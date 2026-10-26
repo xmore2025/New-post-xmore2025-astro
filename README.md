@@ -6,7 +6,7 @@
 - 全站 6 类页面 + RSS + Sitemap，产物约 **260 KB**
 - 明暗主题、`⌘K` 搜索、阅读进度、代码复制
 - 支持 `file://` 直接打开（相对路径）
-- 部署目标：**Cloudflare Pages**
+- 线上地址：**https://new-post-xmore2025-astro.pages.dev**（Cloudflare Pages）
 
 ---
 
@@ -44,6 +44,8 @@ cd dist && python -m http.server 4321
 
 ```
 .
+├── .github/workflows/
+│   └── deploy.yml          # push 即构建并部署到 Cloudflare Pages
 ├── build.mjs               # 构建：Markdown → dist/
 ├── server.js               # 本地静态服务器（零依赖）
 ├── site.config.json        # 站点配置：标题、作者、导航、社交链接
@@ -109,33 +111,50 @@ featured: false
 
 ## 五、部署到 Cloudflare Pages
 
-### 方式 A：Git 集成（推荐，推代码自动发布）
+**当前状态：已上线** → https://new-post-xmore2025-astro.pages.dev
 
-1. Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. 选择仓库 `xmore2025/New-post-xmore2025-astro`
-3. 构建设置填：
+| 项 | 值 |
+| --- | --- |
+| Pages 项目 | `new-post-xmore2025-astro` |
+| Account ID | `136ac8b333f04b6782da3395ed4110ad` |
+| 生产分支 | `main` |
+| 项目类型 | Direct Upload（非 Git 集成） |
 
-   | 项 | 值 |
-   | --- | --- |
-   | Framework preset | `None` |
-   | Build command | `node build.mjs` |
-   | Build output directory | `dist` |
-   | 环境变量 | `NODE_VERSION=20`（可选） |
-
-4. **Save and Deploy**。之后每次 `git push` 到 `main` 都会自动构建发布。
-
-### 方式 B：命令行直传
+### 方式 A：本地一条命令发布
 
 ```bash
-npx wrangler pages deploy dist --project-name new-post-xmore2025-astro
+node build.mjs
+npx wrangler pages deploy dist --project-name new-post-xmore2025-astro --branch main
 ```
 
-`wrangler.toml` 里已声明 `pages_build_output_dir = "dist"`，所以直接 `npx wrangler pages deploy` 也可以。
+首次运行需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID` 环境变量（或先 `npx wrangler login`）。
+
+### 方式 B：GitHub Actions 自动发布（推荐）
+
+`.github/workflows/deploy.yml` 已就绪，push 到 `main` 即构建并部署。只需在仓库里配两个 Secret：
+
+> Settings → Secrets and variables → Actions → New repository secret
+
+| Secret | 值 |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API Token（Pages:Edit 权限） |
+| `CLOUDFLARE_ACCOUNT_ID` | `136ac8b333f04b6782da3395ed4110ad` |
+
+未配置时工作流只跑构建、跳过部署，不会报红。
+
+### 方式 C：Cloudflare Git 集成
+
+Direct Upload 项目无法再切换为 Git 集成。若想用官方的"连仓库自动构建"，需要新建一个 Pages 项目：
+
+1. Workers & Pages → Create → Pages → Connect to Git
+2. 选 `xmore2025/New-post-xmore2025-astro`
+3. Build command `node build.mjs`，Output `dist`，环境变量 `NODE_VERSION=20`
 
 ### 上线后建议
 
-- 到 **Custom domains** 绑定自己的域名，然后把 `site.config.json` 的 `url` 和 `public/robots.txt` 里的 Sitemap 地址一起改掉
-- Cloudflare Pages 会自动把 `/posts/foo/` 映射到 `/posts/foo/index.html`，并把 `404.html` 作为兜底页，无需额外配置
+- 到 **Custom domains** 绑定自己的域名，然后把 `site.config.json` 的 `url` 与 `public/robots.txt` 里的 Sitemap 地址一起改掉，重新发布
+- Cloudflare Pages 会自动把 `/posts/foo/` 映射到 `/posts/foo/index.html`，并用 `404.html` 兜底，无需额外配置
+
 
 ---
 
