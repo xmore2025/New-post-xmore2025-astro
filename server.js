@@ -70,7 +70,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log('');
-  console.log('  Devosfera 本地预览已启动');
+  console.log('  xmore 本地预览已启动');
   console.log(`  →  http://localhost:${PORT}`);
   console.log('  Ctrl + C 停止');
   console.log('');

@@ -1,9 +1,9 @@
 {
-  "name": "devosfera-minimal",
+  "name": "xmore-blog",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "零依赖的极简开发者博客（devosfera 风格复刻）",
+  "description": "xmore 的极简博客：零依赖，手写 HTML / CSS / JS",
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs && node server.js",

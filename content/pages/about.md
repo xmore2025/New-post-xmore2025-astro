@@ -22,6 +22,6 @@ title: 关于
 
 ## 联系方式
 
-- GitHub：[xmore2025](https://github.com/xmore2025)
+- GitHub：[xmore](https://github.com/xmore2025)
 
 如果你也在折腾自己的站点，欢迎来聊。我尤其想知道：**你删掉了哪些东西，然后页面变好了。**

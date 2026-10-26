@@ -1,4 +1,4 @@
-# Devosfera · Minimal
+# xmore · 极简博客
 
 > 一个零依赖的极简开发者博客 —— 手写 HTML / CSS / JS，没有任何框架与构建负担。
 
@@ -210,4 +210,4 @@ npx wrangler pages deploy dist --project-name new-post-xmore2025-astro --branch 
 
 ## 📄 许可证
 
-[MIT](./LICENSE) © 2026 [xmore2025](https://github.com/xmore2025)
+[MIT](./LICENSE) © 2026 [xmore](https://github.com/xmore2025)

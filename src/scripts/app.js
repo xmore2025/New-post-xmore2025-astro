@@ -1,4 +1,4 @@
-/* Devosfera · Minimal —— 交互脚本（无依赖，约 4KB） */
+/* xmore —— 交互脚本（无依赖，约 4KB） */
 (function () {
   'use strict';
 
