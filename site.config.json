@@ -3,13 +3,13 @@
   "titleSuffix": "Devosfera",
   "tagline": "把好奇心编译成代码",
   "description": "写作、代码与长期主义的记录。关于前端工程、软件架构，以及让技术世界转起来的一切。",
-  "author": "Andrés Ujpán",
+  "author": "xmore2025",
   "lang": "zh-CN",
   "url": "https://new-post-xmore2025-astro.pages.dev",
   "social": {
-    "github": "https://github.com/",
-    "x": "https://x.com/",
-    "email": "hello@example.com"
+    "github": "https://github.com/xmore2025",
+    "x": "",
+    "email": ""
   },
   "nav": [
     { "label": "文章", "href": "/posts/" },

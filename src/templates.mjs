@@ -63,6 +63,20 @@ export function layout({
 
   const json = JSON.stringify(searchData).replace(/</g, '\\u003c');
 
+  // 只渲染已配置的社交链接，避免出现空占位
+  const social = site.social || {};
+  const socialLinks = [
+    social.github
+      ? `<a href="${esc(social.github)}" target="_blank" rel="noopener noreferrer">GitHub</a>`
+      : '',
+    social.x
+      ? `<a href="${esc(social.x)}" target="_blank" rel="noopener noreferrer">X</a>`
+      : '',
+    social.email ? `<a href="mailto:${esc(social.email)}">邮箱</a>` : '',
+  ]
+    .filter(Boolean)
+    .join('\n      ');
+
   return `<!DOCTYPE html>
 <html lang="${esc(site.lang)}" data-theme="light">
 <head>
@@ -126,8 +140,7 @@ ${content}
     <p class="footer-copy">© ${new Date().getFullYear()} ${esc(site.title)} · 手写 HTML / CSS，没有构建负担</p>
     <div class="footer-links">
       <a href="${b}rss.xml">RSS</a>
-      <a href="${esc(site.social.github)}" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="${esc(site.social.x)}" target="_blank" rel="noopener noreferrer">X</a>
+      ${socialLinks}
       <a href="#top">回到顶部</a>
     </div>
   </div>
@@ -203,8 +216,12 @@ export function homePage({ site, posts, featured }) {
       <span>${posts.length} 篇文章</span>
       <span class="sep" aria-hidden="true"></span>
       <a href="./rss.xml">${icon('rss')}RSS</a>
-      <span class="sep" aria-hidden="true"></span>
-      <a href="${esc(site.social.github)}" target="_blank" rel="noopener noreferrer">${icon('github')}GitHub</a>
+      ${
+        site.social?.github
+          ? `<span class="sep" aria-hidden="true"></span>
+      <a href="${esc(site.social.github)}" target="_blank" rel="noopener noreferrer">${icon('github')}GitHub</a>`
+          : ''
+      }
     </div>
   </div>
 </section>`;
