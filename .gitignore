@@ -1,0 +1,15 @@
+# 依赖
+node_modules/
+
+# 构建产物（Cloudflare Pages 会重新构建）
+dist/
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Cloudflare
+.wrangler/

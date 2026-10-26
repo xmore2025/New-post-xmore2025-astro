@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://new-post-xmore2025-astro.pages.dev/sitemap.xml

@@ -1,0 +1,3 @@
+name = "new-post-xmore2025-astro"
+compatibility_date = "2026-10-26"
+pages_build_output_dir = "dist"

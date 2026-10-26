@@ -1,0 +1,16 @@
+# Cloudflare Pages 响应头
+# 文档：https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+
+# 资源文件名带 ?v=<hash>，内容变化时 URL 随之变化，可安全长缓存
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 订阅源与站点地图：短缓存
+/*.xml
+  Cache-Control: public, max-age=3600
