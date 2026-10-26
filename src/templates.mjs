@@ -49,9 +49,12 @@ export function layout({
   searchData = [],
   absoluteBase = false,
   assetVersion = '',
+  path = '',
 }) {
   const b = absoluteBase ? '/' : baseOf(depth);
   const v = assetVersion ? `?v=${assetVersion}` : '';
+  const canonical = path ? `${site.url}${path}` : '';
+  const ogType = /^\/posts\/[^/]+\/$/.test(path) ? 'article' : 'website';
   const pageTitle = title ? `${title} · ${site.titleSuffix}` : `${site.title} — ${site.tagline}`;
   const desc = description || site.description;
   const navItems = site.nav
@@ -88,11 +91,20 @@ export function layout({
 <meta name="author" content="${esc(site.author)}">
 <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)">
-<meta property="og:type" content="website">
+<meta property="og:type" content="${ogType}">
 <meta property="og:title" content="${esc(pageTitle)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:site_name" content="${esc(site.title)}">
+${canonical ? `<meta property="og:url" content="${esc(canonical)}">` : ''}
+<meta property="og:image" content="${esc(site.url)}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(pageTitle)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(site.url)}/og.png">
+${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ''}
 <link rel="alternate" type="application/rss+xml" title="${esc(site.title)}" href="${b}rss.xml">
 <link rel="icon" href="${b}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${b}assets/main.css${v}">

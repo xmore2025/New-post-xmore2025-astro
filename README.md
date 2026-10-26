@@ -1,26 +1,39 @@
 # Devosfera · Minimal
 
-对 [devosfera.vercel.app](https://devosfera.vercel.app/) 的**零依赖复刻版**：保留它的视觉骨架（居中大标题、终端提示语、网格背景、置顶卡 + 文章列表），去掉 LOFI 电台、终端模拟器、Matrix 雨、音效与彩蛋，改成一套更安静、更适合长文阅读的排版系统。
+> 一个零依赖的极简开发者博客 —— 手写 HTML / CSS / JS，没有任何框架与构建负担。
 
-- 无框架、无构建工具链、无 `npm install`
-- 全站 6 类页面 + RSS + Sitemap，产物约 **260 KB**
-- 明暗主题、`⌘K` 搜索、阅读进度、代码复制
-- 支持 `file://` 直接打开（相对路径）
-- 线上地址：**https://new-post-xmore2025-astro.pages.dev**（Cloudflare Pages）
+[![Deploy](https://github.com/xmore2025/New-post-xmore2025-astro/actions/workflows/deploy.yml/badge.svg)](https://github.com/xmore2025/New-post-xmore2025-astro/actions/workflows/deploy.yml)
+[![License](https://img.shields.io/badge/license-MIT-1a5da8)](./LICENSE)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-1a5da8)](./package.json)
+[![Node](https://img.shields.io/badge/node-%E2%89%A5%2018-1a5da8)](https://nodejs.org)
+
+**[🌐 在线预览](https://web2046.xmorexz.dpdns.org)** · **[📄 优化说明](./OPTIMIZATION.md)**
+
+![站点预览](./docs/preview.png)
 
 ---
 
-## 一、本地运行
+## ✨ 特性
 
-需要 Node.js 18+。在项目根目录：
+| | |
+| --- | --- |
+| **零依赖** | `package.json` 没有 `dependencies`，构建只用 Node 内置模块 |
+| **零框架** | 无 React / Vue / Astro / Tailwind，只有 3 个手写文件 |
+| **排版优先** | 单强调色 · 发丝分隔线 · 8pt 间距刻度 · `clamp()` 流式字号 |
+| **完整 SEO** | canonical · OG / Twitter Card · Sitemap · RSS |
+| **明暗主题** | 跟随系统，可手动切换，`localStorage` 记忆 |
+| **站内搜索** | `⌘K` 唤起，纯前端，数据内联，无网络请求 |
+| **可访问** | skip link · 语义标签 · `aria-current` · `:focus-visible` · 尊重 `prefers-reduced-motion` |
+| **随处可跑** | 相对路径，`file://` 直接打开也能看 |
+
+---
+
+## 🚀 快速开始
+
+需要 Node.js 18 以上，**不需要 `npm install`**。
 
 ```bash
-# 一条命令：构建 + 启动
-node build.mjs && node server.js
-
-# 或分两步
-node build.mjs        # 生成 dist/
-node server.js        # 启动静态服务
+node build.mjs && node server.js      # 构建 + 启动
 ```
 
 打开 <http://localhost:4321>。换端口：
@@ -29,44 +42,46 @@ node server.js        # 启动静态服务
 PORT=8080 node server.js
 ```
 
-**没有 Node 也行**，构建一次后用 Python 起服务：
+<details>
+<summary>没有 Node 时的替代方案</summary>
 
 ```bash
-node build.mjs
+node build.mjs                       # 构建仍需 Node（仅一次）
 cd dist && python -m http.server 4321
 ```
 
-> 构建只做一件事：把 Markdown 拼成 HTML。产物在 `dist/`，纯静态，任何 Web 服务器都能托管。
+</details>
 
 ---
 
-## 二、目录结构
+## 📁 目录结构
 
-```
+```text
 .
-├── .github/workflows/
-│   └── deploy.yml          # push 即构建并部署到 Cloudflare Pages
-├── build.mjs               # 构建：Markdown → dist/
-├── server.js               # 本地静态服务器（零依赖）
-├── site.config.json        # 站点配置：标题、作者、导航、社交链接
-├── wrangler.toml           # Cloudflare Pages 配置（输出目录 dist）
+├── .github/workflows/deploy.yml   # push 即构建并部署到 Cloudflare Pages
+├── build.mjs                      # 构建：Markdown → dist/
+├── server.js                      # 本地静态服务器（零依赖）
+├── site.config.json               # 站点配置：标题 / 作者 / 域名 / 导航 / 社交
+├── wrangler.toml                  # Cloudflare Pages 配置
 ├── content/
-│   ├── posts/*.md          # 文章（文件名即 URL slug）
-│   └── pages/about.md      # 关于页
-├── public/                 # 原样复制到 dist/ 的静态文件
-│   ├── _headers            #   Cloudflare 响应头（缓存 / 安全）
+│   ├── posts/*.md                 # 文章（文件名即 URL slug）
+│   └── pages/about.md             # 关于页
+├── public/                        # 原样复制进 dist/
+│   ├── _headers                   #   Cloudflare 响应头（缓存 / 安全）
+│   ├── og.png                     #   1200×630 分享图
 │   └── robots.txt
 ├── src/
-│   ├── render.mjs          # 极简 Markdown 渲染器
-│   ├── templates.mjs       # 页面模板
-│   ├── styles/main.css     # 全部样式
-│   └── scripts/app.js      # 全部交互（约 4 KB）
-└── dist/                   # 构建产物（已 gitignore）
+│   ├── render.mjs                 # 极简 Markdown 渲染器（含表格）
+│   ├── templates.mjs              # 页面模板
+│   ├── styles/main.css            # 全部样式
+│   └── scripts/app.js             # 全部交互（≈4 KB）
+├── tools/og-card.html             # 分享图源文件
+└── dist/                          # 构建产物（已 gitignore）
 ```
 
 ---
 
-## 三、写一篇新文章
+## ✍️ 写一篇新文章
 
 在 `content/posts/` 新建 `my-post.md`：
 
@@ -82,83 +97,73 @@ featured: false
 正文从这里开始，支持标题、列表、引用、代码块、表格、链接。
 ```
 
-然后 `node build.mjs`，URL 自动是 `/posts/my-post/`。
+运行 `node build.mjs`，URL 自动是 `/posts/my-post/`。
 
-- `featured: true` → 出现在首页"置顶"卡片（只取第一篇）
-- `draft: true` → 构建时跳过
-- 阅读时长按中文 380 字/分钟自动计算
-- 标签无需登记，构建时自动汇总并生成 `/tags/<tag>/` 页面
+| 字段 | 作用 |
+| --- | --- |
+| `featured: true` | 进入首页「置顶」卡片（只取第一篇） |
+| `draft: true` | 构建时跳过 |
+| `tags` | 无需登记，自动汇总并生成 `/tags/<tag>/` 页面 |
+
+阅读时长按中文 380 字/分钟自动计算。
 
 ---
 
-## 四、改配置
+## ⚙️ 站点配置
 
-`site.config.json`：
+编辑 `site.config.json`，改完重新 `node build.mjs`。
 
 | 字段 | 说明 |
 | --- | --- |
 | `title` | 站点名，显示在左上角与页脚 |
 | `tagline` | 首页大标题（建议 ≤ 10 个汉字） |
-| `description` | 首页副标题 + 全站默认 SEO 描述 |
+| `description` | 首页副标题 + 默认 SEO 描述 |
 | `author` | 作者名 |
-| `url` | 部署后的正式域名，影响 RSS / Sitemap / OG |
-| `social` | GitHub / X / 邮箱 |
+| `url` | 正式域名，影响 canonical / OG / RSS / Sitemap |
+| `social` | GitHub / X / 邮箱，留空则不渲染 |
 | `nav` | 顶部导航项 |
-
-改完重新 `node build.mjs`。
 
 ---
 
-## 五、部署到 Cloudflare Pages
+## ☁️ 部署
 
-**当前状态：已上线** → https://new-post-xmore2025-astro.pages.dev
+**线上地址：<https://web2046.xmorexz.dpdns.org>**
 
 | 项 | 值 |
 | --- | --- |
+| 托管 | Cloudflare Pages（Direct Upload） |
 | Pages 项目 | `new-post-xmore2025-astro` |
 | Account ID | `136ac8b333f04b6782da3395ed4110ad` |
+| 自定义域名 | `web2046.xmorexz.dpdns.org` |
 | 生产分支 | `main` |
-| 项目类型 | Direct Upload（非 Git 集成） |
+| 自动部署 | GitHub Actions（`.github/workflows/deploy.yml`） |
 
-### 方式 A：本地一条命令发布
+### 自动发布（当前方式）
+
+推送到 `main` → Actions 构建 → 部署到 Pages。所需 Secret 已配置：
+
+| Secret | 说明 |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Pages:Edit 权限的 API Token |
+| `CLOUDFLARE_ACCOUNT_ID` | 见上表 |
+
+### 手动发布
 
 ```bash
 node build.mjs
 npx wrangler pages deploy dist --project-name new-post-xmore2025-astro --branch main
 ```
 
-首次运行需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID` 环境变量（或先 `npx wrangler login`）。
+### 换域名时记得改两处
 
-### 方式 B：GitHub Actions 自动发布（推荐）
+1. `site.config.json` → `url`
+2. `public/robots.txt` → `Sitemap` 地址
 
-`.github/workflows/deploy.yml` 已就绪，push 到 `main` 即构建并部署。只需在仓库里配两个 Secret：
-
-> Settings → Secrets and variables → Actions → New repository secret
-
-| Secret | 值 |
-| --- | --- |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API Token（Pages:Edit 权限） |
-| `CLOUDFLARE_ACCOUNT_ID` | `136ac8b333f04b6782da3395ed4110ad` |
-
-未配置时工作流只跑构建、跳过部署，不会报红。
-
-### 方式 C：Cloudflare Git 集成
-
-Direct Upload 项目无法再切换为 Git 集成。若想用官方的"连仓库自动构建"，需要新建一个 Pages 项目：
-
-1. Workers & Pages → Create → Pages → Connect to Git
-2. 选 `xmore2025/New-post-xmore2025-astro`
-3. Build command `node build.mjs`，Output `dist`，环境变量 `NODE_VERSION=20`
-
-### 上线后建议
-
-- 到 **Custom domains** 绑定自己的域名，然后把 `site.config.json` 的 `url` 与 `public/robots.txt` 里的 Sitemap 地址一起改掉，重新发布
-- Cloudflare Pages 会自动把 `/posts/foo/` 映射到 `/posts/foo/index.html`，并用 `404.html` 兜底，无需额外配置
-
+然后重新构建发布，否则 canonical / OG / Sitemap 会指向旧域名。
 
 ---
 
-## 六、快捷键
+## ⌨️ 快捷键
 
 | 键 | 行为 |
 | --- | --- |
@@ -169,30 +174,40 @@ Direct Upload 项目无法再切换为 Git 集成。若想用官方的"连仓库
 
 ---
 
-## 七、工程约定
+## 🧱 工程约定
 
-- **零运行时依赖**：`package.json` 没有 `dependencies`，构建只用到 Node 内置模块
-- **相对路径**：页面内部链接按层级生成 `../`，因此子目录部署与本地 `file://` 都能工作；只有 `404.html` 用绝对路径（它可能出现在任意层级）
-- **资源版本号**：`assets/main.css?v=<hash>` 由构建时内容哈希生成，配合 `_headers` 里的 `immutable` 长缓存
-- **可访问性**：skip link、语义标签、`aria-current`、`:focus-visible`、`prefers-reduced-motion` 全覆盖
+- **零运行时依赖**：构建只用 `node:fs` / `node:path` / `node:crypto`
+- **相对路径**：内部链接按层级生成 `../`，因此子目录部署与 `file://` 都能工作；只有 `404.html` 用绝对路径（它可能出现在任意层级）
+- **资源版本号**：`assets/main.css?v=<sha1:8>` 由内容哈希生成，配合 `_headers` 的 `immutable` 长缓存
+- **SEO 完整**：每页独立 `canonical`、`og:url`、`og:type`（文章页为 `article`）、`og:image`
+
+### 📦 体积
+
+| 项 | 大小 |
+| --- | --- |
+| `dist/` 全部（27 个文件） | ≈ 270 KB |
+| 首屏 HTML | ≈ 12 KB |
+| `main.css` | ≈ 18 KB |
+| `app.js` | ≈ 4 KB |
+| 字体 / 图片请求 | 0 |
 
 ---
 
-## 八、与原站的差异
+## 🔍 与原站的差异
 
-| | 原站 | 本项目 |
+| | [原站](https://devosfera.vercel.app/) | 本项目 |
 | --- | --- | --- |
-| 框架 | Astro 6 + Tailwind + Pagefind | 手写 HTML/CSS/JS |
-| 构建依赖 | 数百个 npm 包 | 0 个 |
+| 框架 | Astro 6 + Tailwind + Pagefind | 手写 HTML / CSS / JS |
+| 构建依赖 | 数百个 npm 包 | **0** |
 | 交互 | 终端、电台、音效、Matrix、Konami | 主题、搜索、进度、复制 |
-| 字体 | Wotfard / Sriracha / Fira Code（自托管） | 系统字体栈，0 网络请求 |
+| 字体 | 自托管 3 款 | 系统字体栈，0 请求 |
 | 语言 | 英 / 西双语 | 中文 |
-| 首屏体积 | 数百 KB | 约 30 KB |
+| 首屏体积 | 数百 KB | ≈ 30 KB |
 
-功能取舍的理由见 [OPTIMIZATION.md](./OPTIMIZATION.md)。
+取舍理由见 [OPTIMIZATION.md](./OPTIMIZATION.md)。
 
 ---
 
-## 许可证
+## 📄 许可证
 
-[MIT](./LICENSE) © 2026 xmore2025
+[MIT](./LICENSE) © 2026 [xmore2025](https://github.com/xmore2025)

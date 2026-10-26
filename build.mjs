@@ -212,7 +212,7 @@ async function build() {
     .digest('hex')
     .slice(0, 8);
 
-  const render = (fn, data, { depth, active, bodyClass = '', absoluteBase = false }) => {
+  const render = (fn, data, { depth, active, bodyClass = '', absoluteBase = false, path = '' }) => {
     const { content, title, description } = fn({ site, posts, ...data });
     return layout({
       site,
@@ -225,6 +225,7 @@ async function build() {
       searchData,
       absoluteBase,
       assetVersion,
+      path,
     });
   };
 
@@ -234,13 +235,21 @@ async function build() {
   written.push(
     await write(
       'index.html',
-      render(homePage, { featured, posts }, { depth: 0, active: 'home', bodyClass: 'page-home' })
+      render(homePage, { featured, posts }, {
+        depth: 0,
+        active: 'home',
+        bodyClass: 'page-home',
+        path: '/',
+      })
     )
   );
 
   // 文章列表
   written.push(
-    await write('posts/index.html', render(postsPage, {}, { depth: 1, active: 'posts' }))
+    await write(
+      'posts/index.html',
+      render(postsPage, {}, { depth: 1, active: 'posts', path: '/posts/' })
+    )
   );
 
   // 文章详情
@@ -254,7 +263,7 @@ async function build() {
         render(
           postPage,
           { post, prev, next, html: post.html },
-          { depth: 2, active: 'posts', bodyClass: 'page-post' }
+          { depth: 2, active: 'posts', bodyClass: 'page-post', path: `/posts/${post.slug}/` }
         )
       )
     );
@@ -273,14 +282,21 @@ async function build() {
   const tags = [...tagMap.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   written.push(
-    await write('tags/index.html', render(tagsPage, { tags }, { depth: 1, active: 'tags' }))
+    await write(
+      'tags/index.html',
+      render(tagsPage, { tags }, { depth: 1, active: 'tags', path: '/tags/' })
+    )
   );
 
   for (const tag of tags) {
     written.push(
       await write(
         `tags/${tag.slug}/index.html`,
-        render(tagPage, { tag, posts: tag.posts }, { depth: 2, active: 'tags' })
+        render(tagPage, { tag, posts: tag.posts }, {
+          depth: 2,
+          active: 'tags',
+          path: `/tags/${tag.slug}/`,
+        })
       )
     );
   }
@@ -291,7 +307,11 @@ async function build() {
   written.push(
     await write(
       'about/index.html',
-      render(aboutPage, { html: renderMarkdown(aboutBody) }, { depth: 1, active: 'about' })
+      render(aboutPage, { html: renderMarkdown(aboutBody) }, {
+        depth: 1,
+        active: 'about',
+        path: '/about/',
+      })
     )
   );
 

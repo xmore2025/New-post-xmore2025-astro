@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://new-post-xmore2025-astro.pages.dev/sitemap.xml
+Sitemap: https://web2046.xmorexz.dpdns.org/sitemap.xml
