@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getTags } from '../../lib/posts';
+
+const tags = await getTags();
+const total = tags.reduce((sum, tag) => sum + tag.count, 0);
+---
+
+<BaseLayout title="标签" description="全部标签" bodyClass="page-tags">
+  <div class="shell">
+    <header class="page-head">
+      <p class="kicker">TOPICS</p>
+      <h1>标签</h1>
+      <p class="page-lede">{tags.length} 个主题，{total} 次标记。</p>
+    </header>
+
+    <ul class="tag-cloud">
+      {
+        tags.map((tag) => (
+          <li>
+            <a class="tag-card" href={`/tags/${tag.slug}/`}>
+              <span class="tag-name">{tag.name}</span>
+              <span class="tag-count">{tag.count}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

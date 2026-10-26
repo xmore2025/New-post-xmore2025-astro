@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostRow from '../components/PostRow.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config';
+import { fmtDate, getPosts, isoDate } from '../lib/posts';
+
+const posts = await getPosts();
+const featured = posts.find((post) => post.featured);
+const latest = posts.filter((post) => !post.featured).slice(0, 6);
+const social = site.social ?? {};
+---
+
+<BaseLayout path="/" bodyClass="page-home">
+  <section class="hero">
+    <div class="shell hero-inner">
+      <div class="eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="path">~/writing</span>
+        <span class="caret" aria-hidden="true">_</span>
+      </div>
+
+      <h1>{site.tagline}</h1>
+      <p class="lede">{site.description}</p>
+
+      <div class="hero-meta">
+        <span>{site.author}</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>{posts.length} 篇文章</span>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="/rss.xml"><Icon name="rss" />RSS</a>
+        {
+          social.github && (
+            <>
+              <span class="sep" aria-hidden="true" />
+              <a href={social.github} target="_blank" rel="noopener noreferrer">
+                <Icon name="github" />GitHub
+              </a>
+            </>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    featured && (
+      <section class="section">
+        <div class="shell">
+          <SectionHead label="置顶" />
+          <a class="featured" href={`/posts/${featured.slug}/`}>
+            <span class="featured-idx">01</span>
+            <span class="featured-body">
+              <span class="featured-title">{featured.title}</span>
+              <span class="featured-desc">{featured.description}</span>
+              <span class="featured-meta">
+                <time datetime={isoDate(featured.date)}>{fmtDate(featured.date)}</time>
+                <span>{featured.readingTime} 分钟</span>
+                {featured.tags.map((tag) => (
+                  <>
+                    <span class="dot-sep">·</span>
+                    <span>{tag.name}</span>
+                  </>
+                ))}
+              </span>
+            </span>
+            <span class="featured-arrow"><Icon name="arrowUpRight" /></span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="shell">
+      <SectionHead label="最新" more="全部文章" href="/posts/" />
+      <ul class="post-list">
+        {latest.map((post) => <PostRow post={post} />)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

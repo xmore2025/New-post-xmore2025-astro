@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://web2046.xmorexz.dpdns.org/sitemap.xml
+Sitemap: https://web2046.xmorexz.dpdns.org/sitemap-index.xml

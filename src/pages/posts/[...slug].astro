@@ -1,0 +1,78 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagList from '../../components/TagList.astro';
+import { site } from '../../config';
+import { fmtDate, getPosts, isoDate } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, index) => ({
+    params: { slug: post.slug },
+    props: {
+      post,
+      prev: posts[index - 1] ?? null,
+      next: posts[index + 1] ?? null,
+    },
+  }));
+}
+
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post.entry);
+---
+
+<BaseLayout title={post.title} description={post.description} bodyClass="page-post">
+  <div class="progress" data-progress aria-hidden="true"></div>
+
+  <article class="shell">
+    <div class="article">
+      <header class="article-head">
+        <nav class="crumb" aria-label="面包屑">
+          <a href="/posts/">文章</a>
+          <span aria-hidden="true">/</span>
+          <span>{post.tags[0]?.name ?? '随笔'}</span>
+        </nav>
+
+        <h1>{post.title}</h1>
+        <p class="article-desc">{post.description}</p>
+
+        <div class="article-meta">
+          <time datetime={isoDate(post.date)}>{fmtDate(post.date)}</time>
+          <span class="sep" aria-hidden="true"></span>
+          <span>{post.readingTime} 分钟阅读</span>
+          <span class="sep" aria-hidden="true"></span>
+          <span>{site.author}</span>
+        </div>
+
+        <TagList tags={post.tags} />
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <nav class="article-nav" aria-label="上一篇 / 下一篇">
+        {
+          prev ? (
+            <a href={`/posts/${prev.slug}/`}>
+              <span class="label">← 更新</span>
+              <span class="t">{prev.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next ? (
+            <a href={`/posts/${next.slug}/`} class="next">
+              <span class="label">更早 →</span>
+              <span class="t">{next.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+      </nav>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+import { site } from '../config';
+
+const year = new Date().getFullYear();
+const social = site.social ?? {};
+const links = [
+  { label: 'GitHub', href: social.github, external: true },
+  { label: 'X', href: social.x, external: true },
+  { label: '邮箱', href: social.email ? `mailto:${social.email}` : '', external: false },
+].filter((item) => item.href);
+---
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <p class="footer-copy">© {year} {site.title} · Astro 构建，手写 CSS</p>
+    <div class="footer-links">
+      <a href="/rss.xml">RSS</a>
+      {
+        links.map((item) => (
+          <a
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener noreferrer' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href="#top">回到顶部</a>
+    </div>
+  </div>
+</footer>

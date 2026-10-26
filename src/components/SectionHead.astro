@@ -1,0 +1,9 @@
+---
+const { label, more = '', href = '' } = Astro.props;
+---
+
+<div class="section-head">
+  <h2>{label}</h2>
+  <span class="rule" aria-hidden="true"></span>
+  {more && <a class="section-more" href={href}>{more}</a>}
+</div>

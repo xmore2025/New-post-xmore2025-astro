@@ -1,0 +1,66 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config';
+
+const path = Astro.url.pathname;
+const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="site-header" id="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="/" aria-label={`${site.title} 首页`}>
+      <span class="brand-mark"><Icon name="mark" /></span>
+      <span class="brand-text">{site.title}</span>
+    </a>
+
+    <nav class="nav nav--desktop" aria-label="主导航">
+      {
+        site.nav.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header-actions">
+      <button
+        class="icon-btn search-trigger"
+        type="button"
+        aria-label="搜索文章"
+        data-search-open
+      >
+        <Icon name="search" /><kbd>⌘K</kbd>
+      </button>
+
+      <button class="icon-btn theme-btn" type="button" aria-label="切换明暗主题" data-theme-toggle>
+        <span class="theme-icon theme-icon--light"><Icon name="sun" /></span>
+        <span class="theme-icon theme-icon--dark"><Icon name="moon" /></span>
+      </button>
+
+      <button
+        class="icon-btn menu-btn"
+        type="button"
+        aria-label="打开菜单"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        data-menu-toggle
+      >
+        <span class="menu-icon menu-icon--open"><Icon name="menu" /></span>
+        <span class="menu-icon menu-icon--close"><Icon name="close" /></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <div class="shell">
+      {
+        site.nav.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>

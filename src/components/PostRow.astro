@@ -1,0 +1,29 @@
+---
+import { fmtDate, isoDate } from '../lib/posts';
+
+const { post, withDesc = false, withTags = false } = Astro.props;
+---
+
+<li class={`post-row${withDesc ? ' post-row--full' : ''}`}>
+  <time class="post-date" datetime={isoDate(post.date)}>{fmtDate(post.date)}</time>
+  <div class="post-main">
+    <h3 class="post-title">
+      <a class="post-link" href={`/posts/${post.slug}/`}>{post.title}</a>
+    </h3>
+    {withDesc && <p class="post-desc">{post.description}</p>}
+    {
+      withTags && post.tags.length > 0 && (
+        <ul class="tags">
+          {post.tags.map((tag) => (
+            <li>
+              <a class="tag" href={`/tags/${tag.slug}/`}>
+                {tag.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  <span class="post-read">{post.readingTime} 分钟</span>
+</li>

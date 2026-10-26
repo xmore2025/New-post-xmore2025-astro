@@ -1,0 +1,22 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config';
+
+const entry = await getEntry('pages', 'about');
+const { Content } = await render(entry);
+---
+
+<BaseLayout title="关于" description={`关于 ${site.title}`} bodyClass="page-about">
+  <div class="shell">
+    <div class="article article--about">
+      <header class="article-head">
+        <p class="kicker">ABOUT</p>
+        <h1>关于</h1>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

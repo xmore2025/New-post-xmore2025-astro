@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+const years = [...new Set(posts.map((post) => post.date.getFullYear()))].sort((a, b) => b - a);
+---
+
+<BaseLayout title="文章" description="全部文章归档" bodyClass="page-posts">
+  <div class="shell">
+    <header class="page-head">
+      <p class="kicker">ARCHIVE</p>
+      <h1>文章</h1>
+      <p class="page-lede">共 {posts.length} 篇，按时间倒序排列。</p>
+    </header>
+
+    {
+      years.map((year) => {
+        const rows = posts.filter((post) => post.date.getFullYear() === year);
+        return (
+          <section class="year-group">
+            <div class="section-head">
+              <h2>{year}</h2>
+              <span class="rule" aria-hidden="true" />
+              <span class="count">{rows.length}</span>
+            </div>
+            <ul class="post-list">
+              {rows.map((post) => (
+                <PostRow post={post} withDesc withTags />
+              ))}
+            </ul>
+          </section>
+        );
+      })
+    }
+  </div>
+</BaseLayout>
