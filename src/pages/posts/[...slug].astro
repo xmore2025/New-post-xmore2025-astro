@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
+import Icon from '../../components/Icon.astro';
 import { site } from '../../config';
 import { fmtDate, getPosts, isoDate } from '../../lib/posts';
 
@@ -41,11 +42,11 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
         <p class="article-desc">{post.description}</p>
 
         <div class="article-meta">
-          <time datetime={isoDate(post.date)}>{fmtDate(post.date)}</time>
+          <span class="meta-item"><Icon name="calendar" /><time datetime={isoDate(post.date)}>{fmtDate(post.date)}</time></span>
           <span class="sep" aria-hidden="true"></span>
-          <span>{post.readingTime} 分钟阅读</span>
+          <span class="meta-item"><Icon name="clock" />{post.readingTime} 分钟阅读</span>
           <span class="sep" aria-hidden="true"></span>
-          <span>{site.author}</span>
+          <span class="meta-item">{site.author}</span>
         </div>
 
         <TagList tags={post.tags} />
@@ -61,7 +62,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
             {
               prev ? (
                 <a href={`/posts/${prev.slug}/`}>
-                  <span class="label">← 更新</span>
+                  <span class="label"><Icon name="arrowLeft" /> 更新</span>
                   <span class="t">{prev.title}</span>
                 </a>
               ) : (
@@ -71,7 +72,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
             {
               next ? (
                 <a href={`/posts/${next.slug}/`} class="next">
-                  <span class="label">更早 →</span>
+                  <span class="label">更早 <Icon name="arrowRight" /></span>
                   <span class="t">{next.title}</span>
                 </a>
               ) : (
@@ -107,7 +108,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
                 rel="noopener noreferrer"
                 aria-label="分享到 WhatsApp"
                 title="WhatsApp"
-              >wa</a>
+              ><Icon name="whatsapp" /></a>
               <a
                 class="share-link"
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`}
@@ -115,7 +116,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
                 rel="noopener noreferrer"
                 aria-label="分享到 Facebook"
                 title="Facebook"
-              >f</a>
+              ><Icon name="facebook" /></a>
               <a
                 class="share-link"
                 href={`https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${shareTitle}`}
@@ -123,7 +124,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
                 rel="noopener noreferrer"
                 aria-label="分享到 X"
                 title="X"
-              >𝕏</a>
+              ><Icon name="x" /></a>
               <a
                 class="share-link"
                 href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
@@ -131,7 +132,7 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
                 rel="noopener noreferrer"
                 aria-label="分享到 Telegram"
                 title="Telegram"
-              >tg</a>
+              ><Icon name="telegram" /></a>
               <a
                 class="share-link"
                 href={`https://pinterest.com/pin/create/button/?url=${encodedShareUrl}&media=${encodeURIComponent(`${site.url}/og.png`)}&description=${shareTitle}`}
@@ -139,16 +140,16 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
                 rel="noopener noreferrer"
                 aria-label="分享到 Pinterest"
                 title="Pinterest"
-              >p</a>
+              ><Icon name="pinterest" /></a>
               <a
                 class="share-link"
                 href={`mailto:?subject=${shareTitle}&body=${encodedShareUrl}`}
                 aria-label="通过电子邮件分享"
                 title="电子邮件"
-              >@</a>
+              ><Icon name="mail" /></a>
             </nav>
             <button class="share-copy" type="button" data-share-copy>
-              复制文章链接
+              <Icon name="link" /><span class="txt">复制链接</span>
             </button>
             <span class="share-status" data-share-status role="status" aria-live="polite"></span>
           </section>

@@ -5,12 +5,28 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
+  X-Permitted-Cross-Domain-Policies: none
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
 # Astro 产物文件名带内容哈希，内容变化 URL 随之变化，可安全长缓存
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+# 静态资源：长缓存
+/*.svg
+  Cache-Control: public, max-age=2592000
+/*.png
+  Cache-Control: public, max-age=2592000
+/*.webmanifest
+  Cache-Control: public, max-age=86400
+  Content-Type: application/manifest+json; charset=utf-8
+
 # 订阅源与站点地图：短缓存
 /*.xml
   Cache-Control: public, max-age=3600
+
+# 搜索索引：短缓存
+/search.json
+  Cache-Control: public, max-age=600

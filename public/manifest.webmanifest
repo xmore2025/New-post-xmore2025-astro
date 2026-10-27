@@ -1,0 +1,19 @@
+{
+  "name": "xmore",
+  "short_name": "xmore",
+  "description": "写作、代码与长期主义的记录。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf8",
+  "theme_color": "#1a5da8",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

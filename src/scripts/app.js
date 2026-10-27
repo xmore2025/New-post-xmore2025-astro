@@ -321,4 +321,19 @@
       a.insertAdjacentHTML('beforeend', ' <span aria-hidden="true">↗</span>');
     }
   });
+
+  /* ---------------- 回到顶部 ---------------- */
+  var toTopBtn = $('[data-to-top]');
+  if (toTopBtn) {
+    var toggleToTop = function () {
+      var show = window.scrollY > window.innerHeight * 0.6;
+      if (show && toTopBtn.hidden) toTopBtn.hidden = false;
+      else if (!show && !toTopBtn.hidden) toTopBtn.hidden = true;
+    };
+    toggleToTop();
+    window.addEventListener('scroll', toggleToTop, { passive: true });
+    toTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 })();

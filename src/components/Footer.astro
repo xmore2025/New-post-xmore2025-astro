@@ -1,12 +1,13 @@
 ---
+import Icon from './Icon.astro';
 import { site } from '../config';
 
 const year = new Date().getFullYear();
 const social = site.social ?? {};
 const links = [
-  { label: 'GitHub', href: social.github, external: true },
-  { label: 'X', href: social.x, external: true },
-  { label: '邮箱', href: social.email ? `mailto:${social.email}` : '', external: false },
+  { label: 'GitHub', href: social.github, icon: 'github', external: true },
+  { label: 'X', href: social.x, icon: 'x', external: true },
+  { label: '邮箱', href: social.email ? `mailto:${social.email}` : '', icon: 'mail', external: false },
 ].filter((item) => item.href);
 ---
 
@@ -14,19 +15,20 @@ const links = [
   <div class="shell footer-inner">
     <p class="footer-copy">© {year} {site.title} · Astro 构建，手写 CSS</p>
     <div class="footer-links">
-      <a href="/rss.xml">RSS</a>
+      <a href="/rss.xml" aria-label="RSS 订阅"><Icon name="rss" />RSS</a>
       {
         links.map((item) => (
           <a
             href={item.href}
             target={item.external ? '_blank' : undefined}
             rel={item.external ? 'noopener noreferrer' : undefined}
+            aria-label={item.label}
           >
-            {item.label}
+            <Icon name={item.icon} />{item.label}
           </a>
         ))
       }
-      <a href="#top">回到顶部</a>
+      <a href="#site-header" aria-label="回到顶部" data-back-to-top><Icon name="arrowUp" />顶部</a>
     </div>
   </div>
 </footer>

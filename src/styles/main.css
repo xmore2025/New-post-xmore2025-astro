@@ -915,6 +915,18 @@ kbd {
   color: var(--faint);
 }
 
+.article-meta .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+.article-meta .meta-item .ico svg {
+  width: 13px;
+  height: 13px;
+  color: var(--muted);
+}
+
 .article-head .tags {
   margin-top: 1.05rem;
   padding-bottom: 0;
@@ -1022,12 +1034,13 @@ kbd {
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--fg-2);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1;
   text-decoration: none;
   transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.share-link .ico svg {
+  width: 15px;
+  height: 15px;
 }
 
 .share-link:hover {
@@ -1038,16 +1051,24 @@ kbd {
 }
 
 .share-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   margin-top: 0.55rem;
-  padding: 0.48rem 0.72rem;
+  padding: 0.48rem 0.85rem;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: transparent;
   color: var(--fg-2);
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.share-copy .ico svg {
+  width: 14px;
+  height: 14px;
 }
 
 .share-copy:hover {
@@ -1325,11 +1346,19 @@ kbd {
 }
 
 .article-nav .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--faint);
+}
+
+.article-nav .label .ico svg {
+  width: 13px;
+  height: 13px;
 }
 
 .article-nav .t {
@@ -1409,10 +1438,14 @@ kbd {
 
 .footer-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 1.1rem;
 }
 
 .footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -1420,6 +1453,11 @@ kbd {
 
 .footer-links a:hover {
   color: var(--accent);
+}
+
+.footer-links a .ico svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* ---------- 15. 搜索 ---------- */
@@ -1543,7 +1581,49 @@ kbd {
   letter-spacing: 0.03em;
 }
 
-/* ---------- 16. 响应式 ---------- */
+/* ---------- 16. 回到顶部 ---------- */
+.to-top {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--fg-2);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease),
+    color 0.2s, border-color 0.2s;
+}
+
+.to-top[hidden] {
+  display: none;
+}
+
+.to-top:not([hidden]) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.to-top:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.to-top .ico svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ---------- 17. 响应式 ---------- */
 @media (max-width: 900px) {
   .nav--desktop {
     display: none;
@@ -1676,7 +1756,7 @@ kbd {
   }
 }
 
-/* ---------- 17. 无障碍 / 打印 ---------- */
+/* ---------- 18. 无障碍 / 打印 ---------- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1697,7 +1777,8 @@ kbd {
   .search-modal,
   .progress,
   .article-nav,
-  .backdrop {
+  .backdrop,
+  .to-top {
     display: none !important;
   }
 
