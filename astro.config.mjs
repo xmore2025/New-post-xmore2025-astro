@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import siteConfig from './site.config.json' with { type: 'json' };
 
 export default defineConfig({
-  site: 'https://web2046.xmorexz.dpdns.org',
+  site: siteConfig.url,
 
   // 与旧版 URL 保持一致：/posts/foo/ 而不是 /posts/foo
   trailingSlash: 'always',

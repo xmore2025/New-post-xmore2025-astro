@@ -39,8 +39,9 @@
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo,
     Consolas, "Liberation Mono", monospace;
 
-  --shell: 1120px;
-  --measure: 70ch;
+  --shell: 1440px;
+  --gutter: clamp(1.15rem, 4vw, 3.5rem);
+  --measure: 860px;
 
   --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
 }
@@ -161,7 +162,7 @@ svg {
   width: 100%;
   max-width: var(--shell);
   margin-inline: auto;
-  padding-inline: clamp(1.15rem, 4vw, 2.5rem);
+  padding-inline: var(--gutter);
 }
 
 main {
@@ -1414,6 +1415,30 @@ kbd {
 
   .header-inner {
     height: 60px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    padding-block: clamp(4.5rem, 7vw, 7rem) clamp(3.5rem, 5vw, 5rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(4.35rem, 4.8vw, 5.25rem);
+  }
+
+  .section {
+    padding-block: clamp(2rem, 3vw, 3rem);
+  }
+
+  .featured {
+    padding: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .post-row {
+    grid-template-columns: 7.25rem minmax(0, 1fr) auto;
+    gap: 0.4rem 1.75rem;
+    padding-block: 1.25rem;
   }
 }
 

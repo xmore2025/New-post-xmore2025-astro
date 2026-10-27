@@ -20,6 +20,7 @@
 | **3 个依赖** | `astro` · `@astrojs/rss` · `@astrojs/sitemap`，仅此而已 |
 | **零 UI 框架** | 无 React / Vue / Tailwind，样式是 1 份手写 CSS |
 | **排版优先** | 单强调色 · 发丝分隔线 · 8pt 间距刻度 · `clamp()` 流式字号 |
+| **响应式宽屏** | 桌面内容区最大 1440px、文章正文最大 860px，移动端自动收束 |
 | **内容集合** | Markdown + Zod schema 校验，字段写错构建就失败 |
 | **完整 SEO** | canonical · OG / Twitter Card · Sitemap · RSS · 语义化 `og:type` |
 | **明暗主题** | 跟随系统，可手动切换，`localStorage` 记忆，首屏无闪烁 |
@@ -126,7 +127,7 @@ featured: false
 
 ## ⚙️ 站点配置
 
-`site.config.json` 是唯一的事实来源，改完重新构建即可：
+`site.config.json` 是唯一的事实来源，改完重新构建即可。Astro 构建配置会直接读取其中的 `url`，无需再单独维护域名：
 
 | 字段 | 说明 |
 | --- | --- |
@@ -139,7 +140,7 @@ featured: false
 | `social` | GitHub / X / 邮箱，留空则不渲染 |
 | `nav` | 顶部导航项 |
 
-`astro.config.mjs` 里的 `site` 需要与 `url` 保持一致（RSS 与 sitemap 依赖它生成绝对地址）。
+`url` 会同时用于页面 canonical / OG、RSS、Sitemap 与 Astro 构建元数据，避免多处配置不一致。
 
 ---
 
@@ -172,13 +173,12 @@ npm run build
 npx wrangler pages deploy dist --project-name new-post-xmore2025-astro --branch main
 ```
 
-### 换域名时记得改三处
+### 换域名时记得改两处
 
 1. `site.config.json` → `url`
-2. `astro.config.mjs` → `site`
-3. `public/robots.txt` → `Sitemap` 地址
+2. `public/robots.txt` → `Sitemap` 地址
 
-然后重新构建发布，否则 canonical / OG / RSS / Sitemap 会指向旧域名。
+修改后重新构建发布；同时确认 `robots.txt` 中的 Sitemap 地址与新域名一致。
 
 ---
 
