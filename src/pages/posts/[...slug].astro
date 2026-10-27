@@ -18,7 +18,11 @@ export async function getStaticPaths() {
 }
 
 const { post, prev, next } = Astro.props;
-const { Content } = await render(post.entry);
+const { Content, headings } = await render(post.entry);
+const shareUrl = new URL(Astro.url.pathname, site.url).href;
+const shareTitle = encodeURIComponent(post.title);
+const encodedShareUrl = encodeURIComponent(shareUrl);
+const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
 ---
 
 <BaseLayout title={post.title} description={post.description} bodyClass="page-post">
@@ -26,13 +30,13 @@ const { Content } = await render(post.entry);
 
   <article class="shell">
     <div class="article">
-      <header class="article-head">
-        <nav class="crumb" aria-label="面包屑">
+      <nav class="crumb" aria-label="面包屑">
           <a href="/posts/">文章</a>
           <span aria-hidden="true">/</span>
           <span>{post.tags[0]?.name ?? '随笔'}</span>
-        </nav>
+      </nav>
 
+      <header class="article-head">
         <h1>{post.title}</h1>
         <p class="article-desc">{post.description}</p>
 
@@ -47,32 +51,109 @@ const { Content } = await render(post.entry);
         <TagList tags={post.tags} />
       </header>
 
-      <div class="prose">
-        <Content />
-      </div>
+      <div class="article-layout">
+        <div class="article-main">
+          <div class="prose">
+            <Content />
+          </div>
 
-      <nav class="article-nav" aria-label="上一篇 / 下一篇">
-        {
-          prev ? (
-            <a href={`/posts/${prev.slug}/`}>
-              <span class="label">← 更新</span>
-              <span class="t">{prev.title}</span>
-            </a>
-          ) : (
-            <span />
-          )
-        }
-        {
-          next ? (
-            <a href={`/posts/${next.slug}/`} class="next">
-              <span class="label">更早 →</span>
-              <span class="t">{next.title}</span>
-            </a>
-          ) : (
-            <span />
-          )
-        }
-      </nav>
+          <nav class="article-nav" aria-label="上一篇 / 下一篇">
+            {
+              prev ? (
+                <a href={`/posts/${prev.slug}/`}>
+                  <span class="label">← 更新</span>
+                  <span class="t">{prev.title}</span>
+                </a>
+              ) : (
+                <span />
+              )
+            }
+            {
+              next ? (
+                <a href={`/posts/${next.slug}/`} class="next">
+                  <span class="label">更早 →</span>
+                  <span class="t">{next.title}</span>
+                </a>
+              ) : (
+                <span />
+              )
+            }
+          </nav>
+        </div>
+
+        <aside class="article-sidebar" aria-label="文章辅助导航">
+          {
+            headings.length > 0 && (
+              <nav class="article-toc" aria-label="本文目录">
+                <h2 class="sidebar-title">本文目录</h2>
+                <ol>
+                  {headings.map((heading) => (
+                    <li class={`toc-item toc-item--${heading.depth}`}>
+                      <a href={`#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )
+          }
+
+          <section class="article-share" aria-labelledby="share-title">
+            <h2 class="sidebar-title" id="share-title">分享文章</h2>
+            <nav class="share-links" aria-label="分享到社交平台">
+              <a
+                class="share-link"
+                href={`https://api.whatsapp.com/send?text=${shareText}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="分享到 WhatsApp"
+                title="WhatsApp"
+              >wa</a>
+              <a
+                class="share-link"
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="分享到 Facebook"
+                title="Facebook"
+              >f</a>
+              <a
+                class="share-link"
+                href={`https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${shareTitle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="分享到 X"
+                title="X"
+              >𝕏</a>
+              <a
+                class="share-link"
+                href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="分享到 Telegram"
+                title="Telegram"
+              >tg</a>
+              <a
+                class="share-link"
+                href={`https://pinterest.com/pin/create/button/?url=${encodedShareUrl}&media=${encodeURIComponent(`${site.url}/og.png`)}&description=${shareTitle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="分享到 Pinterest"
+                title="Pinterest"
+              >p</a>
+              <a
+                class="share-link"
+                href={`mailto:?subject=${shareTitle}&body=${encodedShareUrl}`}
+                aria-label="通过电子邮件分享"
+                title="电子邮件"
+              >@</a>
+            </nav>
+            <button class="share-copy" type="button" data-share-copy>
+              复制文章链接
+            </button>
+            <span class="share-status" data-share-status role="status" aria-live="polite"></span>
+          </section>
+        </aside>
+      </div>
     </div>
   </article>
 </BaseLayout>

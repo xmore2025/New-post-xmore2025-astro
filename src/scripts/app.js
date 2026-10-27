@@ -242,6 +242,43 @@
     window.addEventListener('resize', updateProgress);
   }
 
+  /* ---------------- 分享文章 ---------------- */
+  var shareButton = $('[data-share-copy]');
+  var shareStatus = $('[data-share-status]');
+  if (shareButton && shareStatus) {
+    shareButton.addEventListener('click', function () {
+      var text = window.location.href;
+      var showResult = function (copied) {
+        shareStatus.textContent = copied ? '链接已复制' : '复制失败，请手动复制地址栏链接';
+      };
+      var fallbackCopy = function () {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var copied = false;
+        try {
+          copied = document.execCommand('copy');
+        } catch (e) {
+          copied = false;
+        }
+        document.body.removeChild(ta);
+        showResult(copied);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          showResult(true);
+        }, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    });
+  }
+
   /* ---------------- 代码复制 ---------------- */
   var COPY_ICON =
     '<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H6a2.5 2.5 0 0 0-2.5 2.5v6.5A2.5 2.5 0 0 0 6 14.5"/></svg></span>';
