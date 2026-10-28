@@ -1,0 +1,270 @@
+/* ==========================================================================
+   正文层：文章排版、代码块、表格、引用、图片
+   目标行宽 ≈ 40 个汉字（15px 字号 ≈ 640px），行高 1.85
+   ========================================================================== */
+
+.prose {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-body);
+  color: var(--fg-2);
+  text-wrap: pretty;
+}
+
+.prose > * + * {
+  margin-top: 1.15em;
+}
+
+.prose > h2 {
+  margin-top: 2.3em;
+}
+
+.prose > h2 + *,
+.prose > h3 + * {
+  margin-top: 0.8em;
+}
+
+.prose :where(h2, h3, h4) {
+  color: var(--fg);
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+.prose h2 {
+  font-size: 1.1875rem;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+.prose h3 {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.prose h4 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.prose p {
+  margin: 0;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color var(--dur-1);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.prose strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+/* ---------- 行内代码 ---------- */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.34em;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--code-bg);
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 代码块 ---------- */
+.prose pre {
+  position: relative;
+  margin: 1.5em 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  tab-size: 2;
+}
+
+/* Shiki 双主题：defaultColor: false 时不写内联 color，由这里按主题取值 */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+}
+
+[data-theme='dark'] .astro-code,
+[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
+}
+
+.prose pre code {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
+  color: inherit;
+}
+
+.prose pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.4rem;
+  right: 0.5rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+.code-copy {
+  position: absolute;
+  top: 0.38rem;
+  right: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.24rem;
+  padding: 0.14rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-1), color var(--dur-1), border-color var(--dur-1);
+}
+
+.prose pre:hover .code-copy,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+
+.code-copy:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+}
+
+.code-copy.is-done {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* 外链尾标 */
+.external-mark {
+  font-size: 0.85em;
+  opacity: 0.6;
+  margin-left: 0.12em;
+}
+
+.code-copy .ico svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* ---------- 引用 ---------- */
+.prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.1em 0 0.1em 1rem;
+  border-left: 2px solid var(--accent-line);
+  color: var(--muted);
+}
+
+.prose blockquote p + p {
+  margin-top: 0.7em;
+}
+
+/* ---------- 列表 ---------- */
+.prose ul,
+.prose ol {
+  margin: 1em 0;
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--faint);
+}
+
+.prose hr {
+  margin: 2.4em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- 图片 ---------- */
+.prose img {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* ---------- 表格 ---------- */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+  line-height: 1.65;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--code-bg);
+  white-space: nowrap;
+}
+
+.prose tr:last-child td {
+  border-bottom: 0;
+}
+
+.prose td code {
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .prose {
+    font-size: 0.9688rem;
+    line-height: 1.8;
+  }
+
+  .prose pre {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.85rem;
+  }
+}

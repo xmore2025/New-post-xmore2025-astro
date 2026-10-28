@@ -1,0 +1,21 @@
+---
+/**
+ * 导航链接：桌面顶栏与移动端抽屉共用同一份渲染逻辑，
+ * 当前页通过 aria-current="page" 标记（样式与无障碍都依赖它）。
+ */
+import { site } from '../config';
+
+const { class: className = 'nav', ariaLabel = '主导航' } = Astro.props;
+const path = Astro.url.pathname;
+const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<nav class={className} aria-label={ariaLabel}>
+  {
+    site.nav.map((item) => (
+      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))
+  }
+</nav>

@@ -20,21 +20,45 @@ export async function getStaticPaths() {
 
 const { post, prev, next } = Astro.props;
 const { Content, headings } = await render(post.entry);
+
 const shareUrl = new URL(Astro.url.pathname, site.url).href;
 const shareTitle = encodeURIComponent(post.title);
 const encodedShareUrl = encodeURIComponent(shareUrl);
 const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
+const published = isoDate(post.date);
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.description,
+  datePublished: published,
+  dateModified: published,
+  inLanguage: site.lang,
+  image: `${site.url}/og.png`,
+  keywords: post.tags.map((tag) => tag.name).join(', '),
+  author: { '@type': 'Person', name: site.author, url: site.url },
+  publisher: { '@type': 'Organization', name: site.title, url: site.url },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+};
 ---
 
-<BaseLayout title={post.title} description={post.description} bodyClass="page-post">
+<BaseLayout
+  title={post.title}
+  description={post.description}
+  bodyClass="page-post"
+  type="article"
+  published={published}
+  structuredData={structuredData}
+>
   <div class="progress" data-progress aria-hidden="true"></div>
 
   <article class="shell">
     <div class="article">
       <nav class="crumb" aria-label="面包屑">
-          <a href="/posts/">文章</a>
-          <span aria-hidden="true">/</span>
-          <span>{post.tags[0]?.name ?? '随笔'}</span>
+        <a href="/posts/">文章</a>
+        <span aria-hidden="true">/</span>
+        <span>{post.tags[0]?.name ?? '随笔'}</span>
       </nav>
 
       <header class="article-head">
@@ -42,7 +66,10 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
         <p class="article-desc">{post.description}</p>
 
         <div class="article-meta">
-          <span class="meta-item"><Icon name="calendar" /><time datetime={isoDate(post.date)}>{fmtDate(post.date)}</time></span>
+          <span class="meta-item">
+            <Icon name="calendar" />
+            <time datetime={published}>{fmtDate(post.date)}</time>
+          </span>
           <span class="sep" aria-hidden="true"></span>
           <span class="meta-item"><Icon name="clock" />{post.readingTime} 分钟阅读</span>
           <span class="sep" aria-hidden="true"></span>
@@ -62,7 +89,9 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
             {
               prev ? (
                 <a href={`/posts/${prev.slug}/`}>
-                  <span class="label"><Icon name="arrowLeft" /> 更新</span>
+                  <span class="label">
+                    <Icon name="arrowLeft" /> 更新
+                  </span>
                   <span class="t">{prev.title}</span>
                 </a>
               ) : (
@@ -72,7 +101,9 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
             {
               next ? (
                 <a href={`/posts/${next.slug}/`} class="next">
-                  <span class="label">更早 <Icon name="arrowRight" /></span>
+                  <span class="label">
+                    更早 <Icon name="arrowRight" />
+                  </span>
                   <span class="t">{next.title}</span>
                 </a>
               ) : (
@@ -100,58 +131,60 @@ const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
 
           <section class="article-share" aria-labelledby="share-title">
             <h2 class="sidebar-title" id="share-title">分享文章</h2>
-            <nav class="share-links" aria-label="分享到社交平台">
+            <div class="share-links" role="group" aria-label="分享到社交平台">
               <a
                 class="share-link"
                 href={`https://api.whatsapp.com/send?text=${shareText}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 WhatsApp"
-                title="WhatsApp"
-              ><Icon name="whatsapp" /></a>
+                title="WhatsApp"><Icon name="whatsapp" /></a
+              >
               <a
                 class="share-link"
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 Facebook"
-                title="Facebook"
-              ><Icon name="facebook" /></a>
+                title="Facebook"><Icon name="facebook" /></a
+              >
               <a
                 class="share-link"
                 href={`https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 X"
-                title="X"
-              ><Icon name="x" /></a>
+                title="X"><Icon name="x" /></a
+              >
               <a
                 class="share-link"
                 href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 Telegram"
-                title="Telegram"
-              ><Icon name="telegram" /></a>
+                title="Telegram"><Icon name="telegram" /></a
+              >
               <a
                 class="share-link"
                 href={`https://pinterest.com/pin/create/button/?url=${encodedShareUrl}&media=${encodeURIComponent(`${site.url}/og.png`)}&description=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 Pinterest"
-                title="Pinterest"
-              ><Icon name="pinterest" /></a>
+                title="Pinterest"><Icon name="pinterest" /></a
+              >
               <a
                 class="share-link"
                 href={`mailto:?subject=${shareTitle}&body=${encodedShareUrl}`}
                 aria-label="通过电子邮件分享"
-                title="电子邮件"
-              ><Icon name="mail" /></a>
-            </nav>
-            <button class="share-copy" type="button" data-share-copy>
-              <Icon name="link" /><span class="txt">复制链接</span>
-            </button>
-            <span class="share-status" data-share-status role="status" aria-live="polite"></span>
+                title="电子邮件"><Icon name="mail" /></a
+              >
+            </div>
+            <div class="share-copy-row">
+              <button class="share-copy" type="button" data-share-copy>
+                <Icon name="link" /><span class="txt">复制链接</span>
+              </button>
+              <span class="share-status" data-share-status role="status" aria-live="polite"></span>
+            </div>
           </section>
         </aside>
       </div>

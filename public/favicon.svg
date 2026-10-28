@@ -1,11 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="xmore">
-  <rect width="64" height="64" rx="14" fill="#17171b" />
+  <rect width="64" height="64" rx="14" fill="#1b1b1e" />
   <path
-    d="M20 20 44 44M44 20 20 44"
+    d="M32 12 52 32 32 52 12 32Z"
     fill="none"
-    stroke="#fbfaf8"
-    stroke-width="6"
-    stroke-linecap="round"
+    stroke="#faf9f7"
+    stroke-width="3.4"
+    stroke-linejoin="round"
+    opacity="0.92"
   />
-  <circle cx="32" cy="32" r="4" fill="#7aa9f0" />
+  <path d="M32 12v40" stroke="#8ab2ee" stroke-width="3.4" stroke-linecap="round" />
 </svg>

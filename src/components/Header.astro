@@ -1,9 +1,7 @@
 ---
 import Icon from './Icon.astro';
+import NavLinks from './NavLinks.astro';
 import { site } from '../config';
-
-const path = Astro.url.pathname;
-const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <header class="site-header" id="site-header">
@@ -13,27 +11,27 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
       <span class="brand-text">{site.title}</span>
     </a>
 
-    <nav class="nav nav--desktop" aria-label="主导航">
-      {
-        site.nav.map((item) => (
-          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-            {item.label}
-          </a>
-        ))
-      }
-    </nav>
+    <NavLinks class="nav nav--desktop" ariaLabel="主导航" />
 
     <div class="header-actions">
       <button
         class="icon-btn search-trigger"
         type="button"
-        aria-label="搜索文章"
+        aria-label="搜索文章（快捷键 ⌘K）"
+        aria-controls="search-modal"
+        aria-expanded="false"
         data-search-open
       >
-        <Icon name="search" /><kbd>⌘K</kbd>
+        <Icon name="search" /><kbd data-shortcut>⌘K</kbd>
       </button>
 
-      <button class="icon-btn theme-btn" type="button" aria-label="切换明暗主题" data-theme-toggle>
+      <button
+        class="icon-btn theme-btn"
+        type="button"
+        aria-label="切换明暗主题"
+        aria-pressed="false"
+        data-theme-toggle
+      >
         <span class="theme-icon theme-icon--light"><Icon name="sun" /></span>
         <span class="theme-icon theme-icon--dark"><Icon name="moon" /></span>
       </button>
@@ -54,13 +52,7 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
 
   <div class="mobile-nav" id="mobile-nav" hidden>
     <div class="shell">
-      {
-        site.nav.map((item) => (
-          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-            {item.label}
-          </a>
-        ))
-      }
+      <NavLinks class="nav" ariaLabel="移动端导航" />
     </div>
   </div>
 </header>

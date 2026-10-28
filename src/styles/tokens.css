@@ -1,0 +1,129 @@
+/* ==========================================================================
+   设计令牌（Design Tokens）
+   全站唯一的事实来源：颜色、字阶、间距、圆角、动效。
+   改主题只改这里，组件层不出现任何硬编码色值。
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- 1. 颜色 · 亮色（暖纸底 + 中性墨色 + 单一强调色） ---------- */
+  --bg: #faf9f7;
+  --bg-soft: #f3f1ec;
+  --surface: #ffffff;
+  --surface-2: #fdfcfa;
+
+  --fg: #1b1b1e;
+  --fg-2: #3b3b42;
+  --muted: #62626b;
+  --faint: #83838c;
+
+  --line: #e9e6df;
+  --line-2: #d9d5cb;
+
+  --accent: #1a5da8;
+  --accent-strong: #144b88;
+  --accent-wash: rgba(26, 93, 168, 0.07);
+  --accent-line: rgba(26, 93, 168, 0.28);
+
+  --hover: rgba(27, 27, 30, 0.045);
+  --code-bg: #f4f2ed;
+  --grid-line: rgba(27, 27, 30, 0.05);
+  --header-bg: rgba(250, 249, 247, 0.78);
+  --overlay: rgba(250, 249, 247, 0.7);
+  --selection: rgba(26, 93, 168, 0.16);
+  --mark: rgba(26, 93, 168, 0.14);
+
+  --shadow-sm: 0 1px 2px rgba(24, 24, 28, 0.045);
+  --shadow-md: 0 18px 40px -28px rgba(24, 24, 28, 0.35);
+
+  /* ---------- 2. 字阶 ---------- */
+  /* 全站只有 4 个"阅读层级"：正文 15 / 标题 16-21 / 页面标题 22-32 / 首页标题 30-48。
+     其余均为元信息（11-13px）。整体比上一版小一档，靠留白而非字号建立层级。 */
+  --fs-2xs: 0.6563rem; /* 10.5px · kbd、角标 */
+  --fs-xs: 0.6875rem; /* 11px   · 日期、阅读时长、TOC 次级 */
+  --fs-sm: 0.75rem; /* 12px   · 标签、页脚、元信息 */
+  --fs-base: 0.8125rem; /* 13px   · 导航、按钮、摘要 */
+  --fs-md: 0.875rem; /* 14px   · 导语、说明 */
+  --fs-lg: 0.9375rem; /* 15px   · 正文 */
+  --fs-xl: 1rem; /* 16px   · 列表标题 */
+  --fs-2xl: clamp(1.125rem, 0.55vw + 1rem, 1.3125rem); /* 18-21px  · 卡片标题 */
+  --fs-3xl: clamp(1.375rem, 1vw + 1.1rem, 1.75rem); /* 22-28px  · 页面标题 */
+  --fs-4xl: clamp(1.625rem, 1.6vw + 1.25rem, 2.25rem); /* 26-36px  · 文章标题 */
+  --fs-hero: clamp(1.875rem, 3.2vw + 1.1rem, 3rem); /* 30-48px  · 首页大标题 */
+
+  --lh-tight: 1.2;
+  --lh-snug: 1.45;
+  --lh-body: 1.85;
+
+  --tracking-tight: -0.028em;
+  --tracking-wide: 0.12em;
+
+  /* ---------- 3. 间距（4pt 刻度） ---------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  /* ---------- 4. 尺寸 ---------- */
+  --shell: 1160px;
+  --shell-narrow: 880px;
+  --gutter: clamp(1.1rem, 4vw, 2.75rem);
+  --header-h: 58px;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  /* ---------- 5. 字体 ---------- */
+  --font-sans: "Inter", "Segoe UI Variable Text", "Segoe UI", -apple-system,
+    BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI",
+    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo,
+    Consolas, "Liberation Mono", monospace;
+
+  /* ---------- 6. 动效 ---------- */
+  --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+  --dur-1: 140ms;
+  --dur-2: 220ms;
+  --dur-3: 320ms;
+}
+
+/* ---------- 暗色：与亮色同源的暖中性，而不是简单反相 ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0c0c0d;
+  --bg-soft: #131315;
+  --surface: #101012;
+  --surface-2: #151517;
+
+  --fg: #e8e6e1;
+  --fg-2: #c6c3bd;
+  --muted: #9a978f;
+  --faint: #78766f;
+
+  --line: #212123;
+  --line-2: #2d2d31;
+
+  --accent: #8ab2ee;
+  --accent-strong: #a6c5f5;
+  --accent-wash: rgba(138, 178, 238, 0.1);
+  --accent-line: rgba(138, 178, 238, 0.32);
+
+  --hover: rgba(255, 255, 255, 0.045);
+  --code-bg: #131315;
+  --grid-line: rgba(255, 255, 255, 0.04);
+  --header-bg: rgba(12, 12, 13, 0.72);
+  --overlay: rgba(12, 12, 13, 0.72);
+  --selection: rgba(138, 178, 238, 0.2);
+  --mark: rgba(138, 178, 238, 0.18);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 20px 44px -30px rgba(0, 0, 0, 0.85);
+}

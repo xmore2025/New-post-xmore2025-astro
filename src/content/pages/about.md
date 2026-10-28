@@ -16,8 +16,8 @@ title: 关于
 
 - 内容：`src/content/posts/*.md`，content collections + Zod 校验
 - 页面：`src/pages` 文件路由，`src/layouts` 与 `src/components` 复用骨架
-- 样式：`src/styles/main.css`，单一强调色 + 发丝分隔线 + 8pt 间距刻度
-- 交互：主题切换、`⌘K` 搜索、阅读进度、代码复制
+- 样式：`src/styles` 分层（tokens / base / layout / components / prose），单一强调色 + 发丝分隔线 + 4pt 刻度
+- 交互：主题切换、`⌘K` 搜索、阅读进度、目录高亮、代码复制
 - 输出：纯静态 HTML，`@astrojs/sitemap` 与 RSS 一并生成
 
 源码在 [GitHub](https://github.com/xmore2025/New-post-xmore2025-astro)，可以直接拿去改。
