@@ -4,30 +4,56 @@ import Icon from '../../components/Icon.astro';
 import { getTags } from '../../lib/posts';
 
 const tags = await getTags();
-const totalPosts = tags.reduce((sum, tag) => sum + tag.count, 0);
+const totalPosts = tags.reduce((sum, tag) => tag.count, 0);
+
+/** 为每个标签分配一个 emoji，保持视觉趣味 */
+const tagEmojiMap = {
+  rust: '🦀',
+  javascript: '🟨',
+  typescript: '🔷',
+  react: '⚛️',
+  vue: '💚',
+  astro: '🚀',
+  css: '🎨',
+  golang: '🐹',
+  php: '🐘',
+  laravel: '🐛',
+  nginx: '🐕‍🦺',
+  mysql: '🐬',
+  kubernetes: '☸️',
+  docker: '🐳',
+  life: '💃',
+  books: '🔖',
+  tool: '🪜',
+  default: '🏷️',
+};
 
 /**
- * 分类卡片：既有从标签汇总的"已有内容"分类，
- * 也有未来规划的占位分类（应用列表、收藏、图库、工具、导航等）。
- * 占位分类 count 为 0，点击后跳转到对应的预留路径。
+ * Bento 卡片尺寸循环：large(2x2) → wide(2x1) → normal(1x1) → tall(1x2)
+ * 让已有标签按照数量排序后依次套用，占位分类默认 normal。
  */
-const categories = [
-  ...tags.map((tag) => ({
-    name: tag.name,
-    slug: tag.slug,
-    href: `/tags/${tag.slug}/`,
-    count: tag.count,
-    desc: '',
-    icon: 'hash',
-    placeholder: false,
-  })),
+const sizeCycle = ['large', 'wide', 'normal', 'tall'];
+
+const tagCategories = tags.map((tag, i) => ({
+  name: tag.name,
+  slug: tag.slug,
+  href: `/tags/${tag.slug}/`,
+  count: tag.count,
+  desc: '',
+  emoji: tagEmojiMap[tag.slug] ?? tagEmojiMap.default,
+  size: sizeCycle[i % sizeCycle.length],
+  placeholder: false,
+}));
+
+const placeholderCategories = [
   {
     name: '应用列表',
     slug: 'apps',
     href: '/categories/apps/',
     count: 0,
-    desc: '精选应用与工具推荐，按场景分类整理。',
-    icon: 'external',
+    desc: '精选应用与工具推荐。',
+    emoji: '📱',
+    size: 'normal',
     placeholder: true,
   },
   {
@@ -35,8 +61,9 @@ const categories = [
     slug: 'bookmarks',
     href: '/categories/bookmarks/',
     count: 0,
-    desc: '值得反复阅读的文章、资源和灵感来源。',
-    icon: 'link',
+    desc: '值得反复阅读的文章与资源。',
+    emoji: '🔖',
+    size: 'normal',
     placeholder: true,
   },
   {
@@ -45,7 +72,8 @@ const categories = [
     href: '/categories/gallery/',
     count: 0,
     desc: '截图、设计稿与视觉记录。',
-    icon: 'mark',
+    emoji: '🖼️',
+    size: 'normal',
     placeholder: true,
   },
   {
@@ -53,8 +81,9 @@ const categories = [
     slug: 'tools',
     href: '/categories/tools/',
     count: 0,
-    desc: '日常使用的开发工具与效率工具箱。',
-    icon: 'arrowUpRight',
+    desc: '日常使用的开发与效率工具。',
+    emoji: '🛠️',
+    size: 'normal',
     placeholder: true,
   },
   {
@@ -63,13 +92,13 @@ const categories = [
     href: '/categories/navigation/',
     count: 0,
     desc: '常用网站与资源导航。',
-    icon: 'arrowRight',
+    emoji: '🧭',
+    size: 'normal',
     placeholder: true,
   },
 ];
 
-// 按文章数降序排列，占位分类排在后面
-categories.sort((a, b) => b.count - a.count);
+const categories = [...tagCategories, ...placeholderCategories];
 ---
 
 <BaseLayout
@@ -90,22 +119,35 @@ categories.sort((a, b) => b.count - a.count);
       {
         categories.map((cat) => (
           <a
-            class:list={['cat-card', { 'cat-card--placeholder': cat.placeholder }]}
+            class:list={[
+              'cat-card',
+              `cat-card--${cat.size}`,
+              { 'cat-card--placeholder': cat.placeholder },
+            ]}
             href={cat.href}
           >
+            <div class="cat-card-bg" aria-hidden="true" />
             <div class="cat-card-body">
-              <div class="cat-card-icon">
-                <Icon name={cat.icon} />
-              </div>
-              <h2 class="cat-card-title">{cat.name}</h2>
-              {cat.desc && <p class="cat-card-desc">{cat.desc}</p>}
+              <h2 class="cat-card-title">
+                <span class="cat-card-emoji">{cat.emoji}</span>
+                {cat.name}
+              </h2>
+              {cat.desc ? (
+                <p class="cat-card-desc">{cat.desc}</p>
+              ) : (
+                <p class="cat-card-desc cat-card-desc--empty">暂无描述</p>
+              )}
               <div class="cat-card-meta">
                 <span class="cat-card-count">
                   <Icon name="hash" />
                   {cat.count} 篇
                 </span>
-                {cat.placeholder && (
+                {cat.placeholder ? (
                   <span class="cat-card-badge">筹备中</span>
+                ) : (
+                  <span class="cat-card-arrow" aria-hidden="true">
+                    <Icon name="arrowUpRight" />
+                  </span>
                 )}
               </div>
             </div>

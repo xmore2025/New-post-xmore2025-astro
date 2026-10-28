@@ -671,19 +671,42 @@ html.is-search-open {
   height: 15px;
 }
 
-/* ---------- 分类卡片网格 ---------- */
+/* ---------- 分类 Bento 网格 ---------- */
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: clamp(0.7rem, 1.8vw, 1.1rem);
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 130px;
+  gap: clamp(0.6rem, 1.5vw, 0.9rem);
   padding-block: clamp(0.5rem, 1.2vw, 0.8rem);
 }
 
+/* 尺寸变体 */
+.cat-card--large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.cat-card--wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.cat-card--tall {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.cat-card--normal {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
 .cat-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 140px;
-  padding: clamp(0.9rem, 2vw, 1.2rem);
+  overflow: hidden;
+  padding: clamp(0.8rem, 1.8vw, 1.15rem);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -698,32 +721,39 @@ html.is-search-open {
   box-shadow: var(--shadow-md);
 }
 
+/* 渐变装饰背景 */
+.cat-card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    120% 120% at 100% 0%,
+    var(--accent-wash) 0%,
+    transparent 60%
+  );
+  transition: opacity var(--dur-3) var(--ease);
+  pointer-events: none;
+}
+
+.cat-card:hover .cat-card-bg {
+  opacity: 1;
+}
+
 .cat-card-body {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   flex: 1;
-}
-
-.cat-card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-  background: var(--code-bg);
-  color: var(--accent);
-  margin-bottom: 0.2rem;
-}
-
-.cat-card-icon .ico svg {
-  width: 15px;
-  height: 15px;
+  min-height: 0;
 }
 
 .cat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   margin: 0;
   font-size: var(--fs-xl);
   font-weight: 600;
@@ -731,6 +761,16 @@ html.is-search-open {
   line-height: 1.35;
   color: var(--fg);
   transition: color var(--dur-2);
+}
+
+.cat-card--large .cat-card-title {
+  font-size: var(--fs-2xl);
+}
+
+.cat-card-emoji {
+  font-size: 1.4em;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .cat-card:hover .cat-card-title {
@@ -746,13 +786,27 @@ html.is-search-open {
   text-wrap: pretty;
 }
 
+.cat-card-desc--empty {
+  color: var(--faint);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.cat-card--large .cat-card-desc,
+.cat-card--wide .cat-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .cat-card-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
   margin-top: auto;
-  padding-top: 0.6rem;
+  padding-top: 0.55rem;
 }
 
 .cat-card-count {
@@ -783,6 +837,30 @@ html.is-search-open {
   letter-spacing: 0.04em;
 }
 
+.cat-card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  transition: color var(--dur-2), border-color var(--dur-2),
+    transform var(--dur-3) var(--ease);
+}
+
+.cat-card-arrow .ico svg {
+  width: 11px;
+  height: 11px;
+}
+
+.cat-card:hover .cat-card-arrow {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  transform: translate(1px, -1px);
+}
+
 /* 占位卡片视觉弱化 */
 .cat-card--placeholder {
   background: var(--surface-2);
@@ -791,6 +869,42 @@ html.is-search-open {
 
 .cat-card--placeholder:hover {
   border-style: solid;
+}
+
+/* 响应式：平板 2 列 */
+@media (max-width: 920px) {
+  .cat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cat-card--large {
+    grid-column: span 2;
+  }
+
+  .cat-card--wide {
+    grid-column: span 2;
+  }
+
+  .cat-card--tall {
+    grid-column: span 1;
+  }
+}
+
+/* 响应式：手机 1 列 */
+@media (max-width: 560px) {
+  .cat-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .cat-card--large,
+  .cat-card--wide,
+  .cat-card--tall,
+  .cat-card--normal {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 110px;
+  }
 }
 
 @media (max-width: 680px) {
@@ -830,9 +944,7 @@ html.is-search-open {
     text-align: left;
   }
 
-  .cat-grid {
-    grid-template-columns: 1fr;
-  }
+  /* cat-grid 手机断点已在上方 bento 样式中处理 */
 
   .search-modal {
     padding-top: 6vh;

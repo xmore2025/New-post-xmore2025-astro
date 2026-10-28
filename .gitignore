@@ -15,6 +15,7 @@ Thumbs.db
 # Cloudflare
 .wrangler/
 
-# 日志
-npm-debug.log*
+# Playwright CLI 临时文件
+.playwright-cli/
+
 yarn-error.log*
