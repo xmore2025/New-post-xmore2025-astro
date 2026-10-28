@@ -24,7 +24,6 @@ const { Content, headings } = await render(post.entry);
 const shareUrl = new URL(Astro.url.pathname, site.url).href;
 const shareTitle = encodeURIComponent(post.title);
 const encodedShareUrl = encodeURIComponent(shareUrl);
-const shareText = encodeURIComponent(`${post.title} ${shareUrl}`);
 const published = isoDate(post.date);
 
 const structuredData = {
@@ -134,11 +133,11 @@ const structuredData = {
             <div class="share-links" role="group" aria-label="分享到社交平台">
               <a
                 class="share-link"
-                href={`https://api.whatsapp.com/send?text=${shareText}`}
+                href={`https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="分享到 WhatsApp"
-                title="WhatsApp"><Icon name="whatsapp" /></a
+                aria-label="分享到 X"
+                title="X"><Icon name="x" /></a
               >
               <a
                 class="share-link"
@@ -150,27 +149,11 @@ const structuredData = {
               >
               <a
                 class="share-link"
-                href={`https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${shareTitle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="分享到 X"
-                title="X"><Icon name="x" /></a
-              >
-              <a
-                class="share-link"
                 href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 Telegram"
                 title="Telegram"><Icon name="telegram" /></a
-              >
-              <a
-                class="share-link"
-                href={`https://pinterest.com/pin/create/button/?url=${encodedShareUrl}&media=${encodeURIComponent(`${site.url}/og.png`)}&description=${shareTitle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="分享到 Pinterest"
-                title="Pinterest"><Icon name="pinterest" /></a
               >
               <a
                 class="share-link"

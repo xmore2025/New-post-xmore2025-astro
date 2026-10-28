@@ -473,16 +473,16 @@
   padding-bottom: 1.2rem;
 }
 
-/* 关于页没有侧栏，整块收窄到与文章正文一致的阅读宽度 */
+/* 关于页使用与文章页一致的宽屏布局 */
 .article--about {
-  max-width: 42rem;
+  max-width: var(--shell-narrow);
 }
 
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 190px;
+  grid-template-columns: minmax(0, 1fr) 250px;
   align-items: start;
-  gap: clamp(1.8rem, 4vw, 2.75rem);
+  gap: clamp(1.8rem, 4vw, 3rem);
   margin-top: clamp(1.6rem, 3.2vw, 2.4rem);
 }
 
@@ -668,6 +668,6 @@
 
 @media (min-width: 1280px) {
   .hero h1 {
-    font-size: clamp(2.6rem, 3.2vw + 1.1rem, 3rem);
+    font-size: clamp(2.5rem, 3.2vw + 1rem, 2.8125rem);
   }
 }
