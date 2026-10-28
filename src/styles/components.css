@@ -89,7 +89,7 @@ kbd {
 .featured-title {
   font-size: var(--fs-2xl);
   font-weight: 600;
-  letter-spacing: -0.018em;
+  letter-spacing: -0.01em;
   line-height: 1.4;
   text-wrap: balance;
   overflow-wrap: anywhere;
@@ -189,7 +189,7 @@ kbd {
   margin: 0;
   font-size: var(--fs-xl);
   font-weight: 550;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
   line-height: 1.5;
   overflow-wrap: anywhere;
   transition: color var(--dur-1);
@@ -758,7 +758,7 @@ html.is-search-open {
   margin: 0;
   font-size: var(--fs-xl);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.008em;
   line-height: 1.35;
   color: var(--fg);
   transition: color var(--dur-2);

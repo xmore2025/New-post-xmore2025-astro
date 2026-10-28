@@ -28,6 +28,10 @@ body {
   line-height: 1.7;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   font-optical-sizing: auto;
+  /* 中文排版：汉字与拉丁/数字之间自动补 1/4 字宽，行首全角标点自动压缩。
+     不支持的浏览器会直接忽略这两行，不影响原有排版。 */
+  text-autospace: normal;
+  text-spacing-trim: trim-start;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
