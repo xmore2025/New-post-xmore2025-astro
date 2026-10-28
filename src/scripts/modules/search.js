@@ -82,7 +82,9 @@ export function initSearch() {
   };
 
   const render = (rawQuery) => {
-    const query = String(rawQuery ?? '').trim().toLowerCase();
+    const query = String(rawQuery ?? '')
+      .trim()
+      .toLowerCase();
     activeIndex = -1;
 
     if (!index) {

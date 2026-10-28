@@ -3,21 +3,21 @@
    --------------------------------------------------------------------------
    分层顺序即样式优先级，改样式先找对文件：
 
+   0. font-face.css   字体子集声明（由 tools/build-fonts.mjs 生成，勿手改）
    1. tokens.css      设计令牌 —— 颜色 / 字阶 / 间距 / 圆角 / 动效（唯一色值来源）
    2. base.css        重置、排版基线、无障碍、打印、原生视图过渡
    3. layout.css      外壳、顶栏、首屏、页头、文章栅格、页脚、背景
-   4. components.css  按钮、卡片、列表、标签、目录、分享、搜索、回到顶部
-   5. prose.css       正文排版、代码块、表格、引用、图片
+   4. components.css  按钮、卡片、列表、标签、目录、分享、搜索
+   5. prose.css       正文排版、代码块、表格、引用（仅文章 / 关于页）
 
-   字体样式（fonts.css）不在这里引入：它有 100 多条 unicode-range 声明，
-   体积远大于其余样式，因此单独产出、以非阻塞方式加载，
-   避免拖慢首屏渲染。见 BaseLayout.astro。
+   字体：站点自托管 Noto Sans SC + JetBrains Mono 的子集（1 + 1 个 woff2），
+   @font-face 直接写进主样式，浏览器按 unicode-range 只取需要的字形。
 
-   Vite 会在构建时把 @import 合并成单个 CSS 文件，产出仍然只有 1 个请求。
+   Vite 会在构建时把 @import 合并成单个 CSS 文件。
    ========================================================================== */
 
-@import "./tokens.css";
-@import "./base.css";
-@import "./layout.css";
-@import "./components.css";
-@import "./prose.css";
+@import './font-face.css';
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';

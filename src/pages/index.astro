@@ -18,7 +18,9 @@ const social = site.social ?? {};
       <div class="eyebrow">
         <span class="dot" aria-hidden="true"></span>
         <span class="path">~/writing</span>
-        <span class="caret" aria-hidden="true">_</span>
+        <span class="caret" aria-hidden="true">
+          _
+        </span>
       </div>
 
       <h1>{site.tagline}</h1>
@@ -29,54 +31,58 @@ const social = site.social ?? {};
         <span class="sep" aria-hidden="true"></span>
         <span>{posts.length} 篇文章</span>
         <span class="sep" aria-hidden="true"></span>
-        <a href="/rss.xml"><Icon name="rss" />RSS</a>
-        {
-          social.github && (
-            <>
-              <span class="sep" aria-hidden="true" />
-              <a href={social.github} target="_blank" rel="noopener noreferrer">
-                <Icon name="github" />GitHub
-              </a>
-            </>
-          )
-        }
+        <a href="/rss.xml">
+          <Icon name="rss" />
+          RSS
+        </a>
+        {social.github && (
+          <>
+            <span class="sep" aria-hidden="true" />
+            <a href={social.github} target="_blank" rel="noopener noreferrer">
+              <Icon name="github" />
+              GitHub
+            </a>
+          </>
+        )}
       </div>
     </div>
   </section>
 
-  {
-    featured && (
-      <section class="section">
-        <div class="shell">
-          <SectionHead label="置顶" />
-          <a class="featured" href={`/posts/${featured.slug}/`}>
-            <span class="featured-idx">01</span>
-            <span class="featured-body">
-              <span class="featured-title">{featured.title}</span>
-              <span class="featured-desc">{featured.description}</span>
-              <span class="featured-meta">
-                <time datetime={isoDate(featured.date)}>{fmtDate(featured.date)}</time>
-                <span>{featured.readingTime} 分钟</span>
-                {featured.tags.map((tag) => (
-                  <>
-                    <span class="dot-sep">·</span>
-                    <span>{tag.name}</span>
-                  </>
-                ))}
-              </span>
+  {featured && (
+    <section class="section">
+      <div class="shell">
+        <SectionHead label="置顶" />
+        <a class="featured" href={`/posts/${featured.slug}/`}>
+          <span class="featured-idx">01</span>
+          <span class="featured-body">
+            <span class="featured-title">{featured.title}</span>
+            <span class="featured-desc">{featured.description}</span>
+            <span class="featured-meta">
+              <time datetime={isoDate(featured.date)}>{fmtDate(featured.date)}</time>
+              <span>{featured.readingTime} 分钟</span>
+              {featured.tags.map((tag) => (
+                <>
+                  <span class="dot-sep">·</span>
+                  <span>{tag.name}</span>
+                </>
+              ))}
             </span>
-            <span class="featured-arrow"><Icon name="arrowUpRight" /></span>
-          </a>
-        </div>
-      </section>
-    )
-  }
+          </span>
+          <span class="featured-arrow">
+            <Icon name="arrowUpRight" />
+          </span>
+        </a>
+      </div>
+    </section>
+  )}
 
   <section class="section">
     <div class="shell">
       <SectionHead label="最新" more="全部文章" href="/posts/" />
       <ul class="post-list">
-        {latest.map((post) => <PostRow post={post} withDesc />)}
+        {latest.map((post) => (
+          <PostRow post={post} withDesc />
+        ))}
       </ul>
     </div>
   </section>

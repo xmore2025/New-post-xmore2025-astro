@@ -39,9 +39,11 @@ export async function getPosts() {
     title: entry.data.title,
     description: entry.data.description,
     date: entry.data.date,
+    updated: entry.data.updated ?? entry.data.date,
     featured: entry.data.featured ?? false,
     tags: (entry.data.tags ?? []).map((name) => ({ name, slug: slugifyTag(name) })),
     readingTime: readingTime(entry.body ?? ''),
+    wordCount: (entry.body ?? '').replace(/\s+/g, '').length,
   }));
 
   return posts.sort((a, b) => b.date.getTime() - a.date.getTime());

@@ -54,9 +54,7 @@ const initToc = () => {
     let current = entries.find((entry) => visible.has(entry.heading));
     if (!current) {
       // 还没滚到任何标题时，按位置取最近的一个
-      current = entries
-        .filter((entry) => entry.heading.getBoundingClientRect().top <= 120)
-        .pop();
+      current = entries.filter((entry) => entry.heading.getBoundingClientRect().top <= 120).pop();
     }
     links.forEach((link) => {
       link.classList.remove('is-active');
@@ -161,7 +159,20 @@ const initShare = () => {
 const initExternalLinks = () => {
   $$('.prose a[target="_blank"]').forEach((link) => {
     if (link.querySelector('svg')) return;
-    link.insertAdjacentHTML('beforeend', ' <span class="external-mark" aria-hidden="true">↗</span>');
+    link.insertAdjacentHTML(
+      'beforeend',
+      ' <span class="external-mark" aria-hidden="true">↗</span>'
+    );
+  });
+};
+
+/* ---------------- 任务列表复选框 ---------------- */
+/** Markdown 的 `- [ ]` 会渲染成没有 label 的 disabled checkbox，
+    补一个可访问名称，屏幕阅读器才不会只念"复选框"。 */
+const initTaskLists = () => {
+  $$('.prose input[type="checkbox"]').forEach((box) => {
+    if (box.hasAttribute('aria-label')) return;
+    box.setAttribute('aria-label', box.checked ? '已完成' : '未完成');
   });
 };
 
@@ -171,4 +182,5 @@ export function initArticle() {
   initCodeCopy();
   initShare();
   initExternalLinks();
+  initTaskLists();
 }

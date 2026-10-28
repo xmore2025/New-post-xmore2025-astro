@@ -1,0 +1,15 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.astro/
+
+# 生成文件（由脚本产出，不参与排版）
+src/styles/font-face.css
+public/fonts/
+package-lock.json
+
+# 内容正文：保持作者原始分段
+src/content/
+
+# 快照与站点地图
+docs/

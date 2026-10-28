@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import '../../styles/prose.css';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
 import Icon from '../../components/Icon.astro';
@@ -25,21 +26,54 @@ const shareUrl = new URL(Astro.url.pathname, site.url).href;
 const shareTitle = encodeURIComponent(post.title);
 const encodedShareUrl = encodeURIComponent(shareUrl);
 const published = isoDate(post.date);
+const modified = isoDate(post.updated);
+const primaryTag = post.tags[0];
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: post.title,
-  description: post.description,
-  datePublished: published,
-  dateModified: published,
-  inLanguage: site.lang,
-  image: `${site.url}/og.png`,
-  keywords: post.tags.map((tag) => tag.name).join(', '),
-  author: { '@type': 'Person', name: site.author, url: site.url },
-  publisher: { '@type': 'Organization', name: site.title, url: site.url },
-  mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
-};
+/**
+ * 文章页的结构化数据：
+ * - BlogPosting：标题、摘要、发布时间、修订时间、字数、预计阅读时长
+ * - BreadcrumbList：与页面上可见的面包屑保持一致
+ */
+const structuredData = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${shareUrl}#article`,
+    headline: post.title,
+    description: post.description,
+    datePublished: published,
+    dateModified: modified,
+    inLanguage: site.lang,
+    url: shareUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+    image: { '@type': 'ImageObject', url: `${site.url}/og.png`, width: 1200, height: 630 },
+    keywords: post.tags.map((tag) => tag.name).join(', '),
+    articleSection: primaryTag?.name ?? '随笔',
+    wordCount: post.wordCount,
+    timeRequired: `PT${post.readingTime}M`,
+    author: { '@type': 'Person', name: site.author, url: site.url },
+    publisher: { '@id': `${site.url}/#organization` },
+    isPartOf: { '@id': `${site.url}/#website` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${shareUrl}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首页', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '文章', item: `${site.url}/posts/` },
+      ...(primaryTag
+        ? [
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: primaryTag.name,
+              item: `${site.url}/tags/${primaryTag.slug}/`,
+            },
+          ]
+        : []),
+      { '@type': 'ListItem', position: primaryTag ? 4 : 3, name: post.title },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -48,6 +82,7 @@ const structuredData = {
   bodyClass="page-post"
   type="article"
   published={published}
+  modified={modified}
   structuredData={structuredData}
 >
   <div class="progress" data-progress aria-hidden="true"></div>
@@ -70,7 +105,10 @@ const structuredData = {
             <time datetime={published}>{fmtDate(post.date)}</time>
           </span>
           <span class="sep" aria-hidden="true"></span>
-          <span class="meta-item"><Icon name="clock" />{post.readingTime} 分钟阅读</span>
+          <span class="meta-item">
+            <Icon name="clock" />
+            {post.readingTime} 分钟阅读
+          </span>
           <span class="sep" aria-hidden="true"></span>
           <span class="meta-item">{site.author}</span>
         </div>
@@ -85,51 +123,47 @@ const structuredData = {
           </div>
 
           <nav class="article-nav" aria-label="上一篇 / 下一篇">
-            {
-              prev ? (
-                <a href={`/posts/${prev.slug}/`}>
-                  <span class="label">
-                    <Icon name="arrowLeft" /> 更新
-                  </span>
-                  <span class="t">{prev.title}</span>
-                </a>
-              ) : (
-                <span />
-              )
-            }
-            {
-              next ? (
-                <a href={`/posts/${next.slug}/`} class="next">
-                  <span class="label">
-                    更早 <Icon name="arrowRight" />
-                  </span>
-                  <span class="t">{next.title}</span>
-                </a>
-              ) : (
-                <span />
-              )
-            }
+            {prev ? (
+              <a href={`/posts/${prev.slug}/`}>
+                <span class="label">
+                  <Icon name="arrowLeft" /> 更新
+                </span>
+                <span class="t">{prev.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <a href={`/posts/${next.slug}/`} class="next">
+                <span class="label">
+                  更早 <Icon name="arrowRight" />
+                </span>
+                <span class="t">{next.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
           </nav>
         </div>
 
         <aside class="article-sidebar" aria-label="文章辅助导航">
-          {
-            headings.length > 0 && (
-              <nav class="article-toc" aria-label="本文目录">
-                <h2 class="sidebar-title">本文目录</h2>
-                <ol>
-                  {headings.map((heading) => (
-                    <li class={`toc-item toc-item--${heading.depth}`}>
-                      <a href={`#${heading.slug}`}>{heading.text}</a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            )
-          }
+          {headings.length > 0 && (
+            <nav class="article-toc" aria-label="本文目录">
+              <h2 class="sidebar-title">本文目录</h2>
+              <ol>
+                {headings.map((heading) => (
+                  <li class={`toc-item toc-item--${heading.depth}`}>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
 
           <section class="article-share" aria-labelledby="share-title">
-            <h2 class="sidebar-title" id="share-title">分享文章</h2>
+            <h2 class="sidebar-title" id="share-title">
+              分享文章
+            </h2>
             <div class="share-links" role="group" aria-label="分享到社交平台">
               <a
                 class="share-link"
@@ -137,29 +171,37 @@ const structuredData = {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 X"
-                title="X"><Icon name="x" /></a
+                title="X"
               >
+                <Icon name="x" />
+              </a>
               <a
                 class="share-link"
                 href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="分享到 Telegram"
-                title="Telegram"><Icon name="telegram" /></a
+                title="Telegram"
               >
+                <Icon name="telegram" />
+              </a>
               <a
                 class="share-link"
                 href={`mailto:?subject=${shareTitle}&body=${encodedShareUrl}`}
                 aria-label="通过电子邮件分享"
-                title="电子邮件"><Icon name="mail" /></a
+                title="电子邮件"
               >
+                <Icon name="mail" />
+              </a>
               <button
                 class="share-link"
                 type="button"
                 data-share-copy
                 aria-label="复制链接"
-                title="复制链接"><Icon name="link" /></button
+                title="复制链接"
               >
+                <Icon name="link" />
+              </button>
             </div>
             <span class="share-status" data-share-status role="status" aria-live="polite"></span>
           </section>

@@ -15,24 +15,22 @@ const years = [...new Set(posts.map((post) => post.date.getFullYear()))].sort((a
       <p class="page-lede">共 {posts.length} 篇，按时间倒序排列。</p>
     </header>
 
-    {
-      years.map((year) => {
-        const rows = posts.filter((post) => post.date.getFullYear() === year);
-        return (
-          <section class="year-group">
-            <div class="section-head">
-              <h2>{year}</h2>
-              <span class="rule" aria-hidden="true" />
-              <span class="count">{rows.length}</span>
-            </div>
-            <ul class="post-list">
-              {rows.map((post) => (
-                <PostRow post={post} withDesc withTags />
-              ))}
-            </ul>
-          </section>
-        );
-      })
-    }
+    {years.map((year) => {
+      const rows = posts.filter((post) => post.date.getFullYear() === year);
+      return (
+        <section class="year-group">
+          <div class="section-head">
+            <h2>{year}</h2>
+            <span class="rule" aria-hidden="true" />
+            <span class="count">{rows.length}</span>
+          </div>
+          <ul class="post-list">
+            {rows.map((post) => (
+              <PostRow post={post} withDesc withTags />
+            ))}
+          </ul>
+        </section>
+      );
+    })}
   </div>
 </BaseLayout>

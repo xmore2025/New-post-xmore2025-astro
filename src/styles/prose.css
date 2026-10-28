@@ -154,7 +154,10 @@
   font-size: var(--fs-2xs);
   cursor: pointer;
   opacity: 0;
-  transition: opacity var(--dur-1), color var(--dur-1), border-color var(--dur-1);
+  transition:
+    opacity var(--dur-1),
+    color var(--dur-1),
+    border-color var(--dur-1);
 }
 
 .prose pre:hover .code-copy,

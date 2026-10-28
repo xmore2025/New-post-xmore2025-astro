@@ -1,6 +1,5 @@
 ---
 import '../styles/main.css';
-import fontsHref from '../styles/fonts.css?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
@@ -25,6 +24,34 @@ const canonical = noindex ? '' : `${site.url}${path}`;
 const isArticle = /^\/posts\/[^/]+\/$/.test(path);
 const ogType = type ?? (isArticle ? 'article' : 'website');
 const ogImage = `${site.url}/og.png`;
+
+/* 站点级结构化数据：每个页面都带上 WebSite + Organization，
+   页面自己的节点（文章 / 面包屑）通过 @graph 合并进来。 */
+const siteGraph = [
+  {
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    url: site.url,
+    name: site.title,
+    description: site.description,
+    inLanguage: site.lang,
+    publisher: { '@id': `${site.url}/#organization` },
+  },
+  {
+    '@type': 'Organization',
+    '@id': `${site.url}/#organization`,
+    name: site.title,
+    url: site.url,
+    logo: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
+    sameAs: [site.social?.github, site.social?.x].filter(Boolean),
+  },
+];
+const pageNodes = Array.isArray(structuredData)
+  ? structuredData
+  : structuredData
+    ? [structuredData]
+    : [];
+const jsonLd = { '@context': 'https://schema.org', '@graph': [...siteGraph, ...pageNodes] };
 
 /* 让浏览器提前预渲染同站链接：点击时几乎没有等待，且不需要任何 JS 运行时 */
 const speculationRules = {
@@ -69,10 +96,27 @@ const speculationRules = {
     <meta name="description" content={desc} />
     <meta name="author" content={site.author} />
     <meta name="generator" content={Astro.generator} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta
+        name="robots"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+    )}
 
-    <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" data-theme-color="light" />
-    <meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" data-theme-color="dark" />
+    <meta
+      name="theme-color"
+      content="#faf9f7"
+      media="(prefers-color-scheme: light)"
+      data-theme-color="light"
+    />
+    <meta
+      name="theme-color"
+      content="#0c0c0d"
+      media="(prefers-color-scheme: dark)"
+      data-theme-color="dark"
+    />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={pageTitle} />
@@ -81,6 +125,7 @@ const speculationRules = {
     {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:alt" content={`${site.title} — ${site.tagline}`} />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="zh_CN" />
@@ -99,20 +144,19 @@ const speculationRules = {
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- 字体样式：100+ 条 unicode-range 声明，体积远大于其余样式，
-         用 media="print" → onload 切回 all 的方式异步加载，不阻塞首屏渲染。
-         首屏先用系统黑体渲染，字体样式就绪后再平滑替换。 -->
-    <link rel="preload" as="style" href={fontsHref} />
-    <link rel="stylesheet" href={fontsHref} media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href={fontsHref} /></noscript>
-
-    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>}
-    {!noindex && <script type="speculationrules" set:html={JSON.stringify(speculationRules)}></script>}
+    {!noindex && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>}
+    {!noindex && (
+      <script type="speculationrules" set:html={JSON.stringify(speculationRules)}></script>
+    )}
   </head>
 
   <body class={bodyClass}>
-    <a class="skip-link" href="#main">跳到正文</a>
-    <div class="backdrop" aria-hidden="true"><div class="backdrop-grid"></div></div>
+    <a class="skip-link" href="#main">
+      跳到正文
+    </a>
+    <div class="backdrop" aria-hidden="true">
+      <div class="backdrop-grid"></div>
+    </div>
 
     <Header />
 

@@ -1,141 +1,168 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<!--
+  <head>
+    <meta charset="utf-8" />
+    <!--
   OG 分享图源文件（1200×630）
   重新生成：
   chrome --headless --disable-gpu --hide-scrollbars --window-size=1200,630 \
     --screenshot=public/og.png tools/og-card.html
 -->
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-  html, body { width: 1200px; height: 630px; overflow: hidden; }
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
 
-  body {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 72px 80px;
-    background: #fbfaf8;
-    color: #17171b;
-    font-family: "Inter", "Segoe UI", -apple-system, "PingFang SC",
-      "Microsoft YaHei", sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
+      body {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 72px 80px;
+        background: #fbfaf8;
+        color: #17171b;
+        font-family:
+          'Inter',
+          'Segoe UI',
+          -apple-system,
+          'PingFang SC',
+          'Microsoft YaHei',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
 
-  /* 网格背景 */
-  .grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(to right, rgba(23, 23, 27, 0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(23, 23, 27, 0.045) 1px, transparent 1px);
-    background-size: 80px 80px;
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 30% 0%, #000 0%, transparent 75%);
-    mask-image: radial-gradient(ellipse 70% 60% at 30% 0%, #000 0%, transparent 75%);
-  }
+      /* 网格背景 */
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(to right, rgba(23, 23, 27, 0.045) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(23, 23, 27, 0.045) 1px, transparent 1px);
+        background-size: 80px 80px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 60% at 30% 0%, #000 0%, transparent 75%);
+        mask-image: radial-gradient(ellipse 70% 60% at 30% 0%, #000 0%, transparent 75%);
+      }
 
-  .glow {
-    position: absolute;
-    top: -260px;
-    left: -120px;
-    width: 760px;
-    height: 620px;
-    background: radial-gradient(closest-side, rgba(26, 93, 168, 0.09), transparent 70%);
-  }
+      .glow {
+        position: absolute;
+        top: -260px;
+        left: -120px;
+        width: 760px;
+        height: 620px;
+        background: radial-gradient(closest-side, rgba(26, 93, 168, 0.09), transparent 70%);
+      }
 
-  /* 顶部品牌 */
-  .brand {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 26px;
-    font-weight: 620;
-    letter-spacing: -0.02em;
-  }
+      /* 顶部品牌 */
+      .brand {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 26px;
+        font-weight: 620;
+        letter-spacing: -0.02em;
+      }
 
-  .mark {
-    display: grid;
-    place-items: center;
-    width: 46px;
-    height: 46px;
-    border: 1px solid #d6d2ca;
-    border-radius: 14px;
-    background: #fff;
-    color: #1a5da8;
-  }
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        border: 1px solid #d6d2ca;
+        border-radius: 14px;
+        background: #fff;
+        color: #1a5da8;
+      }
 
-  .mark svg { width: 24px; height: 24px; }
+      .mark svg {
+        width: 24px;
+        height: 24px;
+      }
 
-  .brand small {
-    color: #9b9ba4;
-    font-size: 19px;
-    font-weight: 450;
-    letter-spacing: 0;
-  }
+      .brand small {
+        color: #9b9ba4;
+        font-size: 19px;
+        font-weight: 450;
+        letter-spacing: 0;
+      }
 
-  /* 主标题 */
-  .title {
-    position: relative;
-    font-size: 92px;
-    line-height: 1.1;
-    letter-spacing: -0.045em;
-    font-weight: 680;
-  }
+      /* 主标题 */
+      .title {
+        position: relative;
+        font-size: 92px;
+        line-height: 1.1;
+        letter-spacing: -0.045em;
+        font-weight: 680;
+      }
 
-  .sub {
-    position: relative;
-    margin-top: 26px;
-    max-width: 780px;
-    color: #6e6e78;
-    font-size: 27px;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
-  }
+      .sub {
+        position: relative;
+        margin-top: 26px;
+        max-width: 780px;
+        color: #6e6e78;
+        font-size: 27px;
+        line-height: 1.6;
+        letter-spacing: -0.01em;
+      }
 
-  /* 底部信息 */
-  .foot {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 26px;
-    border-top: 1px solid #e7e4de;
-    font-size: 21px;
-    color: #9b9ba4;
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    letter-spacing: 0.02em;
-  }
+      /* 底部信息 */
+      .foot {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 26px;
+        border-top: 1px solid #e7e4de;
+        font-size: 21px;
+        color: #9b9ba4;
+        font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+        letter-spacing: 0.02em;
+      }
 
-  .foot .dot { color: #1a5da8; }
-</style>
-</head>
-<body>
-  <div class="grid"></div>
-  <div class="glow"></div>
+      .foot .dot {
+        color: #1a5da8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid"></div>
+    <div class="glow"></div>
 
-  <div class="brand">
-    <span class="mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-        <path d="M12 2.8 21 12l-9 9.2L3 12l9-9.2Z"/>
-        <path d="M12 2.8V21.2"/>
-      </svg>
-    </span>
-    xmore <small>笔记</small>
-  </div>
+    <div class="brand">
+      <span class="mark">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linejoin="round"
+        >
+          <path d="M12 2.8 21 12l-9 9.2L3 12l9-9.2Z" />
+          <path d="M12 2.8V21.2" />
+        </svg>
+      </span>
+      xmore <small>笔记</small>
+    </div>
 
-  <div>
-    <div class="title">把好奇心编译成代码</div>
-    <div class="sub">写作、代码与长期主义的记录。关于前端工程、软件架构，以及让技术世界转起来的一切。</div>
-  </div>
+    <div>
+      <div class="title">把好奇心编译成代码</div>
+      <div class="sub">
+        写作、代码与长期主义的记录。关于前端工程、软件架构，以及让技术世界转起来的一切。
+      </div>
+    </div>
 
-  <div class="foot">
-    <span><span class="dot">$</span> web2046.xmorexz.dpdns.org</span>
-    <span>6 posts · 8 tags</span>
-  </div>
-</body>
+    <div class="foot">
+      <span><span class="dot">$</span> web2046.xmorexz.dpdns.org</span>
+      <span>6 posts · 8 tags</span>
+    </div>
+  </body>
 </html>

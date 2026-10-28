@@ -8,7 +8,7 @@ const tags = await getTags();
 const totalPosts = posts.length;
 
 /** 标签 → emoji，保持视觉趣味；未收录的用默认标签图标 */
-const tagEmojiMap = {
+const tagEmojiMap: Record<string, string> = {
   rust: '🦀',
   javascript: '🟨',
   typescript: '🔷',
@@ -35,7 +35,7 @@ const tagEmojiMap = {
 };
 
 /** 标签 → 一句话说明，让卡片有内容可读 */
-const tagDescMap = {
+const tagDescMap: Record<string, string> = {
   engineering: '工程实践、架构取舍与长期维护。',
   design: '视觉语言、交互细节与版式节奏。',
   ai: '模型能力、智能体与工具链的边界。',
@@ -51,7 +51,7 @@ const tagDescMap = {
  * 头部多产标签给 large / wide，第 4 个给 tall，其余 normal。
  * 配合 grid-auto-flow: dense，后面的小卡自动回填空位。
  */
-const pickSize = (i, count) => {
+const pickSize = (i: number, count: number): 'large' | 'wide' | 'tall' | 'normal' => {
   if (i === 0) return count >= 2 ? 'large' : 'normal';
   if (i === 1) return 'wide';
   if (i === 3) return count >= 2 ? 'tall' : 'normal';
@@ -147,15 +147,18 @@ const categories = [...tagCategories, ...placeholderCategories];
     </header>
 
     <section class="cat-grid">
-      {
-        categories.map((cat) => (
-          <a
+      {categories.map((cat) => {
+        // 占位分类还没有内容页：渲染成 div 而不是指向 404 的链接
+        const Tag = cat.placeholder ? 'div' : 'a';
+        return (
+          <Tag
             class:list={[
               'cat-card',
               `cat-card--${cat.size}`,
               { 'cat-card--placeholder': cat.placeholder },
             ]}
-            href={cat.href}
+            href={cat.placeholder ? undefined : cat.href}
+            aria-disabled={cat.placeholder ? 'true' : undefined}
           >
             <div class="cat-card-bg" aria-hidden="true" />
             <div class="cat-card-body">
@@ -164,14 +167,13 @@ const categories = [...tagCategories, ...placeholderCategories];
                 {cat.name}
               </h2>
               {cat.desc && <p class="cat-card-desc">{cat.desc}</p>}
-              {cat.recent.length > 0 &&
-                (cat.size === 'large' || cat.size === 'tall') && (
-                  <ul class="cat-card-list">
-                    {cat.recent.map((title) => (
-                      <li>{title}</li>
-                    ))}
-                  </ul>
-                )}
+              {cat.recent.length > 0 && (cat.size === 'large' || cat.size === 'tall') && (
+                <ul class="cat-card-list">
+                  {cat.recent.map((title) => (
+                    <li>{title}</li>
+                  ))}
+                </ul>
+              )}
               <div class="cat-card-meta">
                 <span class="cat-card-count">
                   <Icon name="hash" />
@@ -186,9 +188,9 @@ const categories = [...tagCategories, ...placeholderCategories];
                 )}
               </div>
             </div>
-          </a>
-        ))
-      }
+          </Tag>
+        );
+      })}
     </section>
   </div>
 </BaseLayout>

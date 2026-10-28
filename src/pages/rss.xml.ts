@@ -17,6 +17,10 @@ export async function GET(context: APIContext) {
       pubDate: post.date,
       categories: post.tags.map((tag) => tag.name),
     })),
-    customData: `<language>${site.lang}</language>`,
+    // 订阅器据此判断是否有更新；ttl 提示轮询频率
+    customData:
+      `<language>${site.lang}</language>` +
+      `<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>` +
+      `<ttl>60</ttl>`,
   });
 }

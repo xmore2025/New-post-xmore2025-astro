@@ -11,20 +11,20 @@ const total = tags.reduce((sum, tag) => sum + tag.count, 0);
     <header class="page-head">
       <p class="kicker">TOPICS</p>
       <h1>标签</h1>
-      <p class="page-lede">{tags.length} 个主题，{total} 次标记。</p>
+      <p class="page-lede">
+        {tags.length} 个主题，{total} 次标记。
+      </p>
     </header>
 
     <ul class="tag-cloud">
-      {
-        tags.map((tag) => (
-          <li>
-            <a class="tag-card" href={`/tags/${tag.slug}/`}>
-              <span class="tag-name">{tag.name}</span>
-              <span class="tag-count">{tag.count}</span>
-            </a>
-          </li>
-        ))
-      }
+      {tags.map((tag) => (
+        <li>
+          <a class="tag-card" href={`/tags/${tag.slug}/`}>
+            <span class="tag-name">{tag.name}</span>
+            <span class="tag-count">{tag.count}</span>
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </BaseLayout>

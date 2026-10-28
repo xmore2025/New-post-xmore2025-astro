@@ -1,17 +1,21 @@
 ---
-const { tags = [] } = Astro.props;
+import type { TagRef } from '../lib/types';
+
+interface Props {
+  tags?: TagRef[];
+}
+
+const { tags = [] } = Astro.props as Props;
 ---
 
-{
-  tags.length > 0 && (
-    <ul class="tags">
-      {tags.map((tag) => (
-        <li>
-          <a class="tag" href={`/tags/${tag.slug}/`}>
-            {tag.name}
-          </a>
-        </li>
-      ))}
-    </ul>
-  )
-}
+{tags.length > 0 && (
+  <ul class="tags">
+    {tags.map((tag) => (
+      <li>
+        <a class="tag" href={`/tags/${tag.slug}/`}>
+          {tag.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

@@ -21,7 +21,8 @@
 .backdrop-grid {
   position: absolute;
   inset: -1px;
-  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 64px 64px;
   -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 0%, transparent 72%);
@@ -29,7 +30,7 @@
 }
 
 .backdrop::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: -22rem;
@@ -48,11 +49,12 @@
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   backdrop-filter: blur(14px) saturate(160%);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--dur-2) var(--ease),
+  transition:
+    border-color var(--dur-2) var(--ease),
     background-color var(--dur-2) var(--ease);
 }
 
-.site-header[data-scrolled="true"] {
+.site-header[data-scrolled='true'] {
   border-bottom-color: var(--line);
 }
 
@@ -84,7 +86,9 @@
   border: 1px solid var(--line-2);
   background: var(--surface);
   color: var(--accent);
-  transition: transform var(--dur-3) var(--ease), border-color var(--dur-2);
+  transition:
+    transform var(--dur-3) var(--ease),
+    border-color var(--dur-2);
 }
 
 .brand-mark svg {
@@ -109,7 +113,9 @@
   border-radius: var(--radius-sm);
   font-size: var(--fs-base);
   color: var(--muted);
-  transition: color var(--dur-1), background-color var(--dur-1);
+  transition:
+    color var(--dur-1),
+    background-color var(--dur-1);
 }
 
 .nav a:hover {
@@ -117,13 +123,13 @@
   background: var(--hover);
 }
 
-.nav a[aria-current="page"] {
+.nav a[aria-current='page'] {
   color: var(--fg);
   font-weight: 550;
 }
 
-.nav a[aria-current="page"]::after {
-  content: "";
+.nav a[aria-current='page']::after {
+  content: '';
   position: absolute;
   left: 0.6rem;
   right: 0.6rem;
@@ -149,11 +155,11 @@
 }
 
 .menu-icon--close,
-.menu-btn[aria-expanded="true"] .menu-icon--open {
+.menu-btn[aria-expanded='true'] .menu-icon--open {
   display: none;
 }
 
-.menu-btn[aria-expanded="true"] .menu-icon--close {
+.menu-btn[aria-expanded='true'] .menu-icon--close {
   display: inline-flex;
 }
 
@@ -183,7 +189,7 @@
   font-size: var(--fs-md);
 }
 
-.mobile-nav .nav a[aria-current="page"]::after {
+.mobile-nav .nav a[aria-current='page']::after {
   display: none;
 }
 

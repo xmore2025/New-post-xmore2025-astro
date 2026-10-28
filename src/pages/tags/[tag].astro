@@ -29,7 +29,9 @@ const { tag } = Astro.props;
     </header>
 
     <ul class="post-list">
-      {tag.posts.map((post) => <PostRow post={post} withDesc withTags />)}
+      {tag.posts.map((post) => (
+        <PostRow post={post} withDesc withTags />
+      ))}
     </ul>
   </div>
 </BaseLayout>

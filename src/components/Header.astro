@@ -7,7 +7,9 @@ import { site } from '../config';
 <header class="site-header" id="site-header">
   <div class="shell header-inner">
     <a class="brand" href="/" aria-label={`${site.title} 首页`}>
-      <span class="brand-mark"><Icon name="mark" /></span>
+      <span class="brand-mark">
+        <Icon name="mark" />
+      </span>
       <span class="brand-text">{site.title}</span>
     </a>
 
@@ -22,7 +24,8 @@ import { site } from '../config';
         aria-expanded="false"
         data-search-open
       >
-        <Icon name="search" /><kbd data-shortcut>⌘K</kbd>
+        <Icon name="search" />
+        <kbd data-shortcut>⌘K</kbd>
       </button>
 
       <button
@@ -32,8 +35,12 @@ import { site } from '../config';
         aria-pressed="false"
         data-theme-toggle
       >
-        <span class="theme-icon theme-icon--light"><Icon name="sun" /></span>
-        <span class="theme-icon theme-icon--dark"><Icon name="moon" /></span>
+        <span class="theme-icon theme-icon--light">
+          <Icon name="sun" />
+        </span>
+        <span class="theme-icon theme-icon--dark">
+          <Icon name="moon" />
+        </span>
       </button>
 
       <button
@@ -44,8 +51,12 @@ import { site } from '../config';
         aria-controls="mobile-nav"
         data-menu-toggle
       >
-        <span class="menu-icon menu-icon--open"><Icon name="menu" /></span>
-        <span class="menu-icon menu-icon--close"><Icon name="close" /></span>
+        <span class="menu-icon menu-icon--open">
+          <Icon name="menu" />
+        </span>
+        <span class="menu-icon menu-icon--close">
+          <Icon name="close" />
+        </span>
       </button>
     </div>
   </div>

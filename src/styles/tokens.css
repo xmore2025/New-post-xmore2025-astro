@@ -15,8 +15,9 @@
 
   --fg: #1b1b1e;
   --fg-2: #3b3b42;
-  --muted: #62626b;
-  --faint: #83838c;
+  /* 次要 / 辅助文字都按 WCAG AA 反推过：在 #faf9f7 上分别为 6.4:1 与 4.6:1 */
+  --muted: #5e5e67;
+  --faint: #70707a;
 
   --line: #e9e6df;
   --line-2: #d9d5cb;
@@ -87,11 +88,12 @@
   /* ---------- 5. 字体 ---------- */
   /* 自托管 Noto Sans SC 打头：中文与拉丁共用一套字形，中英混排不会出现
      "英文比中文更瘦" 的割裂感；字体加载失败时逐级回退到系统黑体。 */
-  --font-sans: "Noto Sans SC Variable", "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei UI", "Microsoft YaHei", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Noto Sans SC", sans-serif;
-  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", "Cascadia Mono",
-    Menlo, Consolas, "Liberation Mono", monospace;
+  --font-sans:
+    'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
+    'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
 
   /* ---------- 6. 动效 ---------- */
   --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
@@ -101,7 +103,7 @@
 }
 
 /* ---------- 暗色：与亮色同源的暖中性，而不是简单反相 ---------- */
-[data-theme="dark"] {
+[data-theme='dark'] {
   color-scheme: dark;
 
   --bg: #0c0c0d;
@@ -111,8 +113,9 @@
 
   --fg: #e8e6e1;
   --fg-2: #c6c3bd;
-  --muted: #9a978f;
-  --faint: #78766f;
+  /* 深色下白字更"重"，辅助色相应提亮：在 #0c0c0d 上为 8.2:1 与 5.9:1 */
+  --muted: #a8a59d;
+  --faint: #8f8d85;
 
   --line: #212123;
   --line-2: #2d2d31;

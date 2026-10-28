@@ -17,7 +17,9 @@
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition: color var(--dur-1), background-color var(--dur-1),
+  transition:
+    color var(--dur-1),
+    background-color var(--dur-1),
     border-color var(--dur-1);
 }
 
@@ -46,8 +48,8 @@ kbd {
   display: inline-flex;
 }
 
-[data-theme="light"] .theme-icon--dark,
-[data-theme="dark"] .theme-icon--light {
+[data-theme='light'] .theme-icon--dark,
+[data-theme='dark'] .theme-icon--light {
   display: none;
 }
 
@@ -62,8 +64,11 @@ kbd {
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: inherit;
-  transition: border-color var(--dur-2), background-color var(--dur-2),
-    transform var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease);
+  transition:
+    border-color var(--dur-2),
+    background-color var(--dur-2),
+    transform var(--dur-3) var(--ease),
+    box-shadow var(--dur-3) var(--ease);
 }
 
 .featured:hover {
@@ -132,7 +137,9 @@ kbd {
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--muted);
-  transition: color var(--dur-2), border-color var(--dur-2),
+  transition:
+    color var(--dur-2),
+    border-color var(--dur-2),
     transform var(--dur-3) var(--ease);
 }
 
@@ -201,7 +208,7 @@ kbd {
 }
 
 .post-link::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -256,12 +263,14 @@ kbd {
   font-size: var(--fs-2xs);
   line-height: 1.8;
   color: var(--muted);
-  transition: color var(--dur-1), border-color var(--dur-1),
+  transition:
+    color var(--dur-1),
+    border-color var(--dur-1),
     background-color var(--dur-1);
 }
 
 .tag::before {
-  content: "#";
+  content: '#';
   font-family: var(--font-mono);
   opacity: 0.4;
   margin-right: 0.1rem;
@@ -294,17 +303,22 @@ kbd {
   background: var(--surface);
   color: var(--fg-2);
   font-size: var(--fs-base);
-  transition: border-color var(--dur-2), background-color var(--dur-2),
-    transform var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease);
+  transition:
+    border-color var(--dur-2),
+    background-color var(--dur-2),
+    transform var(--dur-3) var(--ease),
+    box-shadow var(--dur-3) var(--ease);
 }
 
 .tag-card::before {
-  content: "#";
+  content: '#';
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--faint);
   opacity: 0.55;
-  transition: color var(--dur-2), opacity var(--dur-2);
+  transition:
+    color var(--dur-2),
+    opacity var(--dur-2);
 }
 
 .tag-card:hover {
@@ -340,7 +354,9 @@ kbd {
   font-size: var(--fs-2xs);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
-  transition: border-color var(--dur-2), color var(--dur-2);
+  transition:
+    border-color var(--dur-2),
+    color var(--dur-2);
 }
 
 .tag-card:hover .tag-count {
@@ -376,7 +392,9 @@ kbd {
   color: var(--muted);
   font-size: var(--fs-sm);
   line-height: 1.5;
-  transition: color var(--dur-1), border-color var(--dur-1);
+  transition:
+    color var(--dur-1),
+    border-color var(--dur-1);
 }
 
 .toc-item a:hover {
@@ -426,7 +444,9 @@ kbd {
   color: var(--muted);
   font: inherit;
   cursor: pointer;
-  transition: border-color var(--dur-1), color var(--dur-1),
+  transition:
+    border-color var(--dur-1),
+    color var(--dur-1),
     background-color var(--dur-1);
 }
 
@@ -465,7 +485,9 @@ kbd {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   color: inherit;
-  transition: border-color var(--dur-2), background-color var(--dur-2),
+  transition:
+    border-color var(--dur-2),
+    background-color var(--dur-2),
     transform var(--dur-2) var(--ease);
 }
 
@@ -514,7 +536,9 @@ kbd {
   border-radius: 999px;
   color: var(--fg);
   font-size: var(--fs-base);
-  transition: border-color var(--dur-1), background-color var(--dur-1),
+  transition:
+    border-color var(--dur-1),
+    background-color var(--dur-1),
     transform var(--dur-2) var(--ease);
 }
 
@@ -712,8 +736,11 @@ html.is-search-open {
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: inherit;
-  transition: border-color var(--dur-2), background-color var(--dur-2),
-    transform var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease);
+  transition:
+    border-color var(--dur-2),
+    background-color var(--dur-2),
+    transform var(--dur-3) var(--ease),
+    box-shadow var(--dur-3) var(--ease);
 }
 
 .cat-card:hover {
@@ -728,11 +755,7 @@ html.is-search-open {
   inset: 0;
   z-index: 0;
   opacity: 0;
-  background: radial-gradient(
-    120% 120% at 100% 0%,
-    var(--accent-wash) 0%,
-    transparent 60%
-  );
+  background: radial-gradient(120% 120% at 100% 0%, var(--accent-wash) 0%, transparent 60%);
   transition: opacity var(--dur-3) var(--ease);
   pointer-events: none;
 }
@@ -820,7 +843,7 @@ html.is-search-open {
 }
 
 .cat-card-list li::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 0.62em;
@@ -885,7 +908,9 @@ html.is-search-open {
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--muted);
-  transition: color var(--dur-2), border-color var(--dur-2),
+  transition:
+    color var(--dur-2),
+    border-color var(--dur-2),
     transform var(--dur-3) var(--ease);
 }
 

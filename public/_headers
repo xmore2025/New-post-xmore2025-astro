@@ -1,4 +1,4 @@
-# Cloudflare Pages 响应头
+﻿# Cloudflare Pages 响应头
 # 文档：https://developers.cloudflare.com/pages/configuration/headers/
 
 /*
@@ -12,6 +12,10 @@
 
 # Astro 产物文件名带内容哈希，内容变化 URL 随之变化，可安全长缓存
 /_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 字体子集：文件名带内容哈希，可长缓存
+/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
 # 静态资源：长缓存
@@ -30,3 +34,4 @@
 # 搜索索引：短缓存
 /search.json
   Cache-Control: public, max-age=600
+

@@ -7,15 +7,13 @@ import { site } from '../config';
 
 const { class: className = 'nav', ariaLabel = '主导航' } = Astro.props;
 const path = Astro.url.pathname;
-const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <nav class={className} aria-label={ariaLabel}>
-  {
-    site.nav.map((item) => (
-      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-        {item.label}
-      </a>
-    ))
-  }
+  {site.nav.map((item) => (
+    <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+      {item.label}
+    </a>
+  ))}
 </nav>

@@ -3,7 +3,9 @@
  * 统一图标组件：全部 24×24 线性图标，颜色继承 currentColor
  * 用法：<Icon name="search" /> 或 <Icon name="github" size={14} />
  */
-const ICONS = {
+type IconDef = { body: string; filled?: boolean };
+
+const ICONS: Record<string, IconDef> = {
   search: {
     body: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
   },

@@ -7,6 +7,8 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    /** 最后修订日期（可选）：用于 sitemap 的 lastmod 与结构化数据 dateModified */
+    updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

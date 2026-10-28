@@ -19,3 +19,7 @@ Thumbs.db
 .playwright-cli/
 
 yarn-error.log*
+
+# 字体子集化的源字体缓存（17MB，不入库）
+tools/.cache/
+
