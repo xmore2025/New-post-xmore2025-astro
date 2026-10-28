@@ -41,7 +41,9 @@ const MONO_SRC = path.join(
   'jetbrains-mono-latin-wght-normal.woff2'
 );
 
-const TEXT_EXT = new Set(['.md', '.astro', '.ts', '.js', '.mjs', '.json', '.css']);
+// 只扫描"会被渲染成文字"的文件；CSS 里的中文只出现在注释里，
+// 把它算进字表会让改动注释也触发字体重建。
+const TEXT_EXT = new Set(['.md', '.astro', '.ts', '.js', '.mjs', '.json']);
 const SCAN_DIRS = ['src'];
 const SCAN_FILES = ['site.config.json'];
 

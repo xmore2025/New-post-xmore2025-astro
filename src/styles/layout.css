@@ -195,7 +195,7 @@
 
 /* ---------- 首屏 ---------- */
 .hero {
-  padding-block: clamp(2.2rem, 5vw, 3.6rem) clamp(1.4rem, 3vw, 2.2rem);
+  padding-block: clamp(2.6rem, 5.5vw, 4.2rem) clamp(1.6rem, 3.2vw, 2.4rem);
   text-align: center;
 }
 
@@ -296,7 +296,7 @@
 
 /* ---------- 区块标题 ---------- */
 .section {
-  padding-block: clamp(1.1rem, 2.6vw, 1.9rem);
+  padding-block: clamp(1.25rem, 2.9vw, 2.15rem);
 }
 
 .section-head {
@@ -343,9 +343,9 @@
 
 /* ---------- 页头（归档 / 标签 / 关于 / 404） ---------- */
 .page-head {
-  padding-block: clamp(2rem, 5vw, 3.2rem) clamp(1.1rem, 2.4vw, 1.8rem);
+  padding-block: clamp(2.2rem, 5.4vw, 3.5rem) clamp(1.2rem, 2.6vw, 2rem);
   border-bottom: 1px solid var(--line);
-  margin-bottom: clamp(1.1rem, 2.4vw, 1.8rem);
+  margin-bottom: clamp(1.3rem, 2.6vw, 2rem);
 }
 
 .kicker {
@@ -403,7 +403,7 @@
 .article {
   max-width: var(--article-max);
   margin-inline: auto;
-  padding-block: clamp(1.8rem, 4vw, 2.9rem) 0;
+  padding-block: clamp(2rem, 4.2vw, 3.2rem) 0;
 }
 
 .crumb {
@@ -490,7 +490,7 @@
   grid-template-columns: minmax(0, 1fr) 280px;
   align-items: start;
   gap: clamp(1.8rem, 4vw, 3rem);
-  margin-top: clamp(1.6rem, 3.2vw, 2.4rem);
+  margin-top: clamp(1.9rem, 3.6vw, 2.8rem);
 }
 
 .article-main {
@@ -676,29 +676,29 @@
 /* ---------- 大屏微调：外壳加宽后让留白与行距同步放大 ---------- */
 @media (min-width: 1280px) {
   .hero h1 {
-    font-size: clamp(2.5rem, 3.2vw + 1rem, 2.8125rem);
+    font-size: clamp(2.6rem, 3.4vw + 1.1rem, 3.125rem);
   }
 
   .hero {
-    padding-block: clamp(2.8rem, 5vw, 4.2rem) clamp(1.6rem, 3vw, 2.4rem);
+    padding-block: clamp(3rem, 5.4vw, 4.6rem) clamp(1.8rem, 3.2vw, 2.6rem);
   }
 
   /* 归档行在宽屏下给日期列和垂直留白更多空间 */
   .post-row {
     grid-template-columns: 6.4rem minmax(0, 1fr) auto;
-    padding: 0.95rem 0.4rem;
+    padding: 1rem 0.4rem;
   }
 
   .post-title {
-    font-size: 1rem;
+    font-size: 1.0625rem;
   }
 
   .featured {
-    padding: clamp(1.3rem, 2.2vw, 1.9rem);
+    padding: clamp(1.4rem, 2.4vw, 2rem);
   }
 
   .page-head {
-    padding-block: clamp(2.4rem, 4vw, 3.8rem) clamp(1.3rem, 2.2vw, 2rem);
+    padding-block: clamp(2.5rem, 4.2vw, 3.9rem) clamp(1.4rem, 2.4vw, 2.1rem);
   }
 }
 

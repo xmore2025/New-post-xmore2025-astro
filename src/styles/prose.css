@@ -1,11 +1,11 @@
 /* ==========================================================================
    正文层：文章排版、代码块、表格、引用、图片
-   目标行宽 ≈ 40 个汉字（14.5px 字号 ≈ 620px），行高 1.85
-   外壳可以很宽，但正文永远锁在舒适行宽内（约 46rem / 736px）。
+   目标行宽 ≈ 45 个汉字（15px 字号 ≈ 48rem / 768px），行高 1.9
+   外壳可以很宽，但正文永远锁在舒适行宽内。
    ========================================================================== */
 
 .prose {
-  max-width: 50rem;
+  max-width: 48rem;
   font-size: var(--fs-lg);
   line-height: var(--lh-body);
   color: var(--fg-2);
@@ -13,11 +13,11 @@
 }
 
 .prose > * + * {
-  margin-top: 1.15em;
+  margin-top: 1.3em;
 }
 
 .prose > h2 {
-  margin-top: 2.3em;
+  margin-top: 2.6em;
 }
 
 .prose > h2 + *,
@@ -38,7 +38,7 @@
 }
 
 .prose h3 {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   line-height: 1.5;
   letter-spacing: -0.005em;
   font-weight: 600;
@@ -90,14 +90,14 @@
 /* ---------- 代码块 ---------- */
 .prose pre {
   position: relative;
-  margin: 1.5em 0;
-  padding: 0.9rem 1rem;
+  margin: 1.7em 0;
+  padding: 0.95rem 1.05rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--code-bg);
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  font-size: 0.7813rem;
+  font-size: 0.8125rem;
   line-height: 1.75;
   tab-size: 2;
 }
@@ -189,8 +189,8 @@
 
 /* ---------- 引用 ---------- */
 .prose blockquote {
-  margin: 1.6em 0;
-  padding: 0.1em 0 0.1em 1rem;
+  margin: 1.8em 0;
+  padding: 0.1em 0 0.1em 1.1rem;
   border-left: 2px solid var(--accent-line);
   color: var(--muted);
 }
@@ -202,12 +202,12 @@
 /* ---------- 列表 ---------- */
 .prose ul,
 .prose ol {
-  margin: 1em 0;
-  padding-left: 1.25rem;
+  margin: 1.1em 0;
+  padding-left: 1.3rem;
 }
 
 .prose li + li {
-  margin-top: 0.35em;
+  margin-top: 0.45em;
 }
 
 .prose li::marker {
@@ -264,12 +264,12 @@
 
 @media (max-width: 680px) {
   .prose {
-    font-size: 0.9375rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.85;
   }
 
   .prose pre {
-    font-size: 0.7188rem;
-    padding: 0.75rem 0.85rem;
+    font-size: 0.75rem;
+    padding: 0.8rem 0.9rem;
   }
 }
