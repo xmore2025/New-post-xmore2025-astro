@@ -384,7 +384,10 @@ kbd {
   justify-content: center;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
+  background: transparent;
   color: var(--muted);
+  font: inherit;
+  cursor: pointer;
   transition: border-color var(--dur-1), color var(--dur-1),
     background-color var(--dur-1);
 }
@@ -400,51 +403,12 @@ kbd {
   color: var(--accent);
 }
 
-.share-copy-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.55rem;
-}
-
-.share-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  padding: 0.36rem 0.65rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--fg-2);
-  font: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: border-color var(--dur-1), color var(--dur-1),
-    background-color var(--dur-1);
-}
-
-.share-copy .ico svg {
-  width: 13px;
-  height: 13px;
-}
-
-.share-copy:hover {
-  border-color: var(--accent-line);
-  background: var(--accent-wash);
-  color: var(--accent);
-}
-
 .share-status {
   display: block;
   min-height: 1.2em;
   margin-top: 0.25rem;
   color: var(--muted);
   font-size: var(--fs-xs);
-}
-
-.share-copy-row .share-status {
-  margin-top: 0;
 }
 
 /* ---------- 上/下篇 ---------- */
@@ -707,6 +671,128 @@ html.is-search-open {
   height: 15px;
 }
 
+/* ---------- 分类卡片网格 ---------- */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(0.7rem, 1.8vw, 1.1rem);
+  padding-block: clamp(0.5rem, 1.2vw, 0.8rem);
+}
+
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+  padding: clamp(0.9rem, 2vw, 1.2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: inherit;
+  transition: border-color var(--dur-2), background-color var(--dur-2),
+    transform var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease);
+}
+
+.cat-card:hover {
+  border-color: var(--line-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cat-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.cat-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--code-bg);
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+
+.cat-card-icon .ico svg {
+  width: 15px;
+  height: 15px;
+}
+
+.cat-card-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--fg);
+  transition: color var(--dur-2);
+}
+
+.cat-card:hover .cat-card-title {
+  color: var(--accent);
+}
+
+.cat-card-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  max-width: 32ch;
+  text-wrap: pretty;
+}
+
+.cat-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+
+.cat-card-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--faint);
+}
+
+.cat-card-count .ico svg {
+  width: 10px;
+  height: 10px;
+  opacity: 0.6;
+}
+
+.cat-card-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--accent-line);
+  border-radius: 5px;
+  background: var(--accent-wash);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+/* 占位卡片视觉弱化 */
+.cat-card--placeholder {
+  background: var(--surface-2);
+  border-style: dashed;
+}
+
+.cat-card--placeholder:hover {
+  border-style: solid;
+}
+
 @media (max-width: 680px) {
   .post-row {
     grid-template-columns: minmax(0, 1fr);
@@ -742,6 +828,10 @@ html.is-search-open {
 
   .article-nav .next {
     text-align: left;
+  }
+
+  .cat-grid {
+    grid-template-columns: 1fr;
   }
 
   .search-modal {

@@ -146,11 +146,12 @@ const initShare = () => {
     if (status) status.textContent = ok ? '链接已复制' : '复制失败，请手动复制地址栏';
     if (!ok) return;
 
-    const label = button.querySelector('.txt');
-    const original = label?.textContent ?? '';
-    if (label) label.textContent = '已复制';
+    const originalTitle = button.getAttribute('title') || '复制链接';
+    button.setAttribute('title', '已复制');
+    button.setAttribute('aria-label', '已复制');
     window.setTimeout(() => {
-      if (label) label.textContent = original;
+      button.setAttribute('title', originalTitle);
+      button.setAttribute('aria-label', originalTitle);
       if (status) status.textContent = '';
     }, 1800);
   });

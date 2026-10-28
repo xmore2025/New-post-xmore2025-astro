@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getTags } from '../../lib/posts';
+
+const tags = await getTags();
+const totalPosts = tags.reduce((sum, tag) => sum + tag.count, 0);
+
+/**
+ * 分类卡片：既有从标签汇总的"已有内容"分类，
+ * 也有未来规划的占位分类（应用列表、收藏、图库、工具、导航等）。
+ * 占位分类 count 为 0，点击后跳转到对应的预留路径。
+ */
+const categories = [
+  ...tags.map((tag) => ({
+    name: tag.name,
+    slug: tag.slug,
+    href: `/tags/${tag.slug}/`,
+    count: tag.count,
+    desc: '',
+    icon: 'hash',
+    placeholder: false,
+  })),
+  {
+    name: '应用列表',
+    slug: 'apps',
+    href: '/categories/apps/',
+    count: 0,
+    desc: '精选应用与工具推荐，按场景分类整理。',
+    icon: 'external',
+    placeholder: true,
+  },
+  {
+    name: '收藏',
+    slug: 'bookmarks',
+    href: '/categories/bookmarks/',
+    count: 0,
+    desc: '值得反复阅读的文章、资源和灵感来源。',
+    icon: 'link',
+    placeholder: true,
+  },
+  {
+    name: '图库',
+    slug: 'gallery',
+    href: '/categories/gallery/',
+    count: 0,
+    desc: '截图、设计稿与视觉记录。',
+    icon: 'mark',
+    placeholder: true,
+  },
+  {
+    name: '工具',
+    slug: 'tools',
+    href: '/categories/tools/',
+    count: 0,
+    desc: '日常使用的开发工具与效率工具箱。',
+    icon: 'arrowUpRight',
+    placeholder: true,
+  },
+  {
+    name: '导航',
+    slug: 'navigation',
+    href: '/categories/navigation/',
+    count: 0,
+    desc: '常用网站与资源导航。',
+    icon: 'arrowRight',
+    placeholder: true,
+  },
+];
+
+// 按文章数降序排列，占位分类排在后面
+categories.sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout
+  title="分类"
+  description="按主题浏览内容：标签分类、应用列表、收藏、图库、工具与导航"
+  bodyClass="page-categories"
+>
+  <div class="shell">
+    <header class="page-head">
+      <p class="kicker">CATEGORIES</p>
+      <h1>分类</h1>
+      <p class="page-lede">
+        {tags.length} 个标签，{totalPosts} 篇文章。更多分类板块筹备中。
+      </p>
+    </header>
+
+    <section class="cat-grid">
+      {
+        categories.map((cat) => (
+          <a
+            class:list={['cat-card', { 'cat-card--placeholder': cat.placeholder }]}
+            href={cat.href}
+          >
+            <div class="cat-card-body">
+              <div class="cat-card-icon">
+                <Icon name={cat.icon} />
+              </div>
+              <h2 class="cat-card-title">{cat.name}</h2>
+              {cat.desc && <p class="cat-card-desc">{cat.desc}</p>}
+              <div class="cat-card-meta">
+                <span class="cat-card-count">
+                  <Icon name="hash" />
+                  {cat.count} 篇
+                </span>
+                {cat.placeholder && (
+                  <span class="cat-card-badge">筹备中</span>
+                )}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </section>
+  </div>
+</BaseLayout>

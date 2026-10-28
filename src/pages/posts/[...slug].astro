@@ -141,14 +141,6 @@ const structuredData = {
               >
               <a
                 class="share-link"
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="分享到 Facebook"
-                title="Facebook"><Icon name="facebook" /></a
-              >
-              <a
-                class="share-link"
                 href={`https://t.me/share/url?url=${encodedShareUrl}&text=${shareTitle}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -161,13 +153,15 @@ const structuredData = {
                 aria-label="通过电子邮件分享"
                 title="电子邮件"><Icon name="mail" /></a
               >
+              <button
+                class="share-link"
+                type="button"
+                data-share-copy
+                aria-label="复制链接"
+                title="复制链接"><Icon name="link" /></button
+              >
             </div>
-            <div class="share-copy-row">
-              <button class="share-copy" type="button" data-share-copy>
-                <Icon name="link" /><span class="txt">复制链接</span>
-              </button>
-              <span class="share-status" data-share-status role="status" aria-live="polite"></span>
-            </div>
+            <span class="share-status" data-share-status role="status" aria-live="polite"></span>
           </section>
         </aside>
       </div>
