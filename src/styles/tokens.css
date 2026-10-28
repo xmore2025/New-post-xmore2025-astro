@@ -72,9 +72,11 @@
   --sp-16: 4rem;
 
   /* ---------- 4. 尺寸 ---------- */
-  --shell: 1280px;
-  --shell-narrow: 1152px;
-  --gutter: clamp(1.1rem, 4vw, 2.75rem);
+  --shell: 1400px;
+  --shell-narrow: 1240px;
+  /* 文章页：正文 50rem + 间距 + 目录，刚好不留多余空白 */
+  --article-max: 1160px;
+  --gutter: clamp(1.1rem, 4vw, 3rem);
   --header-h: 58px;
   --radius-sm: 6px;
   --radius: 10px;

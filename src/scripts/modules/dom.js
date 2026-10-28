@@ -24,9 +24,3 @@ export const rafThrottle = (fn) => {
 
 export const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/** 安全的 setTimeout 包装：返回取消函数，便于页面卸载时清理 */
-export const delay = (fn, ms) => {
-  const id = window.setTimeout(fn, ms);
-  return () => window.clearTimeout(id);
-};

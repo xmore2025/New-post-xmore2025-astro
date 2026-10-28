@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import { getTags } from '../../lib/posts';
+import { getPosts, getTags } from '../../lib/posts';
 
+const posts = await getPosts();
 const tags = await getTags();
-const totalPosts = tags.reduce((sum, tag) => tag.count, 0);
+const totalPosts = posts.length;
 
-/** 为每个标签分配一个 emoji，保持视觉趣味 */
+/** 标签 → emoji，保持视觉趣味；未收录的用默认标签图标 */
 const tagEmojiMap = {
   rust: '🦀',
   javascript: '🟨',
@@ -25,23 +26,48 @@ const tagEmojiMap = {
   life: '💃',
   books: '🔖',
   tool: '🪜',
+  engineering: '🛠️',
+  design: '✏️',
+  ai: '🤖',
+  'open-source': '🌱',
+  writing: '✍️',
   default: '🏷️',
 };
 
+/** 标签 → 一句话说明，让卡片有内容可读 */
+const tagDescMap = {
+  engineering: '工程实践、架构取舍与长期维护。',
+  design: '视觉语言、交互细节与版式节奏。',
+  ai: '模型能力、智能体与工具链的边界。',
+  astro: '静态站点、内容建模与渲染策略。',
+  css: '布局系统、动效与样式的可维护性。',
+  'open-source': '开源生态、协作方式与项目治理。',
+  typescript: '类型系统如何真正降低维护成本。',
+  writing: '把想法整理成可读文字的练习。',
+};
+
 /**
- * Bento 卡片尺寸循环：large(2x2) → wide(2x1) → normal(1x1) → tall(1x2)
- * 让已有标签按照数量排序后依次套用，占位分类默认 normal。
+ * 尺寸分配：按文章数决定，避免"只有 1 篇却占 2×2"的空卡。
+ * 头部多产标签给 large / wide，第 4 个给 tall，其余 normal。
+ * 配合 grid-auto-flow: dense，后面的小卡自动回填空位。
  */
-const sizeCycle = ['large', 'wide', 'normal', 'tall'];
+const pickSize = (i, count) => {
+  if (i === 0) return count >= 2 ? 'large' : 'normal';
+  if (i === 1) return 'wide';
+  if (i === 3) return count >= 2 ? 'tall' : 'normal';
+  return 'normal';
+};
 
 const tagCategories = tags.map((tag, i) => ({
   name: tag.name,
   slug: tag.slug,
   href: `/tags/${tag.slug}/`,
   count: tag.count,
-  desc: '',
+  desc: tagDescMap[tag.slug] ?? '',
   emoji: tagEmojiMap[tag.slug] ?? tagEmojiMap.default,
-  size: sizeCycle[i % sizeCycle.length],
+  size: pickSize(i, tag.count),
+  /** 最新几篇，用于大卡片的预览列表 */
+  recent: tag.posts.slice(0, 3).map((post) => post.title),
   placeholder: false,
 }));
 
@@ -54,6 +80,7 @@ const placeholderCategories = [
     desc: '精选应用与工具推荐。',
     emoji: '📱',
     size: 'normal',
+    recent: [],
     placeholder: true,
   },
   {
@@ -64,6 +91,7 @@ const placeholderCategories = [
     desc: '值得反复阅读的文章与资源。',
     emoji: '🔖',
     size: 'normal',
+    recent: [],
     placeholder: true,
   },
   {
@@ -74,6 +102,7 @@ const placeholderCategories = [
     desc: '截图、设计稿与视觉记录。',
     emoji: '🖼️',
     size: 'normal',
+    recent: [],
     placeholder: true,
   },
   {
@@ -82,8 +111,9 @@ const placeholderCategories = [
     href: '/categories/tools/',
     count: 0,
     desc: '日常使用的开发与效率工具。',
-    emoji: '🛠️',
+    emoji: '🧰',
     size: 'normal',
+    recent: [],
     placeholder: true,
   },
   {
@@ -94,6 +124,7 @@ const placeholderCategories = [
     desc: '常用网站与资源导航。',
     emoji: '🧭',
     size: 'normal',
+    recent: [],
     placeholder: true,
   },
 ];
@@ -132,11 +163,15 @@ const categories = [...tagCategories, ...placeholderCategories];
                 <span class="cat-card-emoji">{cat.emoji}</span>
                 {cat.name}
               </h2>
-              {cat.desc ? (
-                <p class="cat-card-desc">{cat.desc}</p>
-              ) : (
-                <p class="cat-card-desc cat-card-desc--empty">暂无描述</p>
-              )}
+              {cat.desc && <p class="cat-card-desc">{cat.desc}</p>}
+              {cat.recent.length > 0 &&
+                (cat.size === 'large' || cat.size === 'tall') && (
+                  <ul class="cat-card-list">
+                    {cat.recent.map((title) => (
+                      <li>{title}</li>
+                    ))}
+                  </ul>
+                )}
               <div class="cat-card-meta">
                 <span class="cat-card-count">
                   <Icon name="hash" />

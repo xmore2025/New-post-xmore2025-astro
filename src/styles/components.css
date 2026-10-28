@@ -102,7 +102,7 @@ kbd {
 
 .featured-desc {
   margin-top: 0.45rem;
-  max-width: 56ch;
+  max-width: 52rem;
   color: var(--muted);
   font-size: var(--fs-base);
   line-height: 1.7;
@@ -222,7 +222,7 @@ kbd {
   color: var(--muted);
   font-size: var(--fs-base);
   line-height: 1.65;
-  max-width: 66ch;
+  max-width: 46rem;
   text-wrap: pretty;
 }
 
@@ -278,36 +278,74 @@ kbd {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: clamp(0.5rem, 1.2vw, 0.75rem);
 }
 
 .tag-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem;
-  padding: 0.65rem 0.8rem;
+  gap: 0.7rem;
+  padding: 0.85rem 0.95rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
+  background: var(--surface);
   color: var(--fg-2);
   font-size: var(--fs-base);
-  transition: border-color var(--dur-2), background-color var(--dur-2);
+  transition: border-color var(--dur-2), background-color var(--dur-2),
+    transform var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease);
+}
+
+.tag-card::before {
+  content: "#";
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--faint);
+  opacity: 0.55;
+  transition: color var(--dur-2), opacity var(--dur-2);
 }
 
 .tag-card:hover {
   border-color: var(--accent-line);
   background: var(--accent-wash);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.tag-card:hover::before {
+  color: var(--accent);
+  opacity: 1;
 }
 
 .tag-name {
+  flex: 1;
+  min-width: 0;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .tag-count {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  padding: 0.05rem 0.34rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
-  color: var(--faint);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--dur-2), color var(--dur-2);
+}
+
+.tag-card:hover .tag-count {
+  border-color: var(--accent-line);
+  color: var(--accent);
 }
 
 /* ---------- 阅读进度 ---------- */
@@ -633,50 +671,13 @@ html.is-search-open {
   letter-spacing: 0.02em;
 }
 
-/* ---------- 回到顶部 ---------- */
-.to-top {
-  position: fixed;
-  right: clamp(0.9rem, 2.5vw, 1.6rem);
-  bottom: clamp(0.9rem, 2.5vw, 1.6rem);
-  z-index: 40;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--line-2);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--muted);
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease),
-    color var(--dur-1), border-color var(--dur-1);
-}
-
-.to-top.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.to-top:hover {
-  color: var(--accent);
-  border-color: var(--accent-line);
-}
-
-.to-top .ico svg {
-  width: 15px;
-  height: 15px;
-}
-
 /* ---------- 分类 Bento 网格 ---------- */
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 130px;
-  gap: clamp(0.6rem, 1.5vw, 0.9rem);
+  grid-auto-rows: 138px;
+  grid-auto-flow: dense;
+  gap: clamp(0.6rem, 1.5vw, 1rem);
   padding-block: clamp(0.5rem, 1.2vw, 0.8rem);
 }
 
@@ -782,22 +783,60 @@ html.is-search-open {
   color: var(--muted);
   font-size: var(--fs-sm);
   line-height: 1.6;
-  max-width: 32ch;
   text-wrap: pretty;
-}
-
-.cat-card-desc--empty {
-  color: var(--faint);
-  font-style: italic;
-  opacity: 0.7;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
 }
 
 .cat-card--large .cat-card-desc,
-.cat-card--wide .cat-card-desc {
-  display: -webkit-box;
+.cat-card--wide .cat-card-desc,
+.cat-card--tall .cat-card-desc {
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+}
+
+/* 大卡片里的最新文章预览 */
+.cat-card-list {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.22rem;
+  min-height: 0;
   overflow: hidden;
+}
+
+.cat-card-list li {
+  position: relative;
+  padding-left: 0.7rem;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--dur-2);
+}
+
+.cat-card-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--line-2);
+  transition: background-color var(--dur-2);
+}
+
+.cat-card:hover .cat-card-list li {
+  color: var(--muted);
+}
+
+.cat-card:hover .cat-card-list li::before {
+  background: var(--accent);
 }
 
 .cat-card-meta {

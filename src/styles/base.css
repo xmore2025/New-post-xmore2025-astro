@@ -193,7 +193,6 @@ main {
   .progress,
   .article-nav,
   .backdrop,
-  .to-top,
   .article-sidebar,
   .skip-link {
     display: none !important;

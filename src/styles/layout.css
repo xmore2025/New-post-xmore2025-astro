@@ -395,7 +395,7 @@
 
 /* ---------- 文章骨架 ---------- */
 .article {
-  max-width: var(--shell-narrow);
+  max-width: var(--article-max);
   margin-inline: auto;
   padding-block: clamp(1.8rem, 4vw, 2.9rem) 0;
 }
@@ -473,14 +473,15 @@
   padding-bottom: 1.2rem;
 }
 
-/* 关于页使用与文章页一致的宽屏布局 */
+/* 关于页：单栏文字，居中收在舒适行宽内（无侧栏，避免右侧留白失衡） */
 .article--about {
-  max-width: var(--shell-narrow);
+  max-width: 52rem;
+  margin-inline: auto;
 }
 
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  grid-template-columns: minmax(0, 1fr) 280px;
   align-items: start;
   gap: clamp(1.8rem, 4vw, 3rem);
   margin-top: clamp(1.6rem, 3.2vw, 2.4rem);
@@ -666,8 +667,39 @@
   }
 }
 
+/* ---------- 大屏微调：外壳加宽后让留白与行距同步放大 ---------- */
 @media (min-width: 1280px) {
   .hero h1 {
     font-size: clamp(2.5rem, 3.2vw + 1rem, 2.8125rem);
+  }
+
+  .hero {
+    padding-block: clamp(2.8rem, 5vw, 4.2rem) clamp(1.6rem, 3vw, 2.4rem);
+  }
+
+  /* 归档行在宽屏下给日期列和垂直留白更多空间 */
+  .post-row {
+    grid-template-columns: 6.4rem minmax(0, 1fr) auto;
+    padding: 0.95rem 0.4rem;
+  }
+
+  .post-title {
+    font-size: 1rem;
+  }
+
+  .featured {
+    padding: clamp(1.3rem, 2.2vw, 1.9rem);
+  }
+
+  .page-head {
+    padding-block: clamp(2.4rem, 4vw, 3.8rem) clamp(1.3rem, 2.2vw, 2rem);
+  }
+}
+
+/* 超宽屏：正文与目录之间保持合理间距，避免侧栏被推得过远 */
+@media (min-width: 1440px) {
+  .article-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 3.4rem;
   }
 }

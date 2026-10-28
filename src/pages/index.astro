@@ -76,7 +76,7 @@ const social = site.social ?? {};
     <div class="shell">
       <SectionHead label="最新" more="全部文章" href="/posts/" />
       <ul class="post-list">
-        {latest.map((post) => <PostRow post={post} />)}
+        {latest.map((post) => <PostRow post={post} withDesc />)}
       </ul>
     </div>
   </section>
