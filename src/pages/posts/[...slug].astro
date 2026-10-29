@@ -45,7 +45,16 @@ const structuredData = [
     inLanguage: site.lang,
     url: shareUrl,
     mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
-    image: { '@type': 'ImageObject', url: `${site.url}/og.png`, width: 1200, height: 630 },
+    ...(site.ogImage
+      ? {
+          image: {
+            '@type': 'ImageObject',
+            url: new URL(site.ogImage, site.url).href,
+            width: 1200,
+            height: 630,
+          },
+        }
+      : {}),
     keywords: post.tags.map((tag) => tag.name).join(', '),
     articleSection: primaryTag?.name ?? '随笔',
     wordCount: post.wordCount,

@@ -8,6 +8,7 @@ export interface SiteConfig {
   author: string;
   lang: string;
   url: string;
+  ogImage?: string;
   social: { github?: string; x?: string; email?: string };
   nav: { label: string; href: string }[];
 }

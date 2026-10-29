@@ -52,7 +52,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 ```text
 .
 ├── astro.config.mjs               # site / 内联样式 / sitemap(lastmod) / Shiki 双主题
-├── site.config.json               # 站点配置：标题 / 作者 / 域名 / 导航 / 社交
+├── site.config.json               # 站点配置：标题 / 作者 / 域名 / 分享图 / 导航 / 社交
 ├── .prettierrc.mjs                # 代码风格（含 astro 插件）
 ├── .prettierignore
 ├── tools/
@@ -61,7 +61,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 ├── public/
 │   ├── fonts/*.woff2              # 子集字体（文件名带内容哈希）
 │   ├── _headers                   # 缓存与安全响应头
-│   ├── og.png                     # 1200×630 分享图
+│   ├── og.png                     # 可选：1200×630 分享图（通过 site.config.json 配置）
 │   ├── favicon.svg · robots.txt · manifest.webmanifest
 ├── src/
 │   ├── config.ts                  # 读取 site.config.json 并给出类型
@@ -220,13 +220,14 @@ featured: false
 
 `site.config.json` 是唯一的事实来源：
 
-| 字段                                                | 说明                                       |
-| --------------------------------------------------- | ------------------------------------------ |
-| `title` / `titleSuffix` / `tagline` / `description` | 站点名、标题后缀、首页大标题、默认描述     |
-| `author`                                            | 作者名                                     |
-| `url`                                               | 正式域名（canonical / OG / RSS / Sitemap） |
-| `social`                                            | GitHub / X / 邮箱，留空则不渲染            |
-| `nav`                                               | 顶部导航项                                 |
+| 字段                                                | 说明                                               |
+| --------------------------------------------------- | -------------------------------------------------- |
+| `title` / `titleSuffix` / `tagline` / `description` | 站点名、标题后缀、首页大标题、默认描述             |
+| `author`                                            | 作者名                                             |
+| `url`                                               | 正式域名（canonical / OG / RSS / Sitemap）         |
+| `ogImage`                                           | 可选分享图路径；设置后生成 OG / Twitter 图片元数据 |
+| `social`                                            | GitHub / X / 邮箱，留空则不渲染                    |
+| `nav`                                               | 顶部导航项                                         |
 
 ---
 

@@ -81,31 +81,15 @@ const initToc = () => {
 };
 
 /* ---------------- 代码复制 ---------------- */
-const copyText = (text) =>
-  new Promise((resolve) => {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).then(
-        () => resolve(true),
-        () => resolve(false)
-      );
-      return;
-    }
-
-    const area = document.createElement('textarea');
-    area.value = text;
-    area.setAttribute('readonly', '');
-    area.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
-    document.body.appendChild(area);
-    area.select();
-    let ok = false;
-    try {
-      ok = document.execCommand('copy');
-    } catch {
-      ok = false;
-    }
-    document.body.removeChild(area);
-    resolve(ok);
-  });
+const copyText = async (text) => {
+  if (!navigator.clipboard?.writeText) return false;
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 const initCodeCopy = () => {
   $$('.prose pre').forEach((pre) => {

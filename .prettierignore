@@ -13,3 +13,6 @@ src/content/
 
 # 快照与站点地图
 docs/
+
+# CodeArts 本地索引与工具元数据
+.codeartsdoer/

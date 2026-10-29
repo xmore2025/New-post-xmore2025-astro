@@ -64,6 +64,5 @@ export function initTheme() {
     if (!readStored()) apply(event.matches ? 'dark' : 'light', { persist: false });
   };
 
-  if (media.addEventListener) media.addEventListener('change', onSystemChange);
-  else if (media.addListener) media.addListener(onSystemChange);
+  media.addEventListener('change', onSystemChange);
 }

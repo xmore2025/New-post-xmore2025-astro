@@ -47,6 +47,5 @@ export function initMobileNav() {
     if (event.matches) close();
   };
 
-  if (desktop.addEventListener) desktop.addEventListener('change', onBreakpoint);
-  else if (desktop.addListener) desktop.addListener(onBreakpoint);
+  desktop.addEventListener('change', onBreakpoint);
 }
