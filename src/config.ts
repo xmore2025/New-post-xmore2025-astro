@@ -9,6 +9,12 @@ export interface SiteConfig {
   lang: string;
   url: string;
   ogImage?: string;
+  comments?: {
+    repo: string;
+    repoId: string;
+    category: string;
+    categoryId: string;
+  };
   social: { github?: string; x?: string; telegram?: string; email?: string };
   nav: { label: string; href: string }[];
 }

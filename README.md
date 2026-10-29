@@ -52,7 +52,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 ```text
 .
 ├── astro.config.mjs               # site / 内联样式 / sitemap(lastmod) / Shiki 双主题
-├── site.config.json               # 站点配置：标题 / 作者 / 域名 / 分享图 / 导航 / 社交
+├── site.config.json               # 站点配置：标题 / 作者 / 域名 / 分享图 / 导航 / 社交 / 评论
 ├── .prettierrc.mjs                # 代码风格（含 astro 插件）
 ├── .prettierignore
 ├── tools/
@@ -68,7 +68,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 │   ├── content.config.ts          # 内容集合 schema（title/date/updated/tags…）
 │   ├── content/                   # posts/*.md · pages/about.md
 │   ├── layouts/BaseLayout.astro   # <head> / SEO / JSON-LD / 主题脚本 / 预渲染规则
-│   ├── components/                # Header · NavLinks · Footer · PostRow · TagList · Icon …
+│   ├── components/                # Header · NavLinks · Footer · PostRow · TagList · GiscusComments …
 │   ├── lib/
 │   │   ├── posts.js               # 取文章 / 标签、阅读时长、日期格式化
 │   │   └── types.ts               # PostSummary / TagRef 共享类型
@@ -113,6 +113,12 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 首页及文章分享图源文件为 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 中的 `ogImage` 配置引用。
 
 > 试过 `rel="preload"` 预加载字体：在有系统中文字体的浏览器里，Chrome 会因预加载而延长字体阻塞期，FCP 反而从 590 ms 涨到 1050 ms，因此**没有采用**。字体体积本身才是关键变量。
+
+### 💬 文章评论
+
+文章详情页使用 [Giscus](https://giscus.app/zh-CN) 加载评论。先在 GitHub 仓库设置中启用 Discussions，然后打开 Giscus 配置页，选择当前仓库和一个 Discussions 分类，把分类名称和分类 ID 填入 `site.config.json` 的 `comments` 字段（仓库和仓库 ID 已预填）。配置完成后评论区会自动显示；当前未填写分类信息时，文章页会提示如何完成配置。
+
+Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题跟随站点主题切换。
 
 ---
 

@@ -4,6 +4,7 @@ import '../../styles/prose.css';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
 import Icon from '../../components/Icon.astro';
+import GiscusComments from '../../components/GiscusComments.astro';
 import { site } from '../../config';
 import { fmtDate, getPosts, isoDate } from '../../lib/posts';
 
@@ -216,6 +217,14 @@ const structuredData = [
           </section>
         </aside>
       </div>
+
+      <GiscusComments
+        repo={site.comments?.repo ?? ''}
+        repoId={site.comments?.repoId ?? ''}
+        category={site.comments?.category ?? ''}
+        categoryId={site.comments?.categoryId ?? ''}
+        lang={site.lang}
+      />
     </div>
   </article>
 </BaseLayout>

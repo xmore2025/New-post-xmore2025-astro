@@ -1,0 +1,115 @@
+---
+interface Props {
+  repo: string;
+  repoId: string;
+  category: string;
+  categoryId: string;
+  lang: string;
+}
+
+const { repo, repoId, category, categoryId, lang } = Astro.props;
+const configured = [repo, repoId, category, categoryId].every((value) => value.trim());
+---
+
+<section class="comments" aria-labelledby="comments-title">
+  <h2 class="comments-title" id="comments-title">
+    评论
+  </h2>
+  {configured ? (
+    <div
+      class="giscus"
+      data-giscus
+      data-repo={repo}
+      data-repo-id={repoId}
+      data-category={category}
+      data-category-id={categoryId}
+      data-lang={lang}
+    />
+  ) : (
+    <p class="comments-setup">
+      评论区尚未配置。请在 <code>site.config.json</code> 中填写 Giscus 的仓库、仓库 ID、 Discussions
+      分类和分类 ID。
+      <a href="https://giscus.app/zh-CN" target="_blank" rel="noopener noreferrer">
+        打开 Giscus 配置页
+      </a>
+    </p>
+  )}
+</section>
+
+{configured && <script is:inline>
+  (() => {
+    const widget = document.querySelector('[data-giscus]');
+    if (!widget) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+
+    for (const name of ['repo', 'repo-id', 'category', 'category-id', 'lang']) {
+      script.setAttribute(`data-${name}`, widget.getAttribute(`data-${name}`));
+    }
+
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+
+    const currentTheme = () =>
+      document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    script.setAttribute('data-theme', currentTheme());
+    widget.append(script);
+
+    new MutationObserver(() => {
+      widget
+        .querySelector('iframe')
+        ?.contentWindow?.postMessage(
+          { giscus: { setConfig: { theme: currentTheme() } } },
+          'https://giscus.app'
+        );
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  })();
+</script>}
+
+<style>
+  .comments {
+    margin-top: clamp(2.2rem, 5vw, 3.2rem);
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .comments-title {
+    margin: 0 0 1.25rem;
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    line-height: var(--lh-tight);
+  }
+
+  .giscus {
+    min-width: 0;
+  }
+
+  .comments-setup {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-body);
+  }
+
+  .comments-setup code {
+    color: var(--fg);
+  }
+
+  .comments-setup a {
+    margin-left: 0.35rem;
+    color: var(--accent);
+    text-underline-offset: 0.18em;
+  }
+</style>
