@@ -16,7 +16,8 @@
     "fonts": "node tools/build-fonts.mjs",
     "fonts:check": "node tools/build-fonts.mjs --check",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "icon": "node tools/gen-touch-icon.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

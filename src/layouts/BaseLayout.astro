@@ -1,4 +1,5 @@
 ---
+import fs from 'node:fs';
 import '../styles/main.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -16,6 +17,14 @@ const {
   modified,
   structuredData,
 } = Astro.props;
+
+/* 首屏字体的 preload 提示：从生成的 font-face.css 里解析带哈希的 URL。
+   只预加载首屏一定会用到的两个（正文 + 等宽元信息）；
+   Inter / Noto Sans SC 是缺字兜底，预加载反而会强制下载闲置字体。 */
+const fontFaceCss = fs.readFileSync('src/styles/font-face.css', 'utf8');
+const preloadedFonts = [...fontFaceCss.matchAll(/url\("([^"]+)"\)/g)]
+  .map((m) => m[1])
+  .filter((href) => /lxgw|jetbrains/.test(href));
 
 const path = pathProp ?? Astro.url.pathname;
 const pageTitle = title ? `${title} · ${site.titleSuffix}` : `${site.title} — ${site.tagline}`;
@@ -144,9 +153,14 @@ const speculationRules = {
     {ogImage && <meta name="twitter:image" content={ogImage} />}
 
     {canonical && <link rel="canonical" href={canonical} />}
+    {
+      preloadedFonts.map((href) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
     <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
