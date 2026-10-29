@@ -19,9 +19,9 @@
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                         |
 | **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                      |
-| **自托管字体，只带需要的字** | Inter + Noto Sans SC + JetBrains Mono 按内容子集化：**3 个 woff2 / 约 226 KB**，不再拉 16 片 879 KB     |
+| **自托管字体，只带需要的字** | Inter + 霞鹜文楷 + JetBrains Mono 按内容子集化：**4 个 woff2 / 约 450 KB**，不再拉 16 片 879 KB         |
 | **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                     |
-| **排版优先**                 | 4 级字阶 · 15px 正文 / 1.9 行高 · 约 45 汉字行宽 · 发丝分隔线                                           |
+| **排版优先**                 | 4 级字阶 · 16px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                                       |
 | **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                       |
 | **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                 |
 | **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS |
@@ -96,10 +96,10 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 
 中文 Web 字体的体积是这类站点最大的性能变量。`@fontsource` 的分片方案在**内容很少**的站点上反而浪费：一篇文章仍会触发 16 个分片、约 879 KB。
 
-本项目改为**按内容子集化**，并按字符分配字体：拉丁字母与数字使用 Inter，中文使用 Noto Sans SC：
+本项目改为**按内容子集化**，并按字符分配字体：拉丁字母与数字使用 Inter，中文使用霞鹜文楷（LXGW WenKai Screen，与 mundi-xu.github.io 同一套楷体字形），Noto Sans SC 留在栈尾兜底生僻字：
 
 1. `tools/build-fonts.mjs` 扫描 `src/**` 与 `site.config.json`，收集真正会被渲染的字符；
-2. 用 `subset-font`（HarfBuzz）把 Inter、Noto Sans SC 与 JetBrains Mono 可变字体裁成内容子集：Inter 只包含 Latin 字符，中文由 Noto Sans SC 覆盖；字重轴收到 `400–650`，并去掉不需要的 OpenType 特性与 hinting；
+2. 用 `subset-font`（HarfBuzz）把 Inter、霞鹜文楷、Noto Sans SC 与 JetBrains Mono 裁成内容子集：Inter 只包含 Latin 字符，中文由霞鹜文楷覆盖；可变字体把字重轴收到 `400–650`（霞鹜文楷上游只有静态 Regular，600 字重由浏览器合成），并去掉不需要的 OpenType 特性与 hinting；
 3. 文件名带内容哈希 → 可以 `immutable` 长缓存；
 4. `npm run fonts:check` 在 CI 中校验「内容字符 ⊆ 子集」，忘记重建会直接失败。
 

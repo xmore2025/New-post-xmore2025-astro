@@ -32,6 +32,12 @@ const CSS_OUT = path.join(root, 'src', 'styles', 'font-face.css');
 const NOTO_URL =
   'https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf';
 const NOTO_CACHE = path.join(CACHE_DIR, 'NotoSansSC-VF.ttf');
+
+/* 中文主字体：霞鹜文楷 Screen（楷体，与 mundi-xu.github.io 同一套字形）。
+   上游只发布静态字重的 TTF，没有可变轴，因此不做 variationAxes 裁剪。 */
+const LXGW_URL =
+  'https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.520/LXGWWenKaiScreen.ttf';
+const LXGW_CACHE = path.join(CACHE_DIR, 'LXGWWenKaiScreen.ttf');
 const MONO_SRC = path.join(
   root,
   'node_modules',
@@ -86,8 +92,8 @@ function collectChars() {
   return { chars, files };
 }
 
-async function download(url, dest) {
-  console.log(`下载源字体 → ${path.relative(root, dest)}（约 17 MB，只需一次）`);
+async function download(url, dest, size = '约 17 MB') {
+  console.log(`下载源字体 → ${path.relative(root, dest)}（${size}，只需一次）`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`下载失败：HTTP ${res.status}`);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -97,10 +103,23 @@ async function download(url, dest) {
 /**
  * 生成一个字重子集，返回文件名、字节数与 css 规则。
  * 文件名带内容哈希：字体变化 → URL 变化 → 可安全长缓存。
+ *
+ * variable=false 用于只有静态字重的字体（如霞鹜文楷）：不传 variationAxes，
+ * 否则 subset-font 会因为找不到 fvar 表而报错。
  */
-async function buildFace({ family, source, chars, weights, fileName, style = 'normal' }) {
+async function buildFace({
+  family,
+  source,
+  chars,
+  weights,
+  fileName,
+  style = 'normal',
+  variable = true,
+  downloadUrl,
+  downloadSize,
+}) {
   if (!fs.existsSync(source)) {
-    if (source === NOTO_CACHE) await download(NOTO_URL, source);
+    if (downloadUrl) await download(downloadUrl, source, downloadSize);
     else throw new Error(`缺少字体源文件：${path.relative(root, source)}`);
   }
 
@@ -108,7 +127,7 @@ async function buildFace({ family, source, chars, weights, fileName, style = 'no
   const text = [...chars].sort((a, b) => a.codePointAt(0) - b.codePointAt(0)).join('');
   const buffer = await subsetFont(fs.readFileSync(source), text, {
     targetFormat: 'woff2',
-    variationAxes: { wght: { min: weights[0], max: weights[1] } },
+    ...(variable ? { variationAxes: { wght: { min: weights[0], max: weights[1] } } } : {}),
     // 中文正文用不到 OpenType 排版特性（连字 / 竖排 / 本地化替换），
     // 去掉后同样字数体积减少约 17%，笔画与字距完全不变。
     keepFeatures: [],
@@ -117,6 +136,7 @@ async function buildFace({ family, source, chars, weights, fileName, style = 'no
 
   const hash = crypto.createHash('sha1').update(buffer).digest('hex').slice(0, 8);
   const hashed = `${path.basename(fileName, '.woff2')}.${hash}.woff2`;
+  const weightCss = weights[0] === weights[1] ? `${weights[0]}` : `${weights[0]} ${weights[1]}`;
 
   return {
     family,
@@ -127,7 +147,7 @@ async function buildFace({ family, source, chars, weights, fileName, style = 'no
     buffer,
     css:
       `@font-face{font-family:"${family}";font-style:${style};` +
-      `font-weight:${weights[0]} ${weights[1]};font-display:swap;` +
+      `font-weight:${weightCss};font-display:swap;` +
       `src:url("/fonts/${hashed}") format("woff2")}`,
   };
 }
@@ -168,12 +188,26 @@ async function main() {
   );
   faces.push(
     await buildFace({
+      family: 'LXGW WenKai Screen',
+      source: LXGW_CACHE,
+      chars,
+      // 上游只有静态 Regular：600 字重由浏览器合成，和参考站表现一致
+      weights: [400, 400],
+      fileName: 'lxgw-wenkai-screen-subset.woff2',
+      variable: false,
+      downloadUrl: LXGW_URL,
+      downloadSize: '约 9 MB',
+    })
+  );
+  faces.push(
+    await buildFace({
       family: 'Noto Sans SC Variable',
       source: NOTO_CACHE,
       chars,
       // 站点用到的字重区间：正文 400、强调 550–620，收窄轴比 300–700 小一圈
       weights: [400, 650],
       fileName: 'noto-sans-sc-subset.woff2',
+      downloadUrl: NOTO_URL,
     })
   );
   faces.push(

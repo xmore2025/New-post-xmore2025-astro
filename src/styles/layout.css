@@ -481,15 +481,16 @@
 
 /* 关于页：单栏文字，居中收在舒适行宽内（无侧栏，避免右侧留白失衡） */
 .article--about {
-  max-width: 52rem;
+  max-width: var(--prose-measure);
   margin-inline: auto;
 }
 
+/* 正文列宽 = 正文行宽，正文刚好填满整列，行尾不会在目录前空出一条 */
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, var(--prose-measure)) var(--sidebar-w);
   align-items: start;
-  gap: clamp(1.8rem, 4vw, 3rem);
+  gap: var(--article-gap);
   margin-top: clamp(1.9rem, 3.6vw, 2.8rem);
 }
 
@@ -702,10 +703,4 @@
   }
 }
 
-/* 超宽屏：正文与目录之间保持合理间距，避免侧栏被推得过远 */
-@media (min-width: 1440px) {
-  .article-layout {
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 3.4rem;
-  }
-}
+/* 超宽屏的目录宽度与栏间距由 tokens.css 的 1440 断点接管，栅格本身无需再改 */

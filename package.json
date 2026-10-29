@@ -5,7 +5,7 @@
   "type": "module",
   "description": "xmore 的极简博客（Astro）",
   "engines": {
-    "node": ">=22.23.4"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "astro dev",
