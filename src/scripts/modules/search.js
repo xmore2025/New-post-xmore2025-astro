@@ -208,9 +208,21 @@ export function initSearch() {
     }
   });
 
-  // 空闲时预热索引，避免第一次打开搜索时等待网络
-  const idle = window.requestIdleCallback
-    ? window.requestIdleCallback
-    : (fn) => window.setTimeout(fn, 2000);
-  idle(load);
+  // 索引预热推迟到 load 之后：首屏带宽优先给字体与样式，
+  // 用户一旦表现出搜索意图（悬停按钮、聚焦输入框）就立刻加载。
+  const warm = () => {
+    const idle = window.requestIdleCallback
+      ? window.requestIdleCallback
+      : (fn) => window.setTimeout(fn, 1500);
+    idle(load, { timeout: 4000 });
+  };
+
+  if (document.readyState === 'complete') warm();
+  else window.addEventListener('load', warm, { once: true });
+
+  $$('[data-search-open]').forEach((btn) => {
+    on(btn, 'pointerenter', load);
+    on(btn, 'focus', load);
+  });
+  on(input, 'focus', load);
 }
