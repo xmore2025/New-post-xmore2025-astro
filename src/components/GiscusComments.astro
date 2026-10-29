@@ -11,10 +11,7 @@ const { repo, repoId, category, categoryId, lang } = Astro.props;
 const configured = [repo, repoId, category, categoryId].every((value) => value.trim());
 ---
 
-<section class="comments" aria-labelledby="comments-title">
-  <h2 class="comments-title" id="comments-title">
-    评论
-  </h2>
+<section class="comments">
   {configured ? (
     <div
       class="giscus"
@@ -80,13 +77,6 @@ const configured = [repo, repoId, category, categoryId].every((value) => value.t
     margin-top: clamp(2.2rem, 5vw, 3.2rem);
     padding-top: 1.4rem;
     border-top: 1px solid var(--line);
-  }
-
-  .comments-title {
-    margin: 0 0 1.25rem;
-    font-size: var(--fs-lg);
-    font-weight: 600;
-    line-height: var(--lh-tight);
   }
 
   .giscus {
