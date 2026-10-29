@@ -9,8 +9,9 @@
   "ogImage": "/og-card-v2.png",
   "social": {
     "github": "https://github.com/xmore2025",
-    "x": "",
-    "email": ""
+    "x": "https://x.com/xmail_xz",
+    "telegram": "https://t.me/zslifes",
+    "email": "wxchat2025@gmail.com"
   },
   "nav": [
     { "label": "文章", "href": "/posts/" },

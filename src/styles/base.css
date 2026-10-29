@@ -24,8 +24,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-size: var(--fs-md);
-  line-height: 1.7;
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
   font-feature-settings:
     'kern' 1,
     'liga' 1,
@@ -104,7 +104,7 @@ img {
   background: var(--fg);
   color: var(--bg);
   border-radius: 0 0 var(--radius) 0;
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   text-decoration: none;
 }
 

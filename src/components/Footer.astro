@@ -5,8 +5,8 @@ import { site } from '../config';
 const year = new Date().getFullYear();
 const social = site.social ?? {};
 const links = [
-  { label: 'GitHub', href: social.github, icon: 'github', external: true },
   { label: 'X', href: social.x, icon: 'x', external: true },
+  { label: 'Telegram', href: social.telegram, icon: 'telegram', external: true },
   {
     label: '邮箱',
     href: social.email ? `mailto:${social.email}` : '',

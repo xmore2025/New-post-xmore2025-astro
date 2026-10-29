@@ -6,7 +6,7 @@
 
 .prose {
   max-width: var(--prose-measure);
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   line-height: var(--lh-body);
   color: var(--fg-2);
   text-wrap: pretty;
@@ -31,21 +31,21 @@
 }
 
 .prose h2 {
-  font-size: 1.125rem;
+  font-size: var(--fs-lg);
   line-height: 1.45;
   letter-spacing: -0.008em;
   font-weight: 600;
 }
 
 .prose h3 {
-  font-size: 1.0625rem;
+  font-size: var(--fs-base);
   line-height: 1.5;
   letter-spacing: -0.005em;
   font-weight: 600;
 }
 
 .prose h4 {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: 600;
 }
 
@@ -78,7 +78,7 @@
 /* ---------- 行内代码 ---------- */
 .prose code {
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-size: max(var(--fs-xs), 0.85em);
   padding: 0.1em 0.34em;
   border: 1px solid var(--line);
   border-radius: 4px;
@@ -97,7 +97,7 @@
   background: var(--code-bg);
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   line-height: 1.75;
   tab-size: 2;
 }
@@ -131,7 +131,7 @@
   border-radius: 4px;
   background: var(--code-bg);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
@@ -151,7 +151,7 @@
   background: var(--surface);
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   cursor: pointer;
   opacity: 0;
   transition:
@@ -231,7 +231,7 @@
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   line-height: 1.65;
 }
 
@@ -245,7 +245,7 @@
 
 .prose th {
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -264,12 +264,12 @@
 
 @media (max-width: 680px) {
   .prose {
-    font-size: 1rem;
-    line-height: 1.85;
+    font-size: var(--fs-base);
+    line-height: var(--lh-body);
   }
 
   .prose pre {
-    font-size: 0.75rem;
+    font-size: var(--fs-sm);
     padding: 0.8rem 0.9rem;
   }
 }

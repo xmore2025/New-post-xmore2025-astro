@@ -45,7 +45,7 @@ const siteGraph = [
     ...(ogImage
       ? { logo: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 } }
       : {}),
-    sameAs: [site.social?.github, site.social?.x].filter(Boolean),
+    sameAs: [site.social?.github, site.social?.x, site.social?.telegram].filter(Boolean),
   },
 ];
 const pageNodes = Array.isArray(structuredData)

@@ -9,7 +9,7 @@ export interface SiteConfig {
   lang: string;
   url: string;
   ogImage?: string;
-  social: { github?: string; x?: string; email?: string };
+  social: { github?: string; x?: string; telegram?: string; email?: string };
   nav: { label: string; href: string }[];
 }
 

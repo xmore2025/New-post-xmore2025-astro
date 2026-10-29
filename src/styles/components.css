@@ -15,7 +15,7 @@
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   cursor: pointer;
   transition:
     color var(--dur-1),
@@ -36,7 +36,7 @@
 
 kbd {
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   line-height: 1.5;
   color: var(--faint);
   border: 1px solid var(--line);
@@ -79,7 +79,7 @@ kbd {
 
 .featured-idx {
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   letter-spacing: 0.08em;
   color: var(--accent);
   padding-top: 0.3rem;
@@ -92,7 +92,7 @@ kbd {
 }
 
 .featured-title {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-lg);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.4;
@@ -109,7 +109,7 @@ kbd {
   margin-top: 0.45rem;
   max-width: 52rem;
   color: var(--muted);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   line-height: 1.7;
   text-wrap: pretty;
 }
@@ -194,7 +194,7 @@ kbd {
 
 .post-title {
   margin: 0;
-  font-size: var(--fs-xl);
+  font-size: var(--fs-base);
   font-weight: 550;
   letter-spacing: -0.005em;
   line-height: 1.5;
@@ -227,7 +227,7 @@ kbd {
 .post-desc {
   margin: 0;
   color: var(--muted);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   line-height: 1.65;
   max-width: 46rem;
   text-wrap: pretty;
@@ -235,7 +235,7 @@ kbd {
 
 .post-read {
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--faint);
   white-space: nowrap;
 }
@@ -260,7 +260,7 @@ kbd {
   padding: 0.05rem 0.4rem;
   border: 1px solid var(--line);
   border-radius: 5px;
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   line-height: 1.8;
   color: var(--muted);
   transition:
@@ -302,7 +302,7 @@ kbd {
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--fg-2);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   transition:
     border-color var(--dur-2),
     background-color var(--dur-2),
@@ -313,7 +313,7 @@ kbd {
 .tag-card::before {
   content: '#';
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   color: var(--faint);
   opacity: 0.55;
   transition:
@@ -351,7 +351,7 @@ kbd {
   border-radius: 999px;
   background: var(--surface-2);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   transition:
@@ -390,7 +390,7 @@ kbd {
   padding: 0.28rem 0 0.28rem 0.55rem;
   border-left: 1px solid transparent;
   color: var(--muted);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   line-height: 1.5;
   transition:
     color var(--dur-1),
@@ -502,7 +502,7 @@ kbd {
   align-items: center;
   gap: 0.24rem;
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
@@ -516,7 +516,7 @@ kbd {
 .article-nav .t {
   display: block;
   margin-top: 0.28rem;
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   font-weight: 550;
   line-height: 1.5;
   letter-spacing: -0.005em;
@@ -535,7 +535,7 @@ kbd {
   border: 1px solid var(--line-2);
   border-radius: 999px;
   color: var(--fg);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   transition:
     border-color var(--dur-1),
     background-color var(--dur-1),
@@ -614,7 +614,7 @@ kbd {
   background: transparent;
   color: var(--fg);
   font: inherit;
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
 }
 
 .search-input::placeholder {
@@ -658,7 +658,7 @@ html.is-search-open {
 
 .search-item .st {
   display: block;
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   font-weight: 550;
   line-height: 1.5;
 }
@@ -675,7 +675,7 @@ html.is-search-open {
   display: block;
   margin-top: 0.14rem;
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--faint);
 }
 
@@ -683,14 +683,14 @@ html.is-search-open {
   padding: 1.5rem 1rem;
   text-align: center;
   color: var(--faint);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
 }
 
 .search-hint {
   padding: 0.4rem 0.9rem;
   border-top: 1px solid var(--line);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--faint);
   letter-spacing: 0.02em;
 }
@@ -779,7 +779,7 @@ html.is-search-open {
   align-items: center;
   gap: 0.4rem;
   margin: 0;
-  font-size: var(--fs-xl);
+  font-size: var(--fs-base);
   font-weight: 600;
   letter-spacing: -0.008em;
   line-height: 1.35;
@@ -788,7 +788,7 @@ html.is-search-open {
 }
 
 .cat-card--large .cat-card-title {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-lg);
 }
 
 .cat-card-emoji {
@@ -804,7 +804,7 @@ html.is-search-open {
 .cat-card-desc {
   margin: 0;
   color: var(--muted);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   line-height: 1.6;
   text-wrap: pretty;
   display: -webkit-box;
@@ -876,7 +876,7 @@ html.is-search-open {
   align-items: center;
   gap: 0.2rem;
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--faint);
 }
 
@@ -894,7 +894,7 @@ html.is-search-open {
   border-radius: 5px;
   background: var(--accent-wash);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--accent);
   letter-spacing: 0.04em;
 }
@@ -980,7 +980,7 @@ html.is-search-open {
 
   .post-date {
     order: -1;
-    font-size: var(--fs-2xs);
+    font-size: var(--fs-xs);
   }
 
   .post-read {
@@ -997,7 +997,7 @@ html.is-search-open {
   }
 
   .featured-desc {
-    font-size: var(--fs-base);
+    font-size: var(--fs-sm);
   }
 
   .article-nav {

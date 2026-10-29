@@ -72,7 +72,7 @@
   gap: 0.5rem;
   color: var(--fg);
   font-weight: 600;
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   letter-spacing: -0.01em;
   flex: none;
 }
@@ -111,7 +111,7 @@
   position: relative;
   padding: 0.35rem 0.6rem;
   border-radius: var(--radius-sm);
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   color: var(--muted);
   transition:
     color var(--dur-1),
@@ -186,7 +186,7 @@
 .mobile-nav .nav a {
   padding: 0.62rem 0.5rem;
   border-radius: var(--radius-sm);
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
 }
 
 .mobile-nav .nav a[aria-current='page']::after {
@@ -214,7 +214,7 @@
   border-radius: 999px;
   background: var(--surface);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -243,7 +243,7 @@
 
 .hero h1 {
   margin: 1.15rem 0 0;
-  font-size: var(--fs-hero);
+  font-size: var(--fs-display);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
   font-weight: 620;
@@ -254,7 +254,7 @@
   margin: 0.85rem auto 0;
   max-width: 44ch;
   color: var(--muted);
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   line-height: 1.8;
   text-wrap: balance;
 }
@@ -309,7 +309,7 @@
 .section-head h2 {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -325,14 +325,14 @@
 
 .section-head .count {
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   color: var(--faint);
   flex: none;
 }
 
 .section-more {
   flex: none;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   color: var(--muted);
   transition: color var(--dur-1);
 }
@@ -351,7 +351,7 @@
 .kicker {
   margin: 0 0 0.6rem;
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
@@ -359,7 +359,7 @@
 
 .page-head h1 {
   margin: 0;
-  font-size: var(--fs-3xl);
+  font-size: var(--fs-title);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
   font-weight: 620;
@@ -368,7 +368,7 @@
 .page-lede {
   margin: 0.6rem 0 0;
   color: var(--muted);
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   max-width: 54ch;
 }
 
@@ -433,8 +433,8 @@
 
 .article-head h1 {
   margin: 0;
-  font-size: var(--fs-4xl);
-  line-height: 1.24;
+  font-size: var(--fs-title);
+  line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
   font-weight: 620;
   text-wrap: balance;
@@ -443,7 +443,7 @@
 .article-desc {
   margin: 0.7rem 0 0;
   color: var(--muted);
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   line-height: 1.75;
   max-width: 60ch;
 }
@@ -514,7 +514,7 @@
   padding-bottom: 0.55rem;
   border-bottom: 1px solid var(--line);
   font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -526,7 +526,7 @@
   margin-top: clamp(2.4rem, 6vw, 4.5rem);
   border-top: 1px solid var(--line);
   padding-block: 1.5rem 2.2rem;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   color: var(--faint);
 }
 
@@ -573,9 +573,9 @@
 
 .notfound h1 {
   margin: 0;
-  font-size: clamp(3.5rem, 12vw, 6rem);
-  line-height: 1;
-  letter-spacing: -0.05em;
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
   font-weight: 620;
   font-variant-numeric: tabular-nums;
 }
@@ -648,7 +648,7 @@
   .article-share .sidebar-title {
     border: 0;
     padding: 0;
-    font-size: var(--fs-2xs);
+    font-size: var(--fs-xs);
   }
 
   .share-links {
@@ -693,7 +693,7 @@
 /* ---------- 大屏微调：外壳加宽后让留白与行距同步放大 ---------- */
 @media (min-width: 1280px) {
   .hero h1 {
-    font-size: clamp(2.6rem, 3.4vw + 1.1rem, 3.125rem);
+    font-size: var(--fs-display);
   }
 
   .hero {
@@ -707,7 +707,7 @@
   }
 
   .post-title {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
   }
 
   .featured {
