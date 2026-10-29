@@ -3,17 +3,6 @@ import Icon from './Icon.astro';
 import { site } from '../config';
 
 const year = new Date().getFullYear();
-const social = site.social ?? {};
-const links = [
-  { label: 'X', href: social.x, icon: 'x', external: true },
-  { label: 'Telegram', href: social.telegram, icon: 'telegram', external: true },
-  {
-    label: '邮箱',
-    href: social.email ? `mailto:${social.email}` : '',
-    icon: 'mail',
-    external: false,
-  },
-].filter((item) => item.href);
 ---
 
 <footer class="site-footer">
@@ -26,17 +15,6 @@ const links = [
         <Icon name="rss" />
         RSS
       </a>
-      {links.map((item) => (
-        <a
-          href={item.href}
-          target={item.external ? '_blank' : undefined}
-          rel={item.external ? 'noopener noreferrer' : undefined}
-          aria-label={item.label}
-        >
-          <Icon name={item.icon} />
-          {item.label}
-        </a>
-      ))}
       {/* 兜底用 #top（无同名元素时浏览器会滚到文档顶部）；
           脚本接管后走平滑滚动，详见 scripts/modules/ui.js */}
       <a href="#top" aria-label="回到顶部" data-back-to-top>
