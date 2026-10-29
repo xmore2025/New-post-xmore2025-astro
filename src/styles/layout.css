@@ -584,6 +584,32 @@
   margin-top: var(--sp-5);
 }
 
+/* 两个动作并排（返回首页 / 搜索），窄屏自动换行 */
+.notfound-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.notfound-actions .btn {
+  margin-top: 0;
+}
+
+.notfound-hint {
+  margin-top: var(--sp-4);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.notfound-hint kbd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  padding: 0.08em 0.4em;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--faint);
+}
+
 /* ---------- 响应式 ---------- */
 /* 双栏至少需要正文、目录和栏间距合计约 1096px；更窄时改为单栏，避免挤压正文行宽 */
 @media (max-width: 1200px) {

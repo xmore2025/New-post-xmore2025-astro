@@ -67,6 +67,12 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [...siteGraph, ...p
 /* 让浏览器提前预渲染同站链接：点击时几乎没有等待，且不需要任何 JS 运行时 */
 const speculationRules = {
   prerender: [
+    // 文章链接是最高概率的跳转目标，进页面就预渲染；
+    // Chrome 会对超出预算的 eager 目标自动降级为 prefetch，不会失控。
+    {
+      where: { href_matches: '/posts/*' },
+      eagerness: 'eager',
+    },
     {
       where: {
         and: [
@@ -153,11 +159,9 @@ const speculationRules = {
     {ogImage && <meta name="twitter:image" content={ogImage} />}
 
     {canonical && <link rel="canonical" href={canonical} />}
-    {
-      preloadedFonts.map((href) => (
-        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
-      ))
-    }
+    {preloadedFonts.map((href) => (
+      <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+    ))}
     <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

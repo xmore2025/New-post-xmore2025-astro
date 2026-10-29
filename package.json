@@ -17,12 +17,15 @@
     "fonts:check": "node tools/build-fonts.mjs --check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "icon": "node tools/gen-touch-icon.mjs"
+    "icon": "node tools/gen-touch-icon.mjs",
+    "og": "node tools/optimize-og.mjs",
+    "og:check": "node tools/optimize-og.mjs --check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.4.2"
+    "astro": "^7.4.2",
+    "marked": "^18.1.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
@@ -30,6 +33,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
+    "sharp": "^0.35.5",
     "subset-font": "^2.9.0",
     "typescript": "^6.0.3"
   }

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
+import { site } from '../../config';
 import { getTags } from '../../lib/posts';
 
 export async function getStaticPaths() {
@@ -12,12 +13,33 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.props;
+
+const pageUrl = new URL(Astro.url.pathname, site.url).href;
+const structuredData = {
+  '@type': 'CollectionPage',
+  '@id': `${pageUrl}#webpage`,
+  name: `#${tag.name}`,
+  description: `标签 ${tag.name} 下的全部文章`,
+  url: pageUrl,
+  inLanguage: site.lang,
+  isPartOf: { '@id': `${site.url}/#website` },
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首页', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '标签', item: `${site.url}/tags/` },
+      { '@type': 'ListItem', position: 3, name: `#${tag.name}` },
+    ],
+  },
+};
 ---
 
 <BaseLayout
   title={`#${tag.name}`}
   description={`标签 ${tag.name} 下的全部文章`}
   bodyClass="page-tag"
+  structuredData={structuredData}
 >
   <div class="shell">
     <header class="page-head">

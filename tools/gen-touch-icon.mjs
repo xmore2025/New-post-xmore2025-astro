@@ -15,7 +15,12 @@ import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const SIZE = 180;
-const OUT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'public', 'apple-touch-icon.png');
+const OUT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  'public',
+  'apple-touch-icon.png'
+);
 
 /* ---------- 像素绘制（与 favicon.svg 同一套设计语言） ---------- */
 const BG = [23, 23, 27]; // #17171b

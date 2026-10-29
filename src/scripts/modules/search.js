@@ -3,6 +3,9 @@
  *
  * 索引只在空闲时预取一次（/search.json 约几 KB），
  * 因此首屏不承担任何搜索成本，第一次按 ⌘K 也几乎无等待。
+ *
+ * 本模块整体由 app.js 动态加载：返回 { open } 供加载前的
+ * 代理调用，保证用户在模块就绪前触发的搜索意图不丢失。
  */
 
 import { $, $$, on, prefersReducedMotion } from './dom.js';
@@ -35,7 +38,7 @@ export function initSearch() {
   const list = $('[data-search-results]', modal);
   const status = $('[data-search-status]', modal);
 
-  if (!modal || !panel || !input || !list) return;
+  if (!modal || !panel || !input || !list) return undefined;
 
   /** @type {{t:string,d:string,u:string,g:string[],y:string}[] | null} */
   let index = null;
@@ -225,4 +228,6 @@ export function initSearch() {
     on(btn, 'focus', load);
   });
   on(input, 'focus', load);
+
+  return { open };
 }
