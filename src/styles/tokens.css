@@ -90,10 +90,11 @@
   --radius-lg: 14px;
 
   /* ---------- 5. 字体 ---------- */
-  /* Inter 负责拉丁字母与数字，霞鹜文楷（楷体）负责中文；
-     两套字体都只加载站点用到的字形。Noto Sans SC 留在栈尾兜底生僻字。 */
+  /* 与 mundi-xu.github.io 的字体栈一致：霞鹜文楷排第一位，中文和拉丁字母都由它渲染
+     （霞鹜文楷自带楷体风格的拉丁字形，参考站实测英文宽度与 LXGW 完全一致）。
+     Inter / Noto Sans SC 只作为子集缺字时的兜底，正常情况下不会下载。 */
   --font-sans:
-    'Inter Variable', 'LXGW WenKai Screen', 'Noto Sans SC Variable', 'PingFang SC',
+    'LXGW WenKai Screen', 'LXGW WenKai', 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
   --font-mono:
