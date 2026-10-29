@@ -86,11 +86,12 @@
   --radius-lg: 14px;
 
   /* ---------- 5. 字体 ---------- */
-  /* 自托管 Noto Sans SC 打头：中文与拉丁共用一套字形，中英混排不会出现
-     "英文比中文更瘦" 的割裂感；字体加载失败时逐级回退到系统黑体。 */
+  /* Inter 负责拉丁字母与数字，Noto Sans SC 负责中文；按字符自动回退，
+     让中英混排更协调，且两套字体都仅加载站点使用到的字形。 */
   --font-sans:
-    'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
-    'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Noto Sans SC', sans-serif;
   --font-mono:
     'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
     'Liberation Mono', monospace;

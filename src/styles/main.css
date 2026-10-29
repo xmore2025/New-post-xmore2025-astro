@@ -10,8 +10,8 @@
    4. components.css  按钮、卡片、列表、标签、目录、分享、搜索
    5. prose.css       正文排版、代码块、表格、引用（仅文章 / 关于页）
 
-   字体：站点自托管 Noto Sans SC + JetBrains Mono 的子集（1 + 1 个 woff2），
-   @font-face 直接写进主样式，浏览器按 unicode-range 只取需要的字形。
+   字体：站点自托管 Inter + Noto Sans SC + JetBrains Mono 的内容子集，
+   @font-face 直接写进主样式，未使用的字形不会进入下载文件。
 
    Vite 会在构建时把 @import 合并成单个 CSS 文件。
    ========================================================================== */

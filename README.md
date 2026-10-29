@@ -19,7 +19,7 @@
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                         |
 | **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                      |
-| **自托管字体，只带需要的字** | Noto Sans SC + JetBrains Mono 按内容子集化：**2 个 woff2 / 225 KB**，不再拉 16 片 879 KB                |
+| **自托管字体，只带需要的字** | Inter + Noto Sans SC + JetBrains Mono 按内容子集化：**3 个 woff2 / 约 226 KB**，不再拉 16 片 879 KB     |
 | **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                     |
 | **排版优先**                 | 4 级字阶 · 15px 正文 / 1.9 行高 · 约 45 汉字行宽 · 发丝分隔线                                           |
 | **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                       |
@@ -61,7 +61,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 ├── public/
 │   ├── fonts/*.woff2              # 子集字体（文件名带内容哈希）
 │   ├── _headers                   # 缓存与安全响应头
-│   ├── og.png                     # 可选：1200×630 分享图（通过 site.config.json 配置）
+│   ├── og-card-v2.png             # 1200×630 分享图（通过 site.config.json 配置）
 │   ├── favicon.svg · robots.txt · manifest.webmanifest
 ├── src/
 │   ├── config.ts                  # 读取 site.config.json 并给出类型
@@ -96,19 +96,21 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 
 中文 Web 字体的体积是这类站点最大的性能变量。`@fontsource` 的分片方案在**内容很少**的站点上反而浪费：一篇文章仍会触发 16 个分片、约 879 KB。
 
-本项目改为**按内容子集化**：
+本项目改为**按内容子集化**，并按字符分配字体：拉丁字母与数字使用 Inter，中文使用 Noto Sans SC：
 
 1. `tools/build-fonts.mjs` 扫描 `src/**` 与 `site.config.json`，收集真正会被渲染的字符；
-2. 用 `subset-font`（HarfBuzz）把可变字体裁成 1 个 woff2：字重轴收到 `400–650`（站点实际只用 400–620），并去掉 OpenType 排版特性与 hinting——同样字形，体积再减 21%；
+2. 用 `subset-font`（HarfBuzz）把 Inter、Noto Sans SC 与 JetBrains Mono 可变字体裁成内容子集：Inter 只包含 Latin 字符，中文由 Noto Sans SC 覆盖；字重轴收到 `400–650`，并去掉不需要的 OpenType 特性与 hinting；
 3. 文件名带内容哈希 → 可以 `immutable` 长缓存；
 4. `npm run fonts:check` 在 CI 中校验「内容字符 ⊆ 子集」，忘记重建会直接失败。
 
-| 方案                | 请求数 | 传输量       |
-| ------------------- | ------ | ------------ |
-| fontsource 全量分片 | 16     | ≈ 879 KB     |
-| 内容子集（本项目）  | **2**  | **≈ 225 KB** |
+| 方案                | 请求数 | 传输量   |
+| ------------------- | ------ | -------- |
+| fontsource 全量分片 | 16     | ≈ 879 KB |
+| 内容子集（本项目）  | **3**  | ≈ 226 KB |
 
 写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
+
+首页及文章分享图源文件为 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 中的 `ogImage` 配置引用。
 
 > 试过 `rel="preload"` 预加载字体：在有系统中文字体的浏览器里，Chrome 会因预加载而延长字体阻塞期，FCP 反而从 590 ms 涨到 1050 ms，因此**没有采用**。字体体积本身才是关键变量。
 

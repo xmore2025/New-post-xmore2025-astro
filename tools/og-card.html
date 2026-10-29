@@ -6,7 +6,7 @@
   OG 分享图源文件（1200×630）
   重新生成：
   chrome --headless --disable-gpu --hide-scrollbars --window-size=1200,630 \
-    --screenshot=public/og.png tools/og-card.html
+    --screenshot=public/og-card-v2.png tools/og-card.html
 -->
     <style>
       * {
@@ -31,7 +31,8 @@
         background: #fbfaf8;
         color: #17171b;
         font-family:
-          'Inter',
+          'Inter Variable',
+          'Noto Sans SC Variable',
           'Segoe UI',
           -apple-system,
           'PingFang SC',
@@ -130,6 +131,20 @@
 
       .foot .dot {
         color: #1a5da8;
+      }
+
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-weight: 400 650;
+        src: url('../public/fonts/inter-latin-subset.3482519b.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Noto Sans SC Variable';
+        font-style: normal;
+        font-weight: 400 650;
+        src: url('../public/fonts/noto-sans-sc-subset.4b46ff2a.woff2') format('woff2');
       }
     </style>
   </head>

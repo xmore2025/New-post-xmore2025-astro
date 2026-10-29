@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 字体子集化：把 Noto Sans SC / JetBrains Mono 裁到「站点真正用到的字」。
+ * 字体子集化：把 Inter / Noto Sans SC / JetBrains Mono 裁到站点真正用到的字。
  *
  * 为什么需要：@fontsource 的中文分片按使用频率切了 100+ 片，一篇文章仍要拉
  * 16 片、约 880 KB。子集化后同样一页只需 1 个 woff2（约 280 KB）。
@@ -39,6 +39,14 @@ const MONO_SRC = path.join(
   'jetbrains-mono',
   'files',
   'jetbrains-mono-latin-wght-normal.woff2'
+);
+const INTER_SRC = path.join(
+  root,
+  'node_modules',
+  '@fontsource-variable',
+  'inter',
+  'files',
+  'inter-latin-ext-wght-normal.woff2'
 );
 
 // 只扫描"会被渲染成文字"的文件；CSS 里的中文只出现在注释里，
@@ -149,6 +157,15 @@ async function main() {
   }
 
   const faces = [];
+  faces.push(
+    await buildFace({
+      family: 'Inter Variable',
+      source: INTER_SRC,
+      chars: new Set([...chars].filter((ch) => ch.codePointAt(0) <= 0x024f)),
+      weights: [400, 650],
+      fileName: 'inter-latin-subset.woff2',
+    })
+  );
   faces.push(
     await buildFace({
       family: 'Noto Sans SC Variable',

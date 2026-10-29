@@ -1,3 +1,4 @@
 /* 由 tools/build-fonts.mjs 生成，请勿手改 —— 内容更新后运行 `npm run fonts` · chars:12baaab4 */
+@font-face{font-family:"Inter Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/inter-latin-subset.3482519b.woff2") format("woff2")}
 @font-face{font-family:"Noto Sans SC Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/noto-sans-sc-subset.4b46ff2a.woff2") format("woff2")}
 @font-face{font-family:"JetBrains Mono Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/jetbrains-mono-subset.9d70488b.woff2") format("woff2")}
