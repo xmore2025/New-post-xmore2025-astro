@@ -418,3 +418,56 @@ Lighthouse 的剩余时间基本等于「225 KB 字体 / 1.6 Mbps ≈ 1.1 s」�
 2. **切回系统字体（轻量模式）**：字体请求归零，FCP 可到 0.4 s，但 macOS / Windows / Android 的中文字形不同，视觉一致性下降。
 
 两条都保留为可选方向，当前版本选择「保住字形一致性」。
+
+---
+
+## 十、第四轮：评论区为什么慢，以及预渲染的隐藏成本
+
+这一轮不再调视觉，而是把「全局加载链路」过了一遍：HTML → 字体 → 首屏 JS → 预渲染 → 评论。真正的问题集中在两处。
+
+### 1. 评论慢，不是 GitHub 慢，是「页面一打开就去拉」
+
+Giscus 的工作方式是：`client.js` 先注入一个 `iframe`，iframe 里再跑一套 Next.js 应用，最后向 `giscus.app/api/discussions` 查当前路径对应的 Discussion。一次完整加载实测 **19 个跨域请求**：
+
+| 阶段   | 请求                                                                                 |
+| ------ | ------------------------------------------------------------------------------------ |
+| 引导   | `client.js`、`default.css`、主题 CSS                                                 |
+| iframe | 8 个 Next.js chunk + 2 个 manifest + 1 个 CSS                                        |
+| 数据   | `api/discussions?first=15` 与 `api/discussions?last=15` 两次 GitHub Discussions 查询 |
+| 图片   | `githubassets` 的加载占位图                                                          |
+
+旧实现的问题不在请求数量，而在**时机**：`client.js` 在 HTML 解析到评论区时立刻注入，和首屏字体、正文、搜索索引抢同一条带宽；iframe 在内容到达前又是 `opacity: 0`，读者看到的就是一块空白。
+
+更隐蔽的一层：旧 Speculation Rules 对 `/posts/*` 使用 `eagerness: "eager"`。文章页上的「上一篇 / 下一篇 / 面包屑 / 导航」都匹配这个规则，Chrome 会预渲染其中一部分隐藏文档，而**预渲染页面同样会执行脚本**——等于在读者没点任何链接前，额外拉起了评论 iframe。预渲染 + 评论即时加载叠加，才是"评论怎么这么慢"的完整答案。
+
+### 2. 这轮的改动
+
+| 项            | 之前                                            | 现在                                                              |
+| ------------- | ----------------------------------------------- | ----------------------------------------------------------------- |
+| 评论触发      | HTML 解析即注入 `client.js`                     | `IntersectionObserver` 提前 600px；`#comments` 锚点直达时立即加载 |
+| 预渲染页面    | 隐藏文档也会请求评论                            | `document.prerendering` 期间不请求，激活后再判断                  |
+| iframe        | 立刻加载，空白等待                              | `data-loading="lazy"` + 220px 骨架 + 状态文案，就绪后撤掉         |
+| 连接          | 无                                              | 触发时才 `preconnect`，把 DNS / TLS 往返藏在滚动里                |
+| 失败/慢       | 一直空白                                        | 10 秒后给出「前往 GitHub 讨论区」兜底链接                         |
+| 预渲染规则    | `/posts/*` eager + 全站 moderate                | 统一改为 moderate：悬停约 200ms / 触摸按下才预渲染                |
+| 自托管 giscus | 地址写死                                        | `site.config.json → comments.origin`，可指向自己的 giscus 实例    |
+| 字体 preload  | 每个页面 render 时 `fs.readFileSync` + 正则解析 | 抽到 `src/lib/fonts.ts`，模块级缓存，20 个页面只读一次            |
+
+评论组件仍然保留明暗主题同步、`data-mapping="pathname"` 等原有行为；`is:inline` 脚本不依赖 Astro 运行时。
+
+### 3. 验证（本机 headless Chrome）
+
+| 场景                                           | 结果                                                      |
+| ---------------------------------------------- | --------------------------------------------------------- |
+| 文章页打开后不滚动，等待 12s                   | `giscus.app` 请求 **0** 个；`data-state="idle"`           |
+| 滚动到页面底部                                 | `data-state="ready"`，iframe 出现，高度 372px，骨架已移除 |
+| 直接访问 `#comments`                           | 立即加载，19 个 giscus 请求按需发生                       |
+| `astro build`                                  | 20 页，约 1s；36 个文件 / 1.47 MB                         |
+| `astro check` / `format:check` / `fonts:check` | 0 error / 0 warning / 全部通过                            |
+
+### 4. 还能继续压的两条路
+
+1. **评论换成自托管**：如果读者主要在中国大陆，`giscus.app` 与 GitHub API 的跨洋往返是硬延迟。Giscus 支持自托管，配好 `comments.origin` 即可；想彻底去掉 GitHub 依赖，可换 Waline / Twikoo（自己的数据库与 API，通常 1 个请求就能渲染）。
+2. **字体按路由切子集**：当前 4 个子集共 458 KB，首屏实际下载 234 KB。首页/列表页只需要导航、标题、摘要的字（约 70–90 KB），文章页再用全量，配合 `unicode-range` 可再省 0.5s 左右——这是目前剩下最大的一块，但构建脚本要按路由生成字表，复杂度也最高。
+
+另外两个不影响首屏、但值得排期的小项：`components.css` 里分类 Bento（约 6 KB）与标签云（约 2.4 KB）只在两个索引页使用，可以拆成页面级 CSS，让其余页面的内联样式再小一截；PWA manifest 目前只有 180px 图标，Chrome 安装提示需要 192 / 512，补两张 PNG 即可。

@@ -1,10 +1,10 @@
 ---
-import fs from 'node:fs';
 import '../styles/main.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
 import { site } from '../config';
+import { getPreloadedFonts } from '../lib/fonts';
 
 const {
   title = '',
@@ -21,10 +21,7 @@ const {
 /* 首屏字体的 preload 提示：从生成的 font-face.css 里解析带哈希的 URL。
    只预加载首屏一定会用到的两个（正文 + 等宽元信息）；
    Inter / Noto Sans SC 是缺字兜底，预加载反而会强制下载闲置字体。 */
-const fontFaceCss = fs.readFileSync('src/styles/font-face.css', 'utf8');
-const preloadedFonts = [...fontFaceCss.matchAll(/url\("([^"]+)"\)/g)]
-  .map((m) => m[1])
-  .filter((href) => /lxgw|jetbrains/.test(href));
+const preloadedFonts = getPreloadedFonts();
 
 const path = pathProp ?? Astro.url.pathname;
 const pageTitle = title ? `${title} · ${site.titleSuffix}` : `${site.title} — ${site.tagline}`;
@@ -64,15 +61,12 @@ const pageNodes = Array.isArray(structuredData)
     : [];
 const jsonLd = { '@context': 'https://schema.org', '@graph': [...siteGraph, ...pageNodes] };
 
-/* 让浏览器提前预渲染同站链接：点击时几乎没有等待，且不需要任何 JS 运行时 */
+/* 让浏览器提前准备同站链接，但只在用户表现出意图时（悬停约 200ms / 触摸按下）。
+   不在进页面时 eager 预渲染文章：本页 HTML 已内联约 30 KB 样式，预渲染会再拉
+   整页 HTML + 字体，并在隐藏文档里执行脚本（连评论区一起请求），和首屏抢带宽。
+   点击时 moderate 预渲染通常已就绪，仍能保持"瞬时跳转"。 */
 const speculationRules = {
   prerender: [
-    // 文章链接是最高概率的跳转目标，进页面就预渲染；
-    // Chrome 会对超出预算的 eager 目标自动降级为 prefetch，不会失控。
-    {
-      where: { href_matches: '/posts/*' },
-      eagerness: 'eager',
-    },
     {
       where: {
         and: [

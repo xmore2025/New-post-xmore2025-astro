@@ -14,6 +14,8 @@ export interface SiteConfig {
     repoId: string;
     category: string;
     categoryId: string;
+    /** giscus 服务地址：官方实例或自托管域名 */
+    origin?: string;
   };
   social: { github?: string; x?: string; telegram?: string; email?: string };
   nav: { label: string; href: string }[];

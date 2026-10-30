@@ -1,11 +1,11 @@
-# xmore · 极简博客
+﻿# xmore · 极简博客
 
 > 一个用 Astro 承载、样式全部手写的极简开发者博客 —— 没有 UI 框架，没有 Tailwind，没有多余的一层。
 
 [![Deploy](https://github.com/xmore2025/New-post-xmore2025-astro/actions/workflows/deploy.yml/badge.svg)](https://github.com/xmore2025/New-post-xmore2025-astro/actions/workflows/deploy.yml)
 [![License](https://img.shields.io/badge/license-MIT-1a5da8)](./LICENSE)
 [![Astro](https://img.shields.io/badge/astro-7.4-1a5da8)](https://astro.build)
-[![Node](https://img.shields.io/badge/node-%E2%89%A5%2022.23.4-1a5da8)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%E2%89%A5%2024-1a5da8)](https://nodejs.org)
 
 **[🌐 在线预览](https://web2046.xmorexz.dpdns.org)** · **[📄 优化说明](./OPTIMIZATION.md)**
 
@@ -15,24 +15,24 @@
 
 ## ✨ 特性
 
-|                              |                                                                                                         |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
-| **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                         |
-| **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                      |
-| **自托管字体，只带需要的字** | 霞鹜文楷 + Inter + JetBrains Mono 按内容子集化：**4 个 woff2 / 约 450 KB**，不再拉 16 片 879 KB         |
-| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                     |
-| **排版优先**                 | 最小 12px · 6 级字阶 · 16px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                           |
-| **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                       |
-| **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                 |
-| **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS |
-| **可访问**                   | axe-core 全站扫描 **0 违规**（WCAG 2.1 A/AA）· skip link · 焦点管理 · `prefers-reduced-motion`          |
-| **代码规范**                 | `astro check` 0 错误 · Prettier 统一风格 · CI 会在构建前跑三项校验                                      |
+|                              |                                                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                                      |
+| **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                                   |
+| **自托管字体，只带需要的字** | 霞鹜文楷 + Inter + JetBrains Mono 按内容子集化：**4 个 woff2 / 约 458 KB**；首屏只预加载正文与等宽 2 个（约 234 KB） |
+| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                                  |
+| **排版优先**                 | 最小 12px · 6 级字阶 · 16px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                                        |
+| **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                                    |
+| **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                              |
+| **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS              |
+| **可访问**                   | axe-core 全站扫描 **0 违规**（WCAG 2.1 A/AA）· skip link · 焦点管理 · `prefers-reduced-motion`                       |
+| **代码规范**                 | `astro check` 0 错误 · Prettier 统一风格 · CI 会在构建前跑三项校验                                                   |
 
 ---
 
 ## 🚀 快速开始
 
-需要 **Node.js ≥ 22.23.4**（Astro 7 的要求）。
+需要 **Node.js ≥ 24**（Astro 7 的要求）。
 
 ```bash
 npm install
@@ -71,6 +71,7 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 │   ├── components/                # Header · NavLinks · Footer · PostRow · TagList · GiscusComments …
 │   ├── lib/
 │   │   ├── posts.js               # 取文章 / 标签、阅读时长、日期格式化
+│   │   ├── fonts.ts               # 解析生成的 @font-face，产出首屏 preload 列表
 │   │   └── types.ts               # PostSummary / TagRef 共享类型
 │   ├── pages/
 │   │   ├── index.astro            # 首页
@@ -106,19 +107,35 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 | 方案                | 请求数 | 传输量   |
 | ------------------- | ------ | -------- |
 | fontsource 全量分片 | 16     | ≈ 879 KB |
-| 内容子集（本项目）  | **3**  | ≈ 226 KB |
+| 内容子集（本项目）  | **4**  | ≈ 458 KB |
 
-写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
+首屏只预加载霞鹜文楷与 JetBrains Mono 两个子集（约 234 KB）；Inter 与 Noto Sans SC 仅作缺字兜底。写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
 
 首页及文章分享图源文件为 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 中的 `ogImage` 配置引用。
 
-> 试过 `rel="preload"` 预加载字体：在有系统中文字体的浏览器里，Chrome 会因预加载而延长字体阻塞期，FCP 反而从 590 ms 涨到 1050 ms，因此**没有采用**。字体体积本身才是关键变量。
+> 字体 preload 的取舍：早期使用 @fontsource 的 100+ 条 `unicode-range` 分片时，preload 会同时拉起多个分片、延长字体阻塞期，实测 FCP 反而变差；现在合并为单个内容子集后，preload 只提前一个请求，能让首个文本绘制更早开始。如果以后换成按路由切分的多片子集，需要重新评估这一段。
 
 ### 💬 文章评论
 
 文章详情页使用 [Giscus](https://giscus.app/zh-CN) 加载评论。先在 GitHub 仓库设置中启用 Discussions，然后打开 Giscus 配置页，选择当前仓库和一个 Discussions 分类，把分类名称和分类 ID 填入 `site.config.json` 的 `comments` 字段（仓库和仓库 ID 已预填）。配置完成后评论区会自动显示；当前未填写分类信息时，文章页会提示如何完成配置。
 
 Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题跟随站点主题切换。
+
+**加载策略**：评论区在页面最底部，`client.js` 与 iframe 里整套 Next.js 应用（一次完整加载约 19 个请求，还要等 GitHub Discussions API）不应该和首屏字体、文章正文抢带宽。因此：
+
+1. **不随页面加载**：用 `IntersectionObserver`（提前 600px）只在读者接近评论区时才注入 `client.js`；带 `#comments` 锚点直达时立即加载；
+2. **预渲染安全**：`document.prerendering` 期间不请求，Speculation Rules 预渲染出来的隐藏页面不会偷偷拉起评论；
+3. **骨架占位**：加载前显示 220px 高的占位与状态文案，iframe 就绪后再撤掉，避免页面高度跳动；
+4. **按需建连**：加载时才 `preconnect`，并给 iframe 加 `data-loading="lazy"` 作为无 `IntersectionObserver` 时的兜底；
+5. **失败兜底**：10 秒仍未就绪时给出「前往 GitHub 讨论区」的链接。
+
+如果主要读者在中国大陆，`giscus.app` 与 GitHub API 的往返会明显变慢。此时可以把 Giscus [自托管](https://github.com/giscus/giscus/blob/main/SELF-HOSTING.md) 到自己的域名，并修改 `site.config.json`：
+
+```json
+"comments": { "origin": "https://giscus.example.com" }
+```
+
+组件会从该地址加载 `client.js` 并把 iframe 指向它；也可以直接换成 [Waline](https://waline.js.org/) / [Twikoo](https://twikoo.js.org/) 这类自托管评论，彻底去掉 GitHub OAuth 与跨洋 API 的依赖。
 
 ---
 
@@ -163,8 +180,10 @@ Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题�
 | 文章页 LCP     | 1084 ms        | **768 ms**        | −29%           |
 | 请求数（首页） | 23             | **6**             | −74%           |
 | 传输量（首页） | 1035 KB        | **239 KB**        | −77%           |
-| 字体           | 16 个 / 879 KB | **2 个 / 226 KB** | −74%           |
+| 字体           | 16 个 / 879 KB | **2 个 / 234 KB** | −74%           |
 | CLS            | 0.0003         | 0.0004            | 基本持平（≈0） |
+
+以上是上一轮的基线；本轮改动集中在文章页的评论与预渲染流量，首屏指标保持不变。
 
 做法：
 
@@ -173,6 +192,8 @@ Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题�
 - **正文样式按需**：`prose.css` 只在文章 / 关于页引入，其余页面不下载；
 - **长列表 `content-visibility: auto`**；滚动统一 `requestAnimationFrame`；
 - **搜索索引空闲预取**，首屏不承担搜索成本；
+- **评论按需加载**：`IntersectionObserver` 提前 600px 触发，不再和首屏抢带宽；
+- **预渲染按意图**：Speculation Rules 从 `eager` 改为 `moderate`，悬停 / 触摸时才预渲染，避免在隐藏文档里执行脚本与拉起评论；
 - 构建产物文件名带哈希，`/_astro/*`、`/fonts/*` 均为 `immutable` 长缓存。
 
 ---
@@ -229,6 +250,7 @@ featured: false
 | `ogImage`                                           | 可选分享图路径；设置后生成 OG / Twitter 图片元数据 |
 | `social`                                            | GitHub / X / Telegram / 邮箱，留空则不渲染         |
 | `nav`                                               | 顶部导航项                                         |
+| `comments`                                          | Giscus 仓库 / 分类 / 可选 `origin`（自托管地址）   |
 
 ---
 
@@ -270,21 +292,22 @@ featured: false
 
 | 项                               | 结果                |
 | -------------------------------- | ------------------- |
-| `astro build`                    | 20 页，约 1–2 s     |
+| `astro build`                    | 20 页，约 1 s       |
 | `astro check`                    | 0 error / 0 warning |
 | `prettier --check`               | 全部通过            |
+| `fonts:check`                    | 字表与内容一致      |
 | axe-core（7 页 × 明暗）          | 0 违规              |
 | 响应式（320–1920 × 8 档 × 明暗） | 0 处横向溢出        |
 
 ### 📦 体积
 
-| 项                      | 大小                    |
-| ----------------------- | ----------------------- |
-| 首屏 HTML（含内联样式） | 42.3 KB（gzip 11.2 KB） |
-| 文章页 HTML             | 57.6 KB（gzip 15.0 KB） |
-| JS（1 个文件）          | 8.6 KB（gzip 3.4 KB）   |
-| 字体（2 个 woff2）      | 225 KB                  |
-| `dist/` 全部            | 32 个文件 / 1.3 MB      |
+| 项                      | 大小                      |
+| ----------------------- | ------------------------- |
+| 首屏 HTML（含内联样式） | 42.7 KB（gzip 11.2 KB）   |
+| 文章页 HTML             | 74.2 KB（gzip 17.1 KB）   |
+| JS（1 个入口文件）      | 7.9 KB（gzip 3.5 KB）     |
+| 字体（4 个子集）        | 458 KB；首屏预加载 234 KB |
+| `dist/` 全部            | 36 个文件 / 1.47 MB       |
 
 ---
 

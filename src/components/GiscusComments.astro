@@ -5,23 +5,57 @@ interface Props {
   category: string;
   categoryId: string;
   lang: string;
+  /** 自托管 giscus 时填自己的域名；默认官方实例 */
+  origin?: string;
 }
 
-const { repo, repoId, category, categoryId, lang } = Astro.props;
+const { repo, repoId, category, categoryId, lang, origin = 'https://giscus.app' } = Astro.props;
 const configured = [repo, repoId, category, categoryId].every((value) => value.trim());
+const giscusOrigin = origin.replace(/\/+$/, '') || 'https://giscus.app';
+const discussionsUrl = `https://github.com/${repo}/discussions`;
 ---
 
-<section class="comments">
+<section class="comments" data-comments>
   {configured ? (
-    <div
-      class="giscus"
-      data-giscus
-      data-repo={repo}
-      data-repo-id={repoId}
-      data-category={category}
-      data-category-id={categoryId}
-      data-lang={lang}
-    />
+    <>
+      <div class="comments-body" data-comments-body data-state="idle">
+        <div
+          class="giscus"
+          data-giscus
+          data-repo={repo}
+          data-repo-id={repoId}
+          data-category={category}
+          data-category-id={categoryId}
+          data-lang={lang}
+          data-origin={giscusOrigin}
+        ></div>
+
+        <div class="comments-status" data-comments-status role="status" aria-live="polite">
+          <span class="comments-spinner" aria-hidden="true"></span>
+          <span data-comments-text>正在加载评论…</span>
+          <a
+            class="comments-fallback"
+            data-comments-fallback
+            href={discussionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+          >
+            在 GitHub 讨论区查看
+          </a>
+        </div>
+      </div>
+
+      <noscript>
+        <p class="comments-setup">
+          评论由 Giscus 提供，需要启用 JavaScript。也可以
+          <a href={discussionsUrl} target="_blank" rel="noopener noreferrer">
+            在 GitHub 讨论区参与
+          </a>
+          。
+        </p>
+      </noscript>
+    </>
   ) : (
     <p class="comments-setup">
       评论区尚未配置。请在 <code>site.config.json</code> 中填写 Giscus 的仓库、仓库 ID、 Discussions
@@ -35,40 +69,150 @@ const configured = [repo, repoId, category, categoryId].every((value) => value.t
 
 {configured && <script is:inline>
   (() => {
-    const widget = document.querySelector('[data-giscus]');
-    if (!widget) return;
+    const section = document.querySelector('[data-comments]');
+    if (!section) return;
 
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
+    const body = section.querySelector('[data-comments-body]');
+    const mount = section.querySelector('[data-giscus]');
+    const status = section.querySelector('[data-comments-status]');
+    const statusText = section.querySelector('[data-comments-text]');
+    const fallback = section.querySelector('[data-comments-fallback]');
+    if (!body || !mount) return;
 
-    for (const name of ['repo', 'repo-id', 'category', 'category-id', 'lang']) {
-      script.setAttribute(`data-${name}`, widget.getAttribute(`data-${name}`));
+    const origin = mount.getAttribute('data-origin') || 'https://giscus.app';
+    const theme = () =>
+      document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+
+    let started = false;
+    let finished = false;
+    let timer = 0;
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      window.clearTimeout(timer);
+      body.setAttribute('data-state', 'ready');
+      body.removeAttribute('aria-busy');
+      status?.remove();
+    };
+
+    const showFallback = (message) => {
+      if (finished) return;
+      body.removeAttribute('aria-busy');
+      if (statusText) statusText.textContent = message;
+      if (fallback) fallback.hidden = false;
+      status?.classList.add('is-delayed');
+    };
+
+    const watchIframe = () => {
+      const iframe = mount.querySelector('iframe');
+      if (!iframe) return false;
+      iframe.addEventListener(
+        'load',
+        () => {
+          finish();
+          // iframe 加载期间用户可能切过主题：就绪后再对齐一次
+          iframe.contentWindow?.postMessage({ giscus: { setConfig: { theme: theme() } } }, origin);
+        },
+        { once: true }
+      );
+      return true;
+    };
+
+    const start = () => {
+      // 预渲染的隐藏文档里只执行脚本、不绘制：等页面真正激活再请求
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', start, { once: true });
+        return;
+      }
+      if (started) return;
+      started = true;
+      body.setAttribute('data-state', 'loading');
+      body.setAttribute('aria-busy', 'true');
+
+      // 评论在页面底部：等滚到这里再握手，DNS / TLS 往返就落在滚动的时间里
+      const preconnect = document.createElement('link');
+      preconnect.rel = 'preconnect';
+      preconnect.href = origin;
+      preconnect.crossOrigin = 'anonymous';
+      document.head.append(preconnect);
+
+      const script = document.createElement('script');
+      script.src = `${origin}/client.js`;
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+
+      for (const name of ['repo', 'repo-id', 'category', 'category-id', 'lang']) {
+        script.setAttribute(`data-${name}`, mount.getAttribute(`data-${name}`) ?? '');
+      }
+      script.setAttribute('data-mapping', 'pathname');
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'bottom');
+      // 双重保险：即使下面的 IntersectionObserver 不可用，iframe 也由浏览器懒加载
+      script.setAttribute('data-loading', 'lazy');
+      script.setAttribute('data-theme', theme());
+
+      script.addEventListener(
+        'error',
+        () => showFallback('评论加载失败，可稍后在 GitHub 讨论区查看。'),
+        { once: true }
+      );
+
+      script.addEventListener(
+        'load',
+        () => {
+          // client.js 只负责注入 iframe，评论内容随后才到；等 iframe load 再撤骨架
+          const observer = new MutationObserver(() => {
+            if (!watchIframe()) return;
+            observer.disconnect();
+          });
+          observer.observe(mount, { childList: true, subtree: true });
+          watchIframe();
+
+          // 主题切换：giscus 在 iframe 里，只能靠 postMessage 同步
+          new MutationObserver(() => {
+            mount
+              .querySelector('iframe')
+              ?.contentWindow?.postMessage({ giscus: { setConfig: { theme: theme() } } }, origin);
+          }).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme'],
+          });
+        },
+        { once: true }
+      );
+
+      mount.append(script);
+
+      timer = window.setTimeout(
+        () => showFallback('评论加载较慢，可先前往 GitHub 讨论区参与。'),
+        10000
+      );
+    };
+
+    // 带 #comments 锚点直达时不必等滚动；预渲染状态下交给上面的守卫
+    if (window.location.hash === '#comments') {
+      start();
+      return;
     }
 
-    script.setAttribute('data-mapping', 'pathname');
-    script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '1');
-    script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'bottom');
-
-    const currentTheme = () =>
-      document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    script.setAttribute('data-theme', currentTheme());
-    widget.append(script);
-
-    new MutationObserver(() => {
-      widget
-        .querySelector('iframe')
-        ?.contentWindow?.postMessage(
-          { giscus: { setConfig: { theme: currentTheme() } } },
-          'https://giscus.app'
-        );
-    }).observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          start();
+        },
+        // 提前一屏左右开始加载，滚动到底时通常已经就绪
+        { rootMargin: '600px 0px' }
+      );
+      observer.observe(section);
+    } else {
+      const idle = window.requestIdleCallback || ((fn) => window.setTimeout(fn, 1200));
+      window.addEventListener('load', () => idle(start, { timeout: 4000 }), { once: true });
+    }
   })();
 </script>}
 
@@ -79,8 +223,67 @@ const configured = [repo, repoId, category, categoryId].every((value) => value.t
     border-top: 1px solid var(--line);
   }
 
+  .comments-body {
+    position: relative;
+    min-width: 0;
+  }
+
+  /* 骨架只在真正开始加载后出现：无 JS 时交给 <noscript>，不留空白框 */
+  .comments-body[data-state='loading'] {
+    min-height: 220px;
+  }
+
   .giscus {
     min-width: 0;
+  }
+
+  .comments-status {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    padding: 0.9rem;
+    border: 1px dashed var(--line-2);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+
+  .comments-body[data-state='loading'] .comments-status {
+    display: flex;
+  }
+
+  .comments-body[data-state='ready'] .comments-status {
+    display: none;
+  }
+
+  .comments-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--line-2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: comments-spin 0.8s linear infinite;
+  }
+
+  .comments-status.is-delayed .comments-spinner {
+    display: none;
+  }
+
+  @keyframes comments-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .comments-fallback {
+    color: var(--accent);
+    text-underline-offset: 0.18em;
   }
 
   .comments-setup {
