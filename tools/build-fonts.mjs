@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 字体子集化：把 Inter / Noto Sans SC / JetBrains Mono 裁到站点真正用到的字。
+ * 字体子集化：把霞鹜文楷 / Inter / Noto Sans SC / 等宽字体裁到站点真正用到的字。
  *
  * 为什么需要：@fontsource 的中文分片按使用频率切了 100+ 片，一篇文章仍要拉
  * 16 片、约 880 KB。子集化后同样一页只需 1 个 woff2（约 280 KB）。
@@ -9,8 +9,9 @@
  *   node tools/build-fonts.mjs           # 生成 public/fonts/*.woff2 与 font-face.css
  *   node tools/build-fonts.mjs --check   # 只校验：产物是否与当前内容同步（CI 用）
  *
- * 源字体：Noto Sans SC VF 有 17 MB，不进仓库；缺失时自动从 google/fonts 下载到
- * tools/.cache/（已 gitignore）。仓库只提交生成后的子集。
+ * 源字体：Noto Sans SC VF 有 17 MB、霞鹜文楷每个字重约 25 MB，都不进仓库；
+ * 缺失时自动从上游下载到 tools/.cache/（已 gitignore）。仓库只提交生成后的子集。
+ * 唯一例外是 Maple Mono CN：上游只提供 140 MB 的 zip，需手动放一次（见下方常量）。
  *
  * 说明：@font-face 不写 unicode-range —— 子集已覆盖全部内容字符；元素里出现
  * 子集外的生僻字时，浏览器会按字体栈自动回退到系统字体，不会显示豆腐块。
@@ -33,11 +34,26 @@ const NOTO_URL =
   'https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf';
 const NOTO_CACHE = path.join(CACHE_DIR, 'NotoSansSC-VF.ttf');
 
-/* 中文主字体：霞鹜文楷 Screen（楷体，与 mundi-xu.github.io 同一套字形）。
-   上游只发布静态字重的 TTF，没有可变轴，因此不做 variationAxes 裁剪。 */
-const LXGW_URL =
-  'https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.520/LXGWWenKaiScreen.ttf';
-const LXGW_CACHE = path.join(CACHE_DIR, 'LXGWWenKaiScreen.ttf');
+/* 中文主字体：霞鹜文楷**标准版**（不是 Screen 版）。
+   Screen 版笔画更细、更适合高 DPI 屏，但 Windows 的 DirectWrite 渲染 16-17px
+   小字号时会明显发灰发虚；标准版笔画饱满，同字号下清晰度高一个档次。
+   上游只发布静态字重、没有可变轴，因此不做 variationAxes 裁剪；
+   这里取 Regular 作正文、Medium 作标题 —— 让 font-weight:600 命中真实字形，
+   而不是浏览器用描边合成的"假粗"（中文合成粗体会糊、字距不均）。 */
+const LXGW_REGULAR_URL =
+  'https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKai-Regular.ttf';
+const LXGW_MEDIUM_URL =
+  'https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKai-Medium.ttf';
+const LXGW_REGULAR_CACHE = path.join(CACHE_DIR, 'LXGWWenKai-Regular.ttf');
+const LXGW_MEDIUM_CACHE = path.join(CACHE_DIR, 'LXGWWenKai-Medium.ttf');
+
+/* 等宽字体：Maple Mono CN（连字美观，中文由霞鹜文楷补全）。
+   上游只把 CN 版打包进 140 MB 的 MapleMono-CN.zip，没有单文件直链，
+   不适合在构建脚本里自动下载，因此改为"手动放一次，之后一直复用"：
+   从 https://github.com/subframe7536/maple-font/releases/latest 下载
+   MapleMono-CN.zip，解压出 MapleMono-CN-Regular.ttf 放到 tools/.cache/ 即可。
+   文件缺失时只告警并跳过，等宽自动回退到 JetBrains Mono，不会中断构建。 */
+const MAPLE_SRC = path.join(CACHE_DIR, 'MapleMono-CN-Regular.ttf');
 const MONO_SRC = path.join(
   root,
   'node_modules',
@@ -92,12 +108,27 @@ function collectChars() {
   return { chars, files };
 }
 
+/* github.com 在部分网络下直连超时，按顺序回退到镜像，避免构建卡死。 */
+const DOWNLOAD_MIRRORS = [null, 'https://gh-proxy.com/'];
+
 async function download(url, dest, size = '约 17 MB') {
-  console.log(`下载源字体 → ${path.relative(root, dest)}（${size}，只需一次）`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`下载失败：HTTP ${res.status}`);
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  for (const [index, mirror] of DOWNLOAD_MIRRORS.entries()) {
+    const target = mirror ? mirror + url : url;
+    try {
+      console.log(
+        `下载源字体 → ${path.relative(root, dest)}（${size}，只需一次）` +
+          (mirror ? ` · 镜像 ${new URL(mirror).host}` : '')
+      );
+      const res = await fetch(target);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+      return;
+    } catch (error) {
+      if (index === DOWNLOAD_MIRRORS.length - 1) throw error;
+      console.log(`  下载失败（${error.message}），换镜像重试`);
+    }
+  }
 }
 
 /**
@@ -117,6 +148,9 @@ async function buildFace({
   variable = true,
   downloadUrl,
   downloadSize,
+  // 保留 kern/liga/calt：body 上的 font-feature-settings 需要这些表才生效，
+  // 中文字形占体积的绝大部分，GSUB 表带来的增量可以忽略。
+  keepFeatures = ['kern', 'liga', 'calt'],
 }) {
   if (!fs.existsSync(source)) {
     if (downloadUrl) await download(downloadUrl, source, downloadSize);
@@ -128,10 +162,10 @@ async function buildFace({
   const buffer = await subsetFont(fs.readFileSync(source), text, {
     targetFormat: 'woff2',
     ...(variable ? { variationAxes: { wght: { min: weights[0], max: weights[1] } } } : {}),
-    // 中文正文用不到 OpenType 排版特性（连字 / 竖排 / 本地化替换），
-    // 去掉后同样字数体积减少约 17%，笔画与字距完全不变。
-    keepFeatures: [],
-    noHinting: true,
+    keepFeatures,
+    // 必须保留 hinting：Windows 渲染 16-17px 中文靠它做网格对齐，
+    // 去掉后笔画会发灰、发虚（macOS 不做 hinting，所以看不出差异）。
+    noHinting: false,
   });
 
   const hash = crypto.createHash('sha1').update(buffer).digest('hex').slice(0, 8);
@@ -188,15 +222,27 @@ async function main() {
   );
   faces.push(
     await buildFace({
-      family: 'LXGW WenKai Screen',
-      source: LXGW_CACHE,
+      family: 'LXGW WenKai',
+      source: LXGW_REGULAR_CACHE,
       chars,
-      // 上游只有静态 Regular：600 字重由浏览器合成，和参考站表现一致
       weights: [400, 400],
-      fileName: 'lxgw-wenkai-screen-subset.woff2',
+      fileName: 'lxgw-wenkai-regular-subset.woff2',
       variable: false,
-      downloadUrl: LXGW_URL,
-      downloadSize: '约 9 MB',
+      downloadUrl: LXGW_REGULAR_URL,
+      downloadSize: '约 25 MB',
+    })
+  );
+  faces.push(
+    await buildFace({
+      family: 'LXGW WenKai',
+      source: LXGW_MEDIUM_CACHE,
+      chars,
+      // 真实 Medium 字形谎报成 600：让标题/strong 精确命中，不再触发合成粗体
+      weights: [600, 600],
+      fileName: 'lxgw-wenkai-medium-subset.woff2',
+      variable: false,
+      downloadUrl: LXGW_MEDIUM_URL,
+      downloadSize: '约 25 MB',
     })
   );
   faces.push(
@@ -219,6 +265,22 @@ async function main() {
       fileName: 'jetbrains-mono-subset.woff2',
     })
   );
+
+  // Maple Mono CN：可选增强，文件缺失就跳过（等宽继续用 JetBrains Mono）
+  if (fs.existsSync(MAPLE_SRC)) {
+    faces.push(
+      await buildFace({
+        family: 'Maple Mono CN',
+        source: MAPLE_SRC,
+        chars,
+        weights: [400, 400],
+        fileName: 'maple-mono-cn-subset.woff2',
+        variable: false,
+      })
+    );
+  } else {
+    console.log(`  Maple Mono CN: 跳过（未找到 ${path.relative(root, MAPLE_SRC)}）`);
+  }
 
   for (const face of faces) console.log(`  ${face.family}: ${(face.bytes / 1024).toFixed(0)} KB`);
 

@@ -31,9 +31,13 @@ body {
     'liga' 1,
     'calt' 1;
   font-optical-sizing: auto;
-  /* 中文排版：汉字与拉丁/数字之间自动补 1/4 字宽，行首全角标点自动压缩。
-     不支持的浏览器会直接忽略这两行，不影响原有排版。 */
-  text-autospace: normal;
+  /* 文楷子集已提供 400（正文）/ 600（标题）两个字重，禁用合成粗体：
+     中文描边加粗会糊、字距不均。只禁 weight 不禁 style —— 中文斜体本来
+     就靠浏览器合成，禁掉会让 em 失去强调效果。 */
+  font-synthesis-weight: none;
+  /* 中文排版：行首全角标点自动压缩。不支持的浏览器直接忽略，不影响原有排版。
+     此处不再启用 text-autospace —— 它只有 Chrome 123+ 生效，会在汉字与拉丁/数字
+     之间插 1/4 字宽，导致 Chrome 与 Safari/Firefox 的疏密不一致。 */
   text-spacing-trim: trim-start;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

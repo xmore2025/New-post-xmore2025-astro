@@ -13,9 +13,15 @@ export function getPreloadedFonts(): string[] {
   if (cache) return cache;
 
   const css = fs.readFileSync(path.join(process.cwd(), 'src/styles/font-face.css'), 'utf8');
-  cache = [...css.matchAll(/url\("([^"]+)"\)/g)]
-    .map((match) => match[1])
-    .filter((href) => /lxgw|jetbrains/.test(href));
+  const hrefs = [...css.matchAll(/url\("([^"]+)"\)/g)].map((match) => match[1]);
+
+  // 正文 Regular 必预载；Medium 只用在标题，等 FOUT 比多下一份字体划算。
+  // 等宽同理二选一：Maple Mono 生成了就预载它，否则退回 JetBrains Mono。
+  const mono = hrefs.filter((href) => href.includes('maple'));
+  cache = [
+    ...hrefs.filter((href) => href.includes('lxgw-wenkai-regular')),
+    ...(mono.length ? mono : hrefs.filter((href) => href.includes('jetbrains'))),
+  ];
 
   return cache;
 }

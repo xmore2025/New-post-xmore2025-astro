@@ -19,9 +19,9 @@
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                                      |
 | **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                                   |
-| **自托管字体，只带需要的字** | 霞鹜文楷 + Inter + JetBrains Mono 按内容子集化：**4 个 woff2 / 约 458 KB**；首屏只预加载正文与等宽 2 个（约 234 KB） |
-| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                                  |
-| **排版优先**                 | 最小 12px · 6 级字阶 · 16px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                                        |
+| **自托管字体，只带需要的字** | 霞鹜文楷（400 正文 / 600 标题）+ Inter + 等宽按内容子集化；首屏只预加载正文与等宽 2 个（约 234 KB）                |
+| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                                |
+| **排版优先**                 | 最小 12px · 6 级字阶 · 17px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                                      |
 | **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                                    |
 | **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                              |
 | **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS              |
@@ -97,10 +97,10 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 
 中文 Web 字体的体积是这类站点最大的性能变量。`@fontsource` 的分片方案在**内容很少**的站点上反而浪费：一篇文章仍会触发 16 个分片、约 879 KB。
 
-本项目改为**按内容子集化**。字体栈与 mundi-xu.github.io 保持一致：**霞鹜文楷（LXGW WenKai Screen）排第一位，中文和拉丁字母都由它渲染** —— 霞鹜文楷自带楷体风格的拉丁字形，参考站实测正文英文的宽度与 LXGW 完全一致。Inter、Noto Sans SC 只在子集缺字时兜底，正常访问不会下载：
+本项目改为**按内容子集化**。**霞鹜文楷（LXGW WenKai）排第一位，中文和拉丁字母都由它渲染** —— 霞鹜文楷自带拉丁字形，正文英文无需额外字体。Inter、Noto Sans SC 只在子集缺字时兜底，正常访问不会下载：
 
 1. `tools/build-fonts.mjs` 扫描 `src/**` 与 `site.config.json`，收集真正会被渲染的字符；
-2. 用 `subset-font`（HarfBuzz）把霞鹜文楷、Inter、Noto Sans SC 与 JetBrains Mono 裁成内容子集：霞鹜文楷覆盖中文与全部 ASCII（含拉丁字母、数字、标点、箭头等符号），Inter 只保留 Latin 作为缺字兜底；可变字体把字重轴收到 `400–650`（霞鹜文楷上游只有静态 Regular，600 字重由浏览器合成），并去掉不需要的 OpenType 特性与 hinting；
+2. 用 `subset-font`（HarfBuzz）把霞鹜文楷、Inter、Noto Sans SC 与等宽字体裁成内容子集：霞鹜文楷覆盖中文与全部 ASCII（含拉丁字母、数字、标点、箭头等符号），Inter 只保留 Latin 作为缺字兜底；可变字体把字重轴收到 `400–650`；**保留 hinting**（Windows 渲染 16–17px 中文靠它做网格对齐，去掉后笔画发灰）与 `kern/liga/calt` 特性；
 3. 文件名带内容哈希 → 可以 `immutable` 长缓存；
 4. `npm run fonts:check` 在 CI 中校验「内容字符 ⊆ 子集」，忘记重建会直接失败。
 
@@ -109,7 +109,11 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 | fontsource 全量分片 | 16     | ≈ 879 KB |
 | 内容子集（本项目）  | **4**  | ≈ 458 KB |
 
-首屏只预加载霞鹜文楷与 JetBrains Mono 两个子集（约 234 KB）；Inter 与 Noto Sans SC 仅作缺字兜底。写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
+霞鹜文楷同时生成 **Regular（400，正文）与 Medium（谎报为 600，标题 / strong）** 两个字重：让 `font-weight: 600` 命中的是真实字形，而不是浏览器描边合成的"假粗"（中文合成粗体会糊、字距不均）；`body` 上另有 `font-synthesis: none` 兜底。这里选**标准版**而非 Screen 版：Screen 版笔画更细、适合高 DPI，但 Windows 的 DirectWrite 渲染小字号时明显发虚。
+
+等宽字体默认为 JetBrains Mono（npm 依赖，开箱可用）。想换成 **Maple Mono CN**：从 [maple-font releases](https://github.com/subframe7536/maple-font/releases/latest) 下载 `MapleMono-CN.zip`，解压出 `MapleMono-CN-Regular.ttf` 放到 `tools/.cache/`，再跑 `npm run fonts` 即可（上游只发 140 MB 的 zip，没有单文件直链，所以不做自动下载）。
+
+首屏只预加载正文与等宽两个子集（约 234 KB）；Inter 与 Noto Sans SC 仅作缺字兜底。写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
 
 首页及文章分享图源文件为 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 中的 `ogImage` 配置引用。
 
@@ -149,12 +153,14 @@ Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题�
 | -------------- | ------- | ---------------------------- |
 | `--fs-xs`      | 12px    | 日期、标签、辅助信息（最小） |
 | `--fs-sm`      | 14px    | 导航、摘要、次级说明、代码块 |
-| `--fs-base`    | 16px    | 正文、列表标题               |
-| `--fs-lg`      | 18px    | 重点卡片、正文二级标题       |
+| `--fs-base`    | 17px    | 正文、列表标题               |
+| `--fs-lg`      | 19px    | 重点卡片、正文二级标题       |
 | `--fs-title`   | 24–36px | 内页标题                     |
 | `--fs-display` | 32–50px | 首页主标题                   |
 
-字号使用 `rem` 和响应式 `clamp()`；正文行高为 1.8，代码使用 JetBrains Mono。正文行内代码会继承正文尺寸，但不低于 12px；避免全站缩放破坏最小字号约定。
+字号使用 `rem` 和响应式 `clamp()`；正文行高为 1.8，代码优先 Maple Mono CN、未生成时回退 JetBrains Mono。正文行内代码会继承正文尺寸，但不低于 12px；避免全站缩放破坏最小字号约定。
+
+楷体中宫小、字面比黑体小，17px 楷体的视觉大小约等于 16px 黑体 —— 这是 `--fs-base` 取 17px 而不是 16px 的原因，最小档 12px 保持不变。
 
 ### 颜色与对比度
 

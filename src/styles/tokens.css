@@ -39,10 +39,12 @@
   --shadow-md: 0 18px 40px -28px rgba(24, 24, 28, 0.35);
 
   /* ---------- 2. 字阶：6 个清晰层级，减少零碎字号 ---------- */
+  /* 最小档 12px 保持不变；正文 17px 是因为楷体中宫小、字面比黑体小，
+     16px 楷体的视觉大小只相当于 15px 黑体，再小就发虚了。 */
   --fs-xs: 0.75rem; /* 12px · 日期、标签、辅助信息 */
   --fs-sm: 0.875rem; /* 14px · 导航、摘要、次级说明 */
-  --fs-base: 1rem; /* 16px · 全站默认与正文 */
-  --fs-lg: 1.125rem; /* 18px · 卡片及正文小标题 */
+  --fs-base: 1.0625rem; /* 17px · 全站默认与正文 */
+  --fs-lg: 1.1875rem; /* 19px · 卡片及正文小标题 */
   --fs-title: clamp(1.5rem, 1.6vw + 1.15rem, 2.25rem); /* 24-36px · 页面标题 */
   --fs-display: clamp(2rem, 3.4vw + 1.1rem, 3.125rem); /* 32-50px · 首页标题 */
 
@@ -83,16 +85,19 @@
   --radius-lg: 14px;
 
   /* ---------- 5. 字体 ---------- */
-  /* 与 mundi-xu.github.io 的字体栈一致：霞鹜文楷排第一位，中文和拉丁字母都由它渲染
-     （霞鹜文楷自带楷体风格的拉丁字形，参考站实测英文宽度与 LXGW 完全一致）。
+  /* 霞鹜文楷标准版排第一位，中文和拉丁字母都由它渲染（文楷自带拉丁字形）。
+     字体子集里已声明 400（Regular）与 600（Medium）两个字重：标题与 strong 用 600
+     命中的是真 Medium 字形，不再是浏览器描边合成的假粗体。
      Inter / Noto Sans SC 只作为子集缺字时的兜底，正常情况下不会下载。 */
   --font-sans:
-    'LXGW WenKai Screen', 'LXGW WenKai', 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', sans-serif;
+    'LXGW WenKai', 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  /* Maple Mono CN 需手动放置源字体后才会生成子集（见 tools/build-fonts.mjs）。
+     没生成时浏览器自动落到 JetBrains Mono，等宽观感不受影响。 */
   --font-mono:
-    'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
-    'Liberation Mono', monospace;
+    'Maple Mono CN', 'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo,
+    Consolas, 'Liberation Mono', monospace;
 
   /* ---------- 6. 动效 ---------- */
   --ease: cubic-bezier(0.22, 0.8, 0.24, 1);

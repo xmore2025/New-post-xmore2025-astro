@@ -1,5 +1,6 @@
-/* 由 tools/build-fonts.mjs 生成，请勿手改 —— 内容更新后运行 `npm run fonts` · chars:08fea9da */
-@font-face{font-family:"Inter Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/inter-latin-subset.3482519b.woff2") format("woff2")}
-@font-face{font-family:"LXGW WenKai Screen";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/lxgw-wenkai-screen-subset.aa5dcd72.woff2") format("woff2")}
-@font-face{font-family:"Noto Sans SC Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/noto-sans-sc-subset.314df813.woff2") format("woff2")}
-@font-face{font-family:"JetBrains Mono Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/jetbrains-mono-subset.9d70488b.woff2") format("woff2")}
+/* 由 tools/build-fonts.mjs 生成，请勿手改 —— 内容更新后运行 `npm run fonts` · chars:d011ab83 */
+@font-face{font-family:"Inter Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/inter-latin-subset.3623fcb0.woff2") format("woff2")}
+@font-face{font-family:"LXGW WenKai";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/lxgw-wenkai-regular-subset.aa8926ce.woff2") format("woff2")}
+@font-face{font-family:"LXGW WenKai";font-style:normal;font-weight:600;font-display:swap;src:url("/fonts/lxgw-wenkai-medium-subset.038efd8b.woff2") format("woff2")}
+@font-face{font-family:"Noto Sans SC Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/noto-sans-sc-subset.b7b9dcbb.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono Variable";font-style:normal;font-weight:400 650;font-display:swap;src:url("/fonts/jetbrains-mono-subset.51fed063.woff2") format("woff2")}
