@@ -437,7 +437,10 @@
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
   font-weight: 620;
-  text-wrap: balance;
+  /* 这里用 pretty 而不是 balance：balance 会把「自主 AI Agent：2026」和「年」
+     拆到两行，中文里数字和量词被拆开是硬伤。pretty 只负责不让末行孤字，
+     主行照常填满，断点落在自然位置。 */
+  text-wrap: pretty;
 }
 
 .article-desc {
@@ -446,6 +449,9 @@
   font-size: var(--fs-base);
   line-height: 1.75;
   max-width: 60ch;
+  /* 与正文同栏，对齐方式也要一致：导语拉齐，正文才不会"换一种对齐" */
+  text-align: justify;
+  text-align-last: start;
 }
 
 .article-meta {

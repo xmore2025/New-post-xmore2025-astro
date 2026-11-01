@@ -13,7 +13,11 @@ html {
   scroll-behavior: smooth;
   /* 锚点跳转时给固定顶栏留出空间 */
   scroll-padding-top: calc(var(--header-h) + 1.25rem);
-  scrollbar-gutter: stable;
+  /* 预留滚动条槽位，避免「页面变长时内容整体左移」的跳动。
+     必须带 both-edges：只写 stable 时槽位只出现在右侧，
+     居中的 .shell 会被推成左窄右宽——手机上尤其明显。
+     both-edges 让两侧同时预留，无论有没有滚动条，左右留白始终相等。 */
+  scrollbar-gutter: stable both-edges;
 }
 
 body {

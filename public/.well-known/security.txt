@@ -1,0 +1,11 @@
+# 安全漏洞披露信息（RFC 9116）
+# 访问路径：https://web2046.xmorexz.dpdns.org/.well-known/security.txt
+#
+# 维护提醒：Expires 到期前需要续期，否则扫描器会判定为「已过期」。
+# 建议每年 10 月更新一次（与站点大版本同步）。
+
+Contact: mailto:wxchat2025@gmail.com
+Expires: 2027-10-01T00:00:00.000Z
+Preferred-Languages: zh-CN, en
+Canonical: https://web2046.xmorexz.dpdns.org/.well-known/security.txt
+Policy: https://web2046.xmorexz.dpdns.org/about/

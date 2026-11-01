@@ -935,8 +935,8 @@ html.is-search-open {
   border-style: solid;
 }
 
-/* 响应式：平板 2 列 */
-@media (max-width: 920px) {
+/* 响应式：平板 2 列（断点与顶栏折叠的 900 对齐，避免中间出现一档「汉堡菜单 + 4 列卡片」的夹缝） */
+@media (max-width: 900px) {
   .cat-grid {
     grid-template-columns: repeat(2, 1fr);
   }
