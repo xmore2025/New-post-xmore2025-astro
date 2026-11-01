@@ -19,14 +19,14 @@
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                         |
 | **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                      |
-| **自托管字体，只带需要的字** | 霞鹜文楷（400 正文 / 600 标题）+ Inter + 等宽按内容子集化；首屏只预加载正文与等宽 2 个（约 234 KB）     |
+| **自托管字体，只带需要的字** | 霞鹜文楷（400 正文 / 600 标题）+ Inter + 等宽按内容子集化；首屏只预加载正文与等宽 2 个（约 243 KB）     |
 | **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                     |
-| **排版优先**                 | 最小 12px · 6 级字阶 · 17px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                           |
+| **排版优先**                 | 最小 12px · 6 级字阶 · 17px 楷体正文 / 1.75 行高 · 约 37 汉字行宽 · 发丝分隔线                          |
+| **排印实验室**               | `/typography/`：5 套完整方案 + 可编辑样张（改一处全卡同步）+ 5 条硬规则实时校验 + 一键生成 CSS          |
 | **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                       |
 | **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                 |
 | **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS |
 | **可访问**                   | axe-core 全站扫描 **0 违规**（WCAG 2.1 A/AA）· skip link · 焦点管理 · `prefers-reduced-motion`          |
-| **代码规范**                 | `astro check` 0 错误 · Prettier 统一风格 · CI 会在构建前跑三项校验                                      |
 
 ---
 
@@ -37,11 +37,11 @@
 ```bash
 npm install
 npm run dev          # 开发服务器 http://localhost:4321
-npm run build        # 构建到 dist/（20 个页面，约 1–2 秒）
+npm run build        # 构建到 dist/（21 个页面，约 1–2 秒）
 
 npm run check        # TypeScript / Astro 类型检查
 npm run format       # Prettier 格式化
-npm run fonts        # 内容更新后重建字体子集（需要下载一次 17 MB 源字体）
+npm run fonts        # 内容更新后重建字体子集（首次运行会下载约 70 MB 源字体）
 npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 ```
 
@@ -69,12 +69,15 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 │   ├── content/                   # posts/*.md · pages/about.md
 │   ├── layouts/BaseLayout.astro   # <head> / SEO / JSON-LD / 主题脚本 / 预渲染规则
 │   ├── components/                # Header · NavLinks · Footer · PostRow · TagList · GiscusComments …
+│   │                              # TypeSample（可编辑样张）· TypeSpecimen（样张卡）
 │   ├── lib/
 │   │   ├── posts.js               # 取文章 / 标签、阅读时长、日期格式化
 │   │   ├── fonts.ts               # 解析生成的 @font-face，产出首屏 preload 列表
+│   │   ├── specimens.ts           # 五套排印方案的参数与共享示例文字
 │   │   └── types.ts               # PostSummary / TagRef 共享类型
 │   ├── pages/
 │   │   ├── index.astro            # 首页
+│   │   ├── typography.astro       # 排印实验室（5 套方案 / 可编辑样张 / 实时校验）
 │   │   ├── posts/index.astro      # 归档
 │   │   ├── posts/[...slug].astro  # 文章（BlogPosting + BreadcrumbList）
 │   │   ├── categories/index.astro # 分类（Bento 网格）
@@ -82,12 +85,13 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 │   │   ├── rss.xml.ts · search.json.ts
 │   ├── scripts/                   # 交互（Vite 合并为 1 个文件）
 │   │   ├── app.js                 #   入口
-│   │   └── modules/               #   dom / theme / nav / search / article / ui
+│   │   └── modules/               #   dom / theme / nav / search / article / ui / specimen
 │   └── styles/
 │       ├── main.css               #   入口（@import 顺序）
 │       ├── font-face.css          #   生成的 @font-face（勿手改）
 │       ├── tokens.css             #   设计令牌（颜色 / 字阶 / 间距 / 动效）
 │       ├── base.css · layout.css · components.css · prose.css
+│       ├── typography.css         #   排印实验室（仅该页加载）
 └── dist/                          # 构建产物（gitignore）
 ```
 
@@ -95,29 +99,21 @@ npm run fonts:check  # 校验字体子集是否覆盖当前内容（CI 用）
 
 ## 🔤 字体策略
 
-中文 Web 字体的体积是这类站点最大的性能变量。`@fontsource` 的分片方案在**内容很少**的站点上反而浪费：一篇文章仍会触发 16 个分片、约 879 KB。
+中文 Web 字体的体积是这类站点最大的性能变量。`@fontsource` 的按频率分片在**内容很少**的站点上反而浪费：一篇文章仍会触发 16 个分片、约 879 KB。本项目改为**按内容子集化**：`tools/build-fonts.mjs` 扫描 `src/**` 与 `site.config.json` 收集真正会被渲染的字符，用 `subset-font`（HarfBuzz）裁出子集，文件名带内容哈希以便 `immutable` 长缓存；`npm run fonts:check` 在 CI 中校验「内容字符 ⊆ 子集」，忘记重建会直接失败。
 
-本项目改为**按内容子集化**。**霞鹜文楷（LXGW WenKai）排第一位，中文和拉丁字母都由它渲染** —— 霞鹜文楷自带拉丁字形，正文英文无需额外字体。Inter、Noto Sans SC 只在子集缺字时兜底，正常访问不会下载：
+**主字体是霞鹜文楷（标准版）**，中文与拉丁都由它渲染 —— 文楷自带拉丁字形，正文英文不需要额外字体。三个取舍值得记下来：
 
-1. `tools/build-fonts.mjs` 扫描 `src/**` 与 `site.config.json`，收集真正会被渲染的字符；
-2. 用 `subset-font`（HarfBuzz）把霞鹜文楷、Inter、Noto Sans SC 与等宽字体裁成内容子集：霞鹜文楷覆盖中文与全部 ASCII（含拉丁字母、数字、标点、箭头等符号），Inter 只保留 Latin 作为缺字兜底；可变字体把字重轴收到 `400–650`；**保留 hinting**（Windows 渲染 16–17px 中文靠它做网格对齐，去掉后笔画发灰）与 `kern/liga/calt` 特性；
-3. 文件名带内容哈希 → 可以 `immutable` 长缓存；
-4. `npm run fonts:check` 在 CI 中校验「内容字符 ⊆ 子集」，忘记重建会直接失败。
+- **标准版而非 Screen 版**：Screen 版笔画细、适合高 DPI，但 Windows 的 DirectWrite 渲染 17px 时明显发虚，这是换回标准版的原因。
+- **两个字重**：Regular（400，正文）+ Medium（谎报为 600，标题 / strong）。让 `font-weight: 600` 命中真实字形，而不是浏览器描边合成的假粗 —— 中文合成粗体会糊、字距不均；`body` 上另有 `font-synthesis-weight: none` 兜底。
+- **保留 hinting 与 `kern/liga/calt`**：Windows 渲染小字号中文靠 hinting 做网格对齐，剥掉笔画就发灰。
 
-| 方案                | 请求数 | 传输量   |
-| ------------------- | ------ | -------- |
-| fontsource 全量分片 | 16     | ≈ 879 KB |
-| 内容子集（本项目）  | **4**  | ≈ 458 KB |
+**回退顺序是刻意排的**：`LXGW WenKai → Inter Variable → 系统楷体 → 黑体系`。Inter 不含 CJK，中文字符会自动跳过它、只兜拉丁缺字；系统楷体（`Kaiti SC` / `KaiTi` …）接力，保证子集外的生僻字仍是楷体，不会在一行里跳成黑体；黑体系只作"系统连楷体都没有"时的极端兜底。
 
-霞鹜文楷同时生成 **Regular（400，正文）与 Medium（谎报为 600，标题 / strong）** 两个字重：让 `font-weight: 600` 命中的是真实字形，而不是浏览器描边合成的"假粗"（中文合成粗体会糊、字距不均）；`body` 上另有 `font-synthesis: none` 兜底。这里选**标准版**而非 Screen 版：Screen 版笔画更细、适合高 DPI，但 Windows 的 DirectWrite 渲染小字号时明显发虚。
+等宽字体默认 JetBrains Mono（npm 依赖，开箱可用）。想换成 **Maple Mono CN**：从 [maple-font releases](https://github.com/subframe7536/maple-font/releases/latest) 下载 `MapleMono-CN.zip`，解压出 `MapleMono-CN-Regular.ttf` 放到 `tools/.cache/` 再跑 `npm run fonts`（上游只发 140 MB 的 zip，没有单文件直链，故不做自动下载）。
 
-等宽字体默认为 JetBrains Mono（npm 依赖，开箱可用）。想换成 **Maple Mono CN**：从 [maple-font releases](https://github.com/subframe7536/maple-font/releases/latest) 下载 `MapleMono-CN.zip`，解压出 `MapleMono-CN-Regular.ttf` 放到 `tools/.cache/`，再跑 `npm run fonts` 即可（上游只发 140 MB 的 zip，没有单文件直链，所以不做自动下载）。
+首屏只预加载正文与等宽两个子集（约 243 KB），字体栈里其余字体仅作缺字兜底、正常访问不下载。新增文章后跑一次 `npm run fonts` 把新字并入子集即可。
 
-首屏只预加载正文与等宽两个子集（约 234 KB）；Inter 与 Noto Sans SC 仅作缺字兜底。写新文章后如果出现子集外的生僻字，浏览器会自动回退到系统字体（不会豆腐块）；跑一次 `npm run fonts` 即可把新字并入子集。
-
-首页及文章分享图源文件为 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 中的 `ogImage` 配置引用。
-
-> 字体 preload 的取舍：早期使用 @fontsource 的 100+ 条 `unicode-range` 分片时，preload 会同时拉起多个分片、延长字体阻塞期，实测 FCP 反而变差；现在合并为单个内容子集后，preload 只提前一个请求，能让首个文本绘制更早开始。如果以后换成按路由切分的多片子集，需要重新评估这一段。
+首页与文章分享图的源文件是 `tools/og-card.html`，生成后的 `public/og-card-v2.png` 由 `site.config.json` 的 `ogImage` 引用。
 
 ### 💬 文章评论
 
@@ -158,9 +154,26 @@ Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题�
 | `--fs-title`   | 24–36px | 内页标题                     |
 | `--fs-display` | 32–50px | 首页主标题                   |
 
-字号使用 `rem` 和响应式 `clamp()`；正文行高为 1.8，代码优先 Maple Mono CN、未生成时回退 JetBrains Mono。正文行内代码会继承正文尺寸，但不低于 12px；避免全站缩放破坏最小字号约定。
+字号使用 `rem` 与响应式 `clamp()`；最小档 12px 用 `max(0.75rem, 12px)` 兜底 —— 用户把浏览器默认字号调小时也不会塌到 12px 以下。正文行高 1.75、行宽 40rem（约 37 汉字），行内代码继承正文尺寸但不低于 12px。`--fs-base` 取 17px 而非 16px，是因为楷体中宫小、字面比黑体小，17px 楷体的视觉大小约等于 16px 黑体。
 
-楷体中宫小、字面比黑体小，17px 楷体的视觉大小约等于 16px 黑体 —— 这是 `--fs-base` 取 17px 而不是 16px 的原因，最小档 12px 保持不变。
+### 排印实验室（`/typography/`）
+
+把"排版参数"从口头建议变成可验证的对照表。五项硬规则写在两处：`src/lib/specimens.ts` 负责渲染，`src/scripts/modules/specimen.js` 负责校验，任何一项越界都会在页面上标红。
+
+| 参数 | 区间       | 为什么是它                                                                                  |
+| ---- | ---------- | ------------------------------------------------------------------------------------------- |
+| 字号 | 10.5–13 pt | 区间上限按楷体留了 1pt 补偿：屏幕端 17px 楷体 = 12.75pt，视觉大小约等于 Word 里的 11pt 楷体 |
+| 行距 | 1.5–1.75   | 中文 1.6 起步；楷体笔画细，1.75 才不散、1.5 以下会闷                                        |
+| 行宽 | 30–40 字   | 眼睛从行尾折返行首不会丢行的距离                                                            |
+| 段距 | 0.5–1 行   | 太小段落粘连，太大文章被切成碎片                                                            |
+| 字体 | ≤ 3 种     | 正文 / 标题 / 等宽，三种已足够表达全部层级                                                  |
+
+五张样张（经典正式 / 现代商务 / 人文阅读 / 演示大屏 / 技术文档）都是真实渲染的 DOM，不是截图。正文 `contenteditable`，改一处按 `data-sync` 键广播到全部卡片并写进 `localStorage`；点「套用到试验台」把该方案的参数搬进滑杆，反过来拖滑杆也能看样张怎么变。
+
+两处刻意的实现选择：
+
+- **行宽读数取实测**（纸面宽度 ÷ 字号），不是滑杆的声明值。纸面装不下 34em 时它会被压成 32 字，读数必须跟着变；窄屏（< 900px）例外，按声明值报 —— 手机上的纸面本来就只有 300px，量出来必然"不合规"，那是屏幕的错。
+- **样张纸面宽度 = 字数 × 字号 + 内边距**，边界即行宽边界。行宽因此是看得见的，右边不会留一截说不清来历的空白。
 
 ### 颜色与对比度
 
@@ -186,7 +199,7 @@ Giscus 的评论按文章路径关联，语言跟随站点设置，明暗主题�
 | 文章页 LCP     | 1084 ms        | **768 ms**        | −29%           |
 | 请求数（首页） | 23             | **6**             | −74%           |
 | 传输量（首页） | 1035 KB        | **239 KB**        | −77%           |
-| 字体           | 16 个 / 879 KB | **2 个 / 234 KB** | −74%           |
+| 字体           | 16 个 / 879 KB | **2 个 / 243 KB** | −72%           |
 | CLS            | 0.0003         | 0.0004            | 基本持平（≈0） |
 
 以上是上一轮的基线；本轮改动集中在文章页的评论与预渲染流量，首屏指标保持不变。
@@ -298,7 +311,7 @@ featured: false
 
 | 项                               | 结果                |
 | -------------------------------- | ------------------- |
-| `astro build`                    | 20 页，约 1 s       |
+| `astro build`                    | 21 页，约 1 s       |
 | `astro check`                    | 0 error / 0 warning |
 | `prettier --check`               | 全部通过            |
 | `fonts:check`                    | 字表与内容一致      |
@@ -307,13 +320,14 @@ featured: false
 
 ### 📦 体积
 
-| 项                      | 大小                      |
-| ----------------------- | ------------------------- |
-| 首屏 HTML（含内联样式） | 42.7 KB（gzip 11.2 KB）   |
-| 文章页 HTML             | 74.2 KB（gzip 17.1 KB）   |
-| JS（1 个入口文件）      | 7.9 KB（gzip 3.5 KB）     |
-| 字体（4 个子集）        | 458 KB；首屏预加载 234 KB |
-| `dist/` 全部            | 36 个文件 / 1.47 MB       |
+| 项                      | 大小                                      |
+| ----------------------- | ----------------------------------------- |
+| 首屏 HTML（含内联样式） | 43.1 KB（gzip 11.3 KB）                   |
+| 文章页 HTML             | 66.6 KB（gzip 17.1 KB）                   |
+| 排印页 HTML             | 85.5 KB（gzip 17.9 KB）                   |
+| JS（入口 + 搜索）       | 11.4 KB（gzip 5.2 KB）；排印页另加 5.6 KB |
+| 字体（5 个子集）        | 710 KB；首屏预加载 243 KB                 |
+| `dist/` 全部            | 40 个文件 / 1.81 MB                       |
 
 ---
 

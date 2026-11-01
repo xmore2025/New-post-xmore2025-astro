@@ -1,0 +1,108 @@
+---
+/**
+ * 一张样张卡：真实的排版样例 + 参数标签 + 取用动作。
+ *
+ * 卡片本身就是「照抄源」：data-* 上挂着全部参数，点「套用到试验台」
+ * 时脚本直接读这些属性，不需要再维护一份重复的数据。
+ */
+import Icon from './Icon.astro';
+import TypeSample from './TypeSample.astro';
+import type { Specimen } from '../lib/specimens';
+
+const { spec } = Astro.props as { spec: Specimen };
+
+const vars = [
+  `--t-font: ${spec.font}`,
+  `--t-title-font: ${spec.titleFont ?? spec.font}`,
+  `--t-mono: ${spec.mono ?? 'var(--font-mono)'}`,
+  `--t-size: ${spec.size}pt`,
+  `--t-lh: ${spec.lh}`,
+  `--t-measure: ${spec.measure}em`,
+  `--t-chars: ${spec.measure}`,
+  `--t-gap: ${(spec.gap * spec.lh).toFixed(3)}em`,
+  `--t-weight: ${spec.weight}`,
+  `--t-tracking: ${spec.tracking}`,
+  `--t-title-scale: ${spec.titleScale}`,
+].join('; ');
+
+/* 复制出来的 CSS 只保留真正需要抄走的部分 */
+const css = [
+  '.article-body {',
+  `  font-family: ${spec.font};`,
+  spec.titleFont ? `  /* 标题另用一族 */\n  --title-font: ${spec.titleFont};` : null,
+  `  font-size: ${spec.size}pt;`,
+  `  line-height: ${spec.lh};`,
+  `  max-width: ${spec.measure}em;`,
+  spec.indent ? '  text-indent: 2em;' : null,
+  '  text-spacing-trim: trim-start;',
+  '  text-wrap: pretty;',
+  '}',
+  '',
+  '.article-body p + p {',
+  `  margin-top: ${(spec.gap * spec.lh).toFixed(2)}em;`,
+  '}',
+]
+  .filter(Boolean)
+  .join('\n');
+
+const chips = [
+  { label: '字号', value: `${spec.size}pt` },
+  { label: '行距', value: String(spec.lh) },
+  { label: '行宽', value: `${spec.measure} 字` },
+  { label: '字体', value: `${spec.families} 种` },
+];
+---
+
+<article
+  class:list={['spec', { 'spec--exception': Boolean(spec.exception) }]}
+  id={`spec-${spec.id}`}
+  style={vars}
+  data-size={spec.size}
+  data-lh={spec.lh}
+  data-measure={spec.measure}
+  data-gap={spec.gap}
+  data-font={spec.font}
+  data-families={spec.families}
+  data-indent={String(spec.indent)}
+  data-name={spec.name}
+>
+  <header class="spec-head">
+    <span class="spec-idx" aria-hidden="true">
+      {spec.index}
+    </span>
+    <div class="spec-titles">
+      <h3 class="spec-name">{spec.name}</h3>
+      <span class="spec-en">{spec.en}</span>
+    </div>
+    <span class="spec-use">{spec.use}</span>
+  </header>
+
+  <TypeSample class:list={['spec-sample', { 'is-indent': spec.indent }]} />
+
+  {spec.exception && <p class="spec-exception">{spec.exception}</p>}
+
+  <footer class="spec-foot">
+    <dl class="spec-chips">
+      {chips.map((chip) => (
+        <div>
+          <dt>{chip.label}</dt>
+          <dd>{chip.value}</dd>
+        </div>
+      ))}
+    </dl>
+    <div class="spec-actions">
+      <button class="mini-btn" type="button" data-apply>
+        <Icon name="arrowRight" />
+        套用到试验台
+      </button>
+      <button class="mini-btn" type="button" data-copy-spec>
+        <Icon name="copy" />
+        复制 CSS
+      </button>
+    </div>
+  </footer>
+
+  <p class="spec-note">{spec.note}</p>
+
+  <template class="spec-src">{css}</template>
+</article>

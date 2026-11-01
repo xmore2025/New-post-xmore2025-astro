@@ -27,6 +27,10 @@
   --accent-wash: rgba(26, 93, 168, 0.07);
   --accent-line: rgba(26, 93, 168, 0.28);
 
+  /* 越界提示：排印实验室的读数用，其余页面不出现 */
+  --warn: #a8621a;
+  --warn-wash: rgba(168, 98, 26, 0.1);
+
   --hover: rgba(27, 27, 30, 0.045);
   --code-bg: #f4f2ed;
   --grid-line: rgba(27, 27, 30, 0.05);
@@ -40,19 +44,27 @@
 
   /* ---------- 2. 字阶：6 个清晰层级，减少零碎字号 ---------- */
   /* 最小档 12px 保持不变；正文 17px 是因为楷体中宫小、字面比黑体小，
-     16px 楷体的视觉大小只相当于 15px 黑体，再小就发虚了。 */
-  --fs-xs: 0.75rem; /* 12px · 日期、标签、辅助信息 */
-  --fs-sm: 0.875rem; /* 14px · 导航、摘要、次级说明 */
+     16px 楷体的视觉大小只相当于 15px 黑体，再小就发虚了。
+
+     12px 是硬下限：用 max() 兜底而不是写死 0.75rem —— 用户把浏览器默认字号
+     调小（例如 12px）时，0.75rem 会塌到 9px，而 max() 仍然守住 12px。 */
+  --fs-xs: max(0.75rem, 12px); /* 12px · 日期、标签、辅助信息（全站下限） */
+  --fs-sm: max(0.875rem, 12px); /* 14px · 导航、摘要、次级说明；缩放下不低于 12px */
   --fs-base: 1.0625rem; /* 17px · 全站默认与正文 */
   --fs-lg: 1.1875rem; /* 19px · 卡片及正文小标题 */
   --fs-title: clamp(1.5rem, 1.6vw + 1.15rem, 2.25rem); /* 24-36px · 页面标题 */
   --fs-display: clamp(2rem, 3.4vw + 1.1rem, 3.125rem); /* 32-50px · 首页标题 */
 
   /* 汉字字面框几乎填满 em，行高与字距都要比拉丁文更宽松：
-     标题行高 1.3、字距 -0.012em，再紧就会"粘字"；正文 1.8 让长文更透气。 */
+     标题行高 1.3、字距 -0.012em，再紧就会"粘字"。
+     正文行高落在 1.5–1.75 的上沿（1.75）：楷体笔画细，再高就散、再低就闷，
+     这条区间与 /typography/ 实验室里的检查表是同一套标准。 */
   --lh-tight: 1.3;
   --lh-snug: 1.5;
-  --lh-body: 1.8;
+  --lh-body: 1.75;
+
+  /* 段间距按"行"算：1.3em ÷ 1.75 ≈ 0.74 行，落在 0.5–1 行的安全区 */
+  --para-gap: 1.3em;
 
   --tracking-tight: -0.012em;
   --tracking-wide: 0.12em;
@@ -72,9 +84,11 @@
   /* ---------- 4. 尺寸 ---------- */
   --shell: 1400px;
   --shell-narrow: 1240px;
-  /* 文章页：正文 48rem + 间距 + 目录 = 容器宽。
-     三者相加即容器宽，正文列刚好被正文填满，行尾不会在目录前空出一条。 */
-  --prose-measure: 48rem;
+  /* 文章页：正文 40rem + 间距 + 目录 = 容器宽。
+     三者相加即容器宽，正文列刚好被正文填满，行尾不会在目录前空出一条。
+     40rem ≈ 640px，17px 楷体下约 37 个汉字一行 —— 落在 30–40 字的区间里，
+     比早先的 48rem（约 45 字）短一截，眼睛回行不用重新找位置。 */
+  --prose-measure: 40rem;
   --sidebar-w: 280px;
   --article-gap: clamp(1.8rem, 4vw, 3rem);
   --article-max: calc(var(--prose-measure) + var(--sidebar-w) + var(--article-gap));
@@ -88,11 +102,21 @@
   /* 霞鹜文楷标准版排第一位，中文和拉丁字母都由它渲染（文楷自带拉丁字形）。
      字体子集里已声明 400（Regular）与 600（Medium）两个字重：标题与 strong 用 600
      命中的是真 Medium 字形，不再是浏览器描边合成的假粗体。
-     Inter / Noto Sans SC 只作为子集缺字时的兜底，正常情况下不会下载。 */
+
+     回退顺序是刻意排的，顺序即优先级：
+     1. 'Inter Variable' 紧跟主字体 —— 它不含 CJK，中文字符会自动跳过，只有拉丁
+        缺字才命中；若把它放后面，Windows 会先被中易楷体的拉丁字形截胡。
+     2. 系统楷体接力（Kaiti SC / STKaiti / KaiTi / TW-Kai）—— 子集外的生僻字落到
+        系统楷体，风格仍是楷体。缺了这一层，生僻字会跳到黑体，一行里两个字形风格。
+     3. 黑体系（Noto Sans SC / PingFang / 微软雅黑）只作极端兜底：系统连楷体都没有时
+        才轮到，保证不出现豆腐块。
+
+     不要换回 'LXGW WenKai Screen'：Screen 版笔画细，在高分屏好看，但 Windows 的
+     DirectWrite 渲染 17px 时发灰发虚，这是换标准版的原因。 */
   --font-sans:
-    'LXGW WenKai', 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
+    'LXGW WenKai', 'Inter Variable', 'Kaiti SC', 'STKaiti', KaiTi, 'TW-Kai',
+    'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
+    'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   /* Maple Mono CN 需手动放置源字体后才会生成子集（见 tools/build-fonts.mjs）。
      没生成时浏览器自动落到 JetBrains Mono，等宽观感不受影响。 */
   --font-mono:
@@ -128,6 +152,9 @@
   --accent-strong: #a6c5f5;
   --accent-wash: rgba(138, 178, 238, 0.1);
   --accent-line: rgba(138, 178, 238, 0.32);
+
+  --warn: #e0a86a;
+  --warn-wash: rgba(224, 168, 106, 0.12);
 
   --hover: rgba(255, 255, 255, 0.045);
   --code-bg: #131315;

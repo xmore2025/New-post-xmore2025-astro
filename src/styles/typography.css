@@ -1,0 +1,1012 @@
+/* ==========================================================================
+   排印实验室（/typography/）
+   只在这一页加载：规则条、试验台、五张样张、修饰清单。
+   样张的字体参数全部走 --t-* 自定义属性，试验台与卡片共用同一套渲染规则。
+   ========================================================================== */
+
+/* ---------- 页头补充信息 ---------- */
+.ty-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.7rem;
+  margin-top: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+}
+
+.ty-meta a {
+  color: var(--muted);
+  transition: color var(--dur-1);
+}
+
+.ty-meta a:hover {
+  color: var(--accent);
+}
+
+.ty-section {
+  padding-block: clamp(1.4rem, 3vw, 2.2rem);
+}
+
+.ty-lede {
+  margin: -0.15rem 0 0.9rem;
+  max-width: 66ch;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+.ty-lede strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* 章节小工具条：说明文字 + 一个动作 */
+.ty-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem 1.2rem;
+  margin-bottom: 0.9rem;
+}
+
+.ty-toolbar .ty-lede {
+  flex: 1 1 22rem;
+  margin-bottom: 0;
+}
+
+.ty-toolbar .mini-btn {
+  flex: none;
+  margin-top: 0.1rem;
+}
+
+/* ==========================================================================
+   1. 五条硬规则
+   ========================================================================== */
+
+.rules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* 发丝网格：不用「背景色 + 1px 间隙」画线，改用每格一圈 1px 投影。
+   前者在换行留下空格时会露出一整块色块，后者空格处就是底色，干净。 */
+.rules > .rule,
+.deco-grid > .deco {
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.rule {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'idx name spec'
+    'idx live live';
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+  padding: 0.8rem 0.95rem 0.85rem;
+  background: var(--surface);
+  transition: background-color var(--dur-2);
+}
+
+.rule-idx {
+  grid-area: idx;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  opacity: 0.55;
+}
+
+.rule-name {
+  grid-area: name;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.rule-spec {
+  grid-area: spec;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.rule-live {
+  grid-area: live;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rule-live::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+  transition:
+    background-color var(--dur-1),
+    box-shadow var(--dur-1);
+}
+
+.rule-live b {
+  font-weight: 500;
+  color: var(--fg-2);
+}
+
+.rule[data-state='bad'] {
+  background: var(--warn-wash);
+}
+
+.rule[data-state='bad'] .rule-live::before {
+  background: var(--warn);
+  box-shadow: 0 0 0 3px var(--warn-wash);
+}
+
+.rule[data-state='bad'] .rule-live b {
+  color: var(--warn);
+}
+
+/* ==========================================================================
+   2. 试验台
+   ========================================================================== */
+
+.lab {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(0.9rem, 2.2vw, 1.4rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.lab-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 0.9rem 1.5rem;
+}
+
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ctrl-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ctrl-head label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.ctrl-head output {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.ctrl-hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+}
+
+/* 滑杆：2px 轨道 + 圆点，明暗主题共用 */
+.ctrl-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.ctrl-range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+
+.ctrl-range::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+
+.ctrl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border: 2px solid var(--surface-2);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-line);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.ctrl-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--surface-2);
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.ctrl-range:hover::-webkit-slider-thumb,
+.ctrl-range:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.18);
+}
+
+/* 修饰开关 */
+.lab-flags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.lab-flags-label {
+  margin-right: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.24rem 0.6rem 0.24rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    color var(--dur-1),
+    border-color var(--dur-1),
+    background-color var(--dur-1);
+}
+
+.flag input {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  background: var(--bg);
+  transition:
+    background-color var(--dur-1),
+    border-color var(--dur-1);
+}
+
+.flag input::after {
+  content: '';
+  width: 5px;
+  height: 2.5px;
+  border-bottom: 1.5px solid var(--surface);
+  border-left: 1.5px solid var(--surface);
+  transform: rotate(-45deg) scale(0);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.flag input:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.flag input:checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.flag.is-on {
+  color: var(--fg);
+  border-color: var(--accent-line);
+  background: var(--accent-wash);
+}
+
+/* 试验台主体：左纸面 / 右读数。
+   两栏各自按内容高，不互相拉伸 —— 让纸面跟着拉高只会得到一张
+   下半截全空的边框，比留白本身更难看。 */
+.lab-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 288px;
+  align-items: start;
+  gap: 1rem;
+}
+
+.lab-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.lab-paper {
+  position: relative;
+  padding: clamp(1.3rem, 3.2vw, 2.3rem) clamp(1.1rem, 2.8vw, 2rem) clamp(1.3rem, 3.2vw, 2.3rem)
+    calc(clamp(1.1rem, 2.8vw, 2rem) + 20px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* 行距刻度尺：每一条刻度 = 一行，开「基线网格」时显示 */
+.lab-paper::before {
+  content: '';
+  position: absolute;
+  top: clamp(1.3rem, 3.2vw, 2.3rem);
+  bottom: clamp(1.3rem, 3.2vw, 2.3rem);
+  left: clamp(1.1rem, 2.8vw, 2rem);
+  width: 10px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--line-2) 0 1px,
+    transparent 1px var(--lab-step, 1.6em)
+  );
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+.lab.is-grid .lab-paper::before {
+  opacity: 1;
+}
+
+.lab.is-grid .lab-sample {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--line-2) 0 1px,
+    transparent 1px var(--lab-step, 1.6em)
+  );
+}
+
+.lab-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.readout-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.readout-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.readout-score {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.readout-score strong {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.readout-score[data-state='bad'] strong {
+  color: var(--warn);
+}
+
+.readout-verdict {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.readout-verdict[data-state='bad'] {
+  color: var(--warn);
+}
+
+.checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.check {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'dot name val'
+    '. hint hint';
+  align-items: center;
+  gap: 0.05rem 0.4rem;
+  padding: 0.36rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--dur-1);
+}
+
+.check-dot {
+  grid-area: dot;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition:
+    background-color var(--dur-1),
+    box-shadow var(--dur-1);
+}
+
+.check-name {
+  grid-area: name;
+  font-size: var(--fs-sm);
+  color: var(--fg-2);
+}
+
+.check-val {
+  grid-area: val;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.check-hint {
+  grid-area: hint;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+}
+
+.check[data-state='bad'] {
+  background: var(--warn-wash);
+}
+
+.check[data-state='bad'] .check-dot {
+  background: var(--warn);
+  box-shadow: 0 0 0 3px var(--warn-wash);
+}
+
+.check[data-state='bad'] .check-val {
+  color: var(--warn);
+}
+
+/* 生成的 CSS 贴在纸面下方：所见与所得的对照，比塞进右侧读数栏更顺 */
+.readout-css {
+  padding: 0.7rem 0.8rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.readout-css-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.readout-css-head span {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.readout-css pre {
+  margin: 0;
+  max-height: 15rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--fg-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+  overflow: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* ---------- 小按钮 ---------- */
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.26rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    color var(--dur-1),
+    border-color var(--dur-1),
+    background-color var(--dur-1);
+}
+
+.mini-btn .ico svg {
+  width: 11px;
+  height: 11px;
+}
+
+.mini-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-wash);
+}
+
+.mini-btn.is-done {
+  color: var(--accent);
+  border-color: var(--accent-line);
+}
+
+/* ==========================================================================
+   3. 样张渲染规则（试验台与五张卡共用）
+   ========================================================================== */
+
+.t-body {
+  position: relative;
+  max-width: var(--t-measure, 34em);
+  color: var(--fg);
+  font-family: var(--t-font, var(--font-sans));
+  font-size: var(--t-size, 12pt);
+  line-height: var(--t-lh, 1.7);
+  /* 中文排版的三处细节，不支持的浏览器直接忽略 */
+  text-spacing-trim: trim-start;
+  word-break: normal;
+  line-break: strict;
+  overflow-wrap: break-word;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'calt' 1;
+  font-synthesis-weight: none;
+  text-wrap: pretty;
+}
+
+.t-body > * {
+  margin: 0;
+}
+
+.t-body > * + * {
+  margin-top: var(--t-gap, 1.2em);
+}
+
+.t-body .s-title {
+  font-family: var(--t-title-font, var(--t-font, var(--font-sans)));
+  font-size: calc(var(--t-size, 12pt) * var(--t-title-scale, 1.45));
+  line-height: 1.3;
+  font-weight: var(--t-weight, 600);
+  letter-spacing: var(--t-tracking, 0);
+  text-wrap: balance;
+}
+
+.t-body .s-lead {
+  color: var(--fg-2);
+}
+
+.t-body .s-code {
+  padding: 0.5em 0.7em;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--code-bg);
+  color: var(--fg-2);
+  font-family: var(--t-mono, var(--font-mono));
+  font-size: 0.86em;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+.t-body .s-quote {
+  padding-left: 0.9em;
+  border-left: 2px solid var(--accent-line);
+  color: var(--muted);
+}
+
+.t-body .s-note {
+  font-size: 0.86em;
+  color: var(--muted);
+}
+
+/* 修饰开关：开关只是加减属性，不改任何字号。
+   缩进只给正文段落 —— 标题和小字注缩进两格，看起来像是排错了。 */
+.t-body.is-indent > p:not(.s-title):not(.s-note) {
+  text-indent: 2em;
+}
+
+.t-body.is-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.t-body.is-autospace {
+  text-autospace: normal;
+}
+
+.t-body:not(.is-trim) {
+  text-spacing-trim: none;
+}
+
+.t-body:not(.is-pretty) {
+  text-wrap: wrap;
+}
+
+/* 可编辑段落：悬停给一层淡底，点进去即可改写 */
+.t-body [data-sync] {
+  border-radius: 3px;
+  outline: none;
+  cursor: text;
+  transition:
+    background-color var(--dur-1),
+    box-shadow var(--dur-1);
+}
+
+.t-body [data-sync]:hover,
+.t-body [data-sync]:focus {
+  background: var(--accent-wash);
+  box-shadow: 0 0 0 4px var(--accent-wash);
+}
+
+.t-body [data-sync]:empty::before {
+  content: '点这里改写…';
+  color: var(--faint);
+}
+
+/* ==========================================================================
+   4. 五张样张
+   ========================================================================== */
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  /* 单栏时收窄居中：卡片再宽，正文也只会用到 544px，
+     剩下的空白应该留在卡片外面，而不是留在卡片里面。 */
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+/* 双栏要保证 34 字行宽塞得下（12pt × 34 = 544px + 两级内边距），
+   窄一点就退回单栏 —— 宁可留白，也不让样张的行宽失真。 */
+@media (min-width: 1360px) {
+  .spec-grid {
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.spec {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.05rem 1.15rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition:
+    border-color var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease);
+}
+
+.spec:hover {
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-md);
+}
+
+.spec-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.5rem 0.55rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.spec-idx {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+.spec-titles {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.45rem;
+}
+
+.spec-name {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.spec-en {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+.spec-use {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  text-align: right;
+}
+
+/* 纸面：比卡片面低一层，样张才像贴在纸上。
+   宽度按「字数 × 字号 + 内边距」精确算出来 —— 纸面边界就是行宽边界，
+   右边不会留下一截说不清来历的空白。 */
+.spec-sample {
+  --spec-pad: clamp(0.85rem, 1.8vw, 1.1rem);
+  width: calc(var(--t-chars, 34) * var(--t-size, 12pt) + var(--spec-pad) * 2 + 2px);
+  max-width: 100%;
+  padding: var(--spec-pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.spec-exception {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--warn);
+}
+
+.spec-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+}
+
+.spec-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.85rem;
+  margin: 0;
+}
+
+.spec-chips div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.28rem;
+}
+
+.spec-chips dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+}
+
+.spec-chips dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--fg-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.spec-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.spec-note {
+  margin: 0;
+  max-width: 62ch;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--line-2);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  line-height: 1.75;
+}
+
+/* 收尾格：五张样张是奇数，第 6 格用来说明判据，避免栅格最后一行空一格 */
+.spec--summary {
+  justify-content: center;
+  gap: 0.55rem;
+  border-style: dashed;
+  border-color: var(--line-2);
+  background: var(--surface-2);
+}
+
+.spec--summary:hover {
+  border-color: var(--line-2);
+  box-shadow: none;
+}
+
+.spec--summary .summary-kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.spec--summary h3 {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.4;
+  letter-spacing: var(--tracking-tight);
+  font-weight: 620;
+  color: var(--fg);
+}
+
+.spec--summary p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+.spec--summary .mini-btn {
+  align-self: flex-start;
+  margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   5. 修饰清单
+   ========================================================================== */
+
+.deco-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* 八条修饰正好铺满 4×2，不留空格 */
+@media (min-width: 1000px) {
+  .deco-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.deco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem 0.95rem;
+  background: var(--surface);
+}
+
+.deco h3 {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.deco p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  line-height: 1.75;
+}
+
+.deco code {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================================================
+   6. 响应式
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  .lab-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lab-readout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .spec-head {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'idx titles'
+      'use use';
+  }
+
+  .spec-idx {
+    grid-area: idx;
+  }
+
+  .spec-titles {
+    grid-area: titles;
+  }
+
+  .spec-use {
+    grid-area: use;
+    text-align: left;
+  }
+
+  .lab-flags-label {
+    width: 100%;
+  }
+
+  .rule {
+    padding: 0.7rem 0.8rem;
+  }
+}

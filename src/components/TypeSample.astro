@@ -1,0 +1,39 @@
+---
+/**
+ * 样张正文：五张卡与试验台共用同一份可编辑文字。
+ *
+ * 每个可编辑段落带 data-sync 键，脚本按「键」广播：
+ * 在任意一处改写，其余所有卡片同步更新（见 scripts/modules/specimen.js）。
+ * 文字本身放在 lib/specimens.ts，避免两处渲染写出两份内容。
+ */
+import { SAMPLE } from '../lib/specimens';
+
+const { id, class: className = '', style } = Astro.props;
+
+const fields = [
+  { key: 'title', tag: 'p', cls: 's-title', label: '样张标题', text: SAMPLE.title },
+  { key: 'lead', tag: 'p', cls: 's-lead', label: '导语段落', text: SAMPLE.lead },
+  { key: 'body', tag: 'p', cls: 's-body', label: '正文段落', text: SAMPLE.body },
+  { key: 'code', tag: 'pre', cls: 's-code', label: '代码行', text: SAMPLE.code },
+  { key: 'quote', tag: 'blockquote', cls: 's-quote', label: '引用段落', text: SAMPLE.quote },
+  { key: 'note', tag: 'p', cls: 's-note', label: '注释段落', text: SAMPLE.note },
+] as const;
+---
+
+<div class={`t-body ${className}`.trim()} id={id} style={style}>
+  {fields.map((field) => {
+    const Tag = field.tag;
+    return (
+      <Tag
+        class={field.cls}
+        data-sync={field.key}
+        contenteditable="true"
+        role="textbox"
+        aria-label={`${field.label}（可直接编辑，同步到全部卡片）`}
+        spellcheck="false"
+      >
+        {field.text}
+      </Tag>
+    );
+  })}
+</div>
