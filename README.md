@@ -15,18 +15,18 @@
 
 ## ✨ 特性
 
-|                              |                                                                                                                      |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                                      |
-| **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                                   |
-| **自托管字体，只带需要的字** | 霞鹜文楷（400 正文 / 600 标题）+ Inter + 等宽按内容子集化；首屏只预加载正文与等宽 2 个（约 234 KB）                |
-| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                                |
-| **排版优先**                 | 最小 12px · 6 级字阶 · 17px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                                      |
-| **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                                    |
-| **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                              |
-| **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS              |
-| **可访问**                   | axe-core 全站扫描 **0 违规**（WCAG 2.1 A/AA）· skip link · 焦点管理 · `prefers-reduced-motion`                       |
-| **代码规范**                 | `astro check` 0 错误 · Prettier 统一风格 · CI 会在构建前跑三项校验                                                   |
+|                              |                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **3 个运行时依赖**           | `astro` · `@astrojs/rss` · `@astrojs/sitemap`；字体与工具链都在 devDependencies                         |
+| **零 UI 框架**               | 无 React / Vue / Tailwind，样式是 1 份分层手写 CSS                                                      |
+| **自托管字体，只带需要的字** | 霞鹜文楷（400 正文 / 600 标题）+ Inter + 等宽按内容子集化；首屏只预加载正文与等宽 2 个（约 234 KB）     |
+| **首屏零阻塞**               | 样式内联进 HTML（约 7 KB gzip），不产生渲染阻塞请求                                                     |
+| **排版优先**                 | 最小 12px · 6 级字阶 · 17px 楷体正文 / 1.8 行高 · 约 45 汉字行宽 · 发丝分隔线                           |
+| **明暗主题**                 | 跟随系统、可切换、`localStorage` 记忆、首屏无闪烁、地址栏颜色同步                                       |
+| **页面切换**                 | 原生 View Transition + Speculation Rules 预渲染，点击近乎瞬时，零运行时                                 |
+| **SEO**                      | WebSite / Organization / BlogPosting / BreadcrumbList 结构化数据 · sitemap `lastmod` · OG/Twitter · RSS |
+| **可访问**                   | axe-core 全站扫描 **0 违规**（WCAG 2.1 A/AA）· skip link · 焦点管理 · `prefers-reduced-motion`          |
+| **代码规范**                 | `astro check` 0 错误 · Prettier 统一风格 · CI 会在构建前跑三项校验                                      |
 
 ---
 
