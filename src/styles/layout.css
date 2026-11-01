@@ -139,6 +139,25 @@
   opacity: 0.65;
 }
 
+/* 站外链接：末尾挂一个 ↗，告诉读者这一步会离开本站 */
+.nav a.nav-external {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.16rem;
+}
+
+.nav-external .ico svg {
+  /* 跟着字号走：顶栏 14px → 11px，移动端抽屉 17px → 13.6px */
+  width: 0.8em;
+  height: 0.8em;
+  opacity: 0.5;
+  transition: opacity var(--dur-1);
+}
+
+.nav-external:hover .ico svg {
+  opacity: 1;
+}
+
 .header-actions {
   display: flex;
   align-items: center;

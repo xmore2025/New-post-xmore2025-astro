@@ -2,7 +2,11 @@
 /**
  * 导航链接：桌面顶栏与移动端抽屉共用同一份渲染逻辑，
  * 当前页通过 aria-current="page" 标记（样式与无障碍都依赖它）。
+ *
+ * 站外链接（site.config.json 里标了 external: true）走另一套处理：
+ * 新标签页打开、不参与"当前页"判定，并在末尾挂一个 ↗ 提示会离开本站。
  */
+import Icon from './Icon.astro';
 import { site } from '../config';
 
 const { class: className = 'nav', ariaLabel = '主导航' } = Astro.props;
@@ -11,9 +15,17 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 ---
 
 <nav class={className} aria-label={ariaLabel}>
-  {site.nav.map((item) => (
-    <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-      {item.label}
-    </a>
-  ))}
+  {site.nav.map((item) =>
+    item.external ? (
+      <a href={item.href} target="_blank" rel="noopener noreferrer" class="nav-external">
+        {item.label}
+        <Icon name="arrowUpRight" />
+        <span class="visually-hidden">（在新标签页打开）</span>
+      </a>
+    ) : (
+      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    )
+  )}
 </nav>

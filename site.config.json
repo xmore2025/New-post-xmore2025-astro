@@ -24,6 +24,11 @@
     { "label": "文章", "href": "/posts/" },
     { "label": "分类", "href": "/categories/" },
     { "label": "排印", "href": "/typography/" },
-    { "label": "关于", "href": "/about/" }
+    { "label": "关于", "href": "/about/" },
+    {
+      "label": "图床",
+      "href": "https://maxs-zxtk.204680.xyz/login",
+      "external": true
+    }
   ]
 }

@@ -18,7 +18,8 @@ export interface SiteConfig {
     origin?: string;
   };
   social: { github?: string; x?: string; telegram?: string; email?: string };
-  nav: { label: string; href: string }[];
+  /** 导航项。external 为 true 时按站外链接处理：新标签打开、不做当前页高亮 */
+  nav: { label: string; href: string; external?: boolean }[];
 }
 
 /** 全站配置的唯一来源：根目录的 site.config.json */
