@@ -66,6 +66,13 @@
   height: var(--header-h);
 }
 
+/* 导航不居中：与右侧动作区一起贴右对齐。
+   auto 外边距吃掉 brand 与导航之间的全部余量，所以导航紧挨搜索与主题按钮；
+   保留 space-between 作为"没有桌面导航时"的兜底。 */
+.header-inner .nav--desktop {
+  margin-left: auto;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -223,6 +230,13 @@
 
 .nav-dropdown__panel[hidden] {
   display: none;
+}
+
+/* 导航靠右后，最后一个分组的浮层改成右对齐，
+   否则面板会从触发器向左铺开、顶到视口右边缘 */
+.nav--desktop > .nav-dropdown:last-child .nav-dropdown__panel {
+  right: 0;
+  left: auto;
 }
 
 /* 覆盖 .nav a 的默认内边距与颜色：面板里是「名称 + 说明」两行式条目 */
