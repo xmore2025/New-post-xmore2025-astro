@@ -1,31 +1,100 @@
 ---
 /**
- * 导航链接：桌面顶栏与移动端抽屉共用同一份渲染逻辑，
- * 当前页通过 aria-current="page" 标记（样式与无障碍都依赖它）。
+ * 导航链接：桌面顶栏与移动端抽屉共用同一份数据与高亮逻辑。
+ * 当前页通过 aria-current="page" 标记，样式与无障碍都依赖它。
  *
- * 站外链接（site.config.json 里标了 external: true）走另一套处理：
- * 新标签页打开、不参与"当前页"判定，并在末尾挂一个 ↗ 提示会离开本站。
+ * 站外链接（site.config.json 里标了 external: true）新标签打开、
+ * 不参与"当前页"判定，并挂一个 ↗ 提示会离开本站。
+ *
+ * 分组项（带 items，例如「实用工具」）在桌面渲染成下拉；
+ * 在移动端抽屉里直接平铺成「小标题 + 子项」——抽屉本身就是列表，
+ * 再套一层折叠只会让手机上多点一次。
  */
 import Icon from './Icon.astro';
 import { site } from '../config';
 
 const { class: className = 'nav', ariaLabel = '主导航' } = Astro.props;
+
 const path = Astro.url.pathname;
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const isDesktop = className.includes('nav--desktop');
+const isActive = (href?: string) => !!href && (href === '/' ? path === '/' : path.startsWith(href));
+const groupActive = (items: { href?: string }[]) => items.some((item) => isActive(item.href));
 ---
 
 <nav class={className} aria-label={ariaLabel}>
-  {site.nav.map((item) =>
-    item.external ? (
-      <a href={item.href} target="_blank" rel="noopener noreferrer" class="nav-external">
+  {site.nav.map((item, index) => {
+    const children = item.items ?? [];
+
+    if (children.length) {
+      // 桌面：下拉；移动端：平铺分组
+      if (!isDesktop) {
+        return (
+          <div class="nav-group">
+            <span class="nav-group__label">{item.label}</span>
+            {children.map((sub) => (
+              <a
+                href={sub.href}
+                class="nav-external"
+                target={sub.external ? '_blank' : undefined}
+                rel={sub.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive(sub.href) ? 'page' : undefined}
+              >
+                {sub.label}
+                {sub.external && <Icon name="arrowUpRight" />}
+              </a>
+            ))}
+          </div>
+        );
+      }
+
+      const panelId = `nav-panel-${index}`;
+      return (
+        <div class="nav-dropdown" data-nav-dropdown>
+          <button
+            class="nav-dropdown__trigger"
+            type="button"
+            aria-expanded="false"
+            aria-controls={panelId}
+            aria-haspopup="true"
+            data-dropdown-trigger
+            data-active={groupActive(children) ? 'true' : undefined}
+          >
+            {item.label}
+            <Icon name="chevronDown" class="nav-dropdown__chevron" />
+          </button>
+          <div class="nav-dropdown__panel" id={panelId} hidden data-dropdown-panel>
+            {children.map((sub) => (
+              <a
+                href={sub.href}
+                class="nav-dropdown__item"
+                target={sub.external ? '_blank' : undefined}
+                rel={sub.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive(sub.href) ? 'page' : undefined}
+              >
+                <span class="nav-dropdown__label">
+                  {sub.label}
+                  {sub.external && <Icon name="arrowUpRight" />}
+                </span>
+                {sub.desc && <span class="nav-dropdown__desc">{sub.desc}</span>}
+                {sub.external && <span class="visually-hidden">（在新标签页打开）</span>}
+              </a>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <a
+        href={item.href}
+        class={item.external ? 'nav-external' : undefined}
+        target={item.external ? '_blank' : undefined}
+        rel={item.external ? 'noopener noreferrer' : undefined}
+        aria-current={isActive(item.href) ? 'page' : undefined}
+      >
         {item.label}
-        <Icon name="arrowUpRight" />
-        <span class="visually-hidden">（在新标签页打开）</span>
+        {item.external && <Icon name="arrowUpRight" />}
       </a>
-    ) : (
-      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-        {item.label}
-      </a>
-    )
-  )}
+    );
+  })}
 </nav>

@@ -18,8 +18,20 @@ export interface SiteConfig {
     origin?: string;
   };
   social: { github?: string; x?: string; telegram?: string; email?: string };
-  /** 导航项。external 为 true 时按站外链接处理：新标签打开、不做当前页高亮 */
-  nav: { label: string; href: string; external?: boolean }[];
+  nav: NavItem[];
+}
+
+/** 导航项。带 items 时渲染成下拉分组，否则是一个普通链接 */
+export interface NavItem {
+  label: string;
+  /** 普通项必填；分组项可省略 */
+  href?: string;
+  /** 二级说明，只在下拉面板里显示 */
+  desc?: string;
+  /** 站外链接：新标签打开、不做当前页高亮 */
+  external?: boolean;
+  /** 二级菜单项 */
+  items?: NavItem[];
 }
 
 /** 全站配置的唯一来源：根目录的 site.config.json */

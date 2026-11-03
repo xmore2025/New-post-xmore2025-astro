@@ -1,0 +1,28 @@
+---
+import { getEntry, render } from 'astro:content';
+import '../styles/prose.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config';
+
+const entry = await getEntry('pages', 'subscribe');
+if (!entry) throw new Error('缺少 src/content/pages/subscribe.md');
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title="订阅转载"
+  description={`订阅 ${site.title} 的新文章，以及转载授权与引用说明`}
+  bodyClass="page-about"
+>
+  <div class="shell">
+    <div class="article article--about">
+      <header class="article-head">
+        <p class="kicker">SUBSCRIBE</p>
+        <h1>订阅转载</h1>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

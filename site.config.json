@@ -26,9 +26,26 @@
     { "label": "排印", "href": "/typography/" },
     { "label": "关于", "href": "/about/" },
     {
-      "label": "图床",
-      "href": "https://maxs-zxtk.204680.xyz/login",
-      "external": true
+      "label": "实用工具",
+      "items": [
+        {
+          "label": "在线图床",
+          "desc": "上传图片，复制直链",
+          "href": "https://maxs-zxtk.204680.xyz/login",
+          "external": true
+        },
+        {
+          "label": "订阅转换",
+          "desc": "节点订阅转 Clash / SingBox",
+          "href": "https://sub-link.maxspanel.qzz.io",
+          "external": true
+        },
+        {
+          "label": "订阅转载",
+          "desc": "RSS 订阅与转载授权",
+          "href": "/subscribe/"
+        }
+      ]
     }
   ]
 }

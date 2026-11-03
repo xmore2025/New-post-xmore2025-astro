@@ -158,6 +158,123 @@
   opacity: 1;
 }
 
+/* ---------- 下拉分组（如「实用工具」） ----------
+   桌面把二级项收进面板，移动端抽屉里则平铺成「小标题 + 子项」。
+   面板用 hidden 属性控制显隐，JS 同步 aria-expanded，
+   所以即使脚本没跑，二级项也只是不展开、不会丢失。 */
+.nav-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-dropdown__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.35rem 0.6rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    color var(--dur-1),
+    background-color var(--dur-1);
+}
+
+.nav-dropdown__trigger:hover,
+.nav-dropdown__trigger[aria-expanded='true'] {
+  color: var(--fg);
+  background: var(--hover);
+}
+
+/* 组内有当前页时，触发器也加深，避免"进了二级页顶栏就没高亮" */
+.nav-dropdown__trigger[data-active='true'] {
+  color: var(--fg);
+}
+
+.nav-dropdown__chevron.ico svg {
+  width: 0.72em;
+  height: 0.72em;
+  opacity: 0.55;
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.nav-dropdown__trigger[aria-expanded='true'] .nav-dropdown__chevron.ico svg {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown__panel {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  z-index: 60;
+  display: grid;
+  gap: 0.1rem;
+  min-width: 15.5rem;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-dropdown__panel[hidden] {
+  display: none;
+}
+
+/* 覆盖 .nav a 的默认内边距与颜色：面板里是「名称 + 说明」两行式条目 */
+.nav .nav-dropdown__item {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.48rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: var(--fg);
+}
+
+.nav .nav-dropdown__item:hover {
+  background: var(--hover);
+}
+
+/* 面板项不画顶栏那根下划线，改用字重区分当前页 */
+.nav .nav-dropdown__item[aria-current='page']::after {
+  display: none;
+}
+
+.nav-dropdown__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: var(--fs-sm);
+}
+
+.nav-dropdown__label .ico svg {
+  width: 0.75em;
+  height: 0.75em;
+  opacity: 0.5;
+}
+
+.nav-dropdown__desc {
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--faint);
+}
+
+/* 移动端抽屉：分组标题 + 平铺子项 */
+.nav-group {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.nav-group__label {
+  padding: 0.55rem 0.5rem 0.15rem;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--faint);
+}
+
 .header-actions {
   display: flex;
   align-items: center;

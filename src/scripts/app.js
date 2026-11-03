@@ -8,7 +8,7 @@
 
 import { $$ } from './modules/dom.js';
 import { initTheme } from './modules/theme.js';
-import { initMobileNav } from './modules/nav.js';
+import { initMobileNav, initNavDropdowns } from './modules/nav.js';
 import { initArticle } from './modules/article.js';
 import { initShell } from './modules/ui.js';
 
@@ -78,6 +78,7 @@ const initSearchLazy = () => {
 const start = () => {
   initTheme();
   initMobileNav();
+  initNavDropdowns();
   initShell();
   initArticle();
   initSearchLazy();
